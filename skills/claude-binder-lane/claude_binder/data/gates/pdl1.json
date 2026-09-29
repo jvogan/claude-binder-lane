@@ -1,0 +1,457 @@
+{
+  "schema_version": 4,
+  "gate_type": "claude-binder.validation-gate",
+  "target_id": "pdl1",
+  "status": "UNVERIFIABLE",
+  "target_dossier": {
+    "status": "UNVERIFIABLE_TARGET_DOSSIER",
+    "reason": "The package ships historical PD-L1 control-panel measurements but not the 4ZQK-derived target structure and residue-map artifacts needed to bind those measurements to a materialized target. The RFdiffusion3 canary design output is not a target dossier and must not supply this binding.",
+    "source": {
+      "file": "Package contents audit",
+      "lines": "data/gates/pdl1.json historical panel citations; data/roster-evidence/canary/rf3 is a generated-design canary"
+    }
+  },
+  "frozen_instrument_mask": [
+    "ef2fast",
+    "boltz2"
+  ],
+  "limitations": [
+    {
+      "id": "negative-target-chain",
+      "statement": "Both negative panels folded barnase as the target chain. The positive control folded PD-L1 as the target chain.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "The four configurations; What I could not determine"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "boltz-alignment-confound",
+      "statement": "The Boltz-2 panel used 5316 PD-L1 alignments and 4777 PD-1 alignments. ESMFold2-Fast used no alignment. The panel cannot split arm and alignment effects.",
+      "source": {
+        "file": "Existing pdl1 gate record",
+        "lines": "Boltz-2 positive-control separation"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "boltz-sampling-unit",
+      "statement": "Boltz-2 produced five samples in conditions (a) and (b). Its API exposed no seed parameter. The protocol asks for five distinct seeds per arm.",
+      "source": {
+        "file": "BOLTZ-COND-A.md",
+        "lines": "Samples, not seeds"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2full-alignment-confound",
+      "statement": "The ef2full panel used a 5316-row PD-L1 target alignment. Its binder-chain alignment had 4777 rows for spliced PD-1 and 4269 rows for repaired PD-1. ESMFold2-Fast was single-sequence, so the panel confounds arm and alignment effects.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "All twenty folds; The alignments"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2full-binder-alignment-depth",
+      "statement": "Only the ten positive-control folds carried a binder alignment with real depth. Both negative ligands had one-row alignments, so alignment information reached the positive side and not the negative side.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "The alignments"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2full-msa-truncation",
+      "statement": "The ef2full folds used msa_max_depth 2048. The deep alignments were truncated before they reached the model.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "All twenty folds; The alignments"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2full-negative-refold",
+      "statement": "The ef2full negatives were refolded, giving an ef2full negative edge of 0.1741 and an ef2fast negative edge of 0.4425. Gaps are not comparable across arms.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "The four configurations"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2full-binder-msa-worker-extension",
+      "statement": "The deployed application was extended to attach an alignment to the binder chain. The worker environment revision was ef2full-bothmsa-v1:GPU-H100:1:py3.12:b28433167b2e7633.",
+      "source": {
+        "file": "FULLPANEL.md",
+        "lines": "The app had to be changed, and how; The deployment"
+      },
+      "resolution_status": "UNRESOLVED"
+    },
+    {
+      "id": "ef2fast-reference-basis",
+      "statement": "The twelve ESMFold2-Fast condition (a) rows used predicted or designed references. The Boltz-2 condition (a) rows used the 4ZQK crystal.",
+      "source": {
+        "file": "BOLTZ-COND-A.md",
+        "lines": "Which number belongs in the gate"
+      },
+      "resolution_status": "UNRESOLVED"
+    }
+  ],
+  "instruments": {
+    "ef2fast": {
+      "arm_name": "ef2fast",
+      "model": "ESMFold2-Fast",
+      "configuration": "single-sequence",
+      "status": "PASS",
+      "sampling": {
+        "unit": "seed",
+        "count": 5,
+        "values": [0, 1, 2, 3, 4],
+        "source": {
+          "file": "FULLPANEL.md",
+          "lines": "The four configurations"
+        }
+      },
+      "superseded_panel": {
+        "label": "original spliced positive control",
+        "positive_ipsae_min_by_seed": [
+          0.47432031857140505,
+          0.4167122448612603,
+          0.5162258074013709,
+          0.47757308326607983,
+          0.33748431755958924
+        ],
+        "positive_score_range": [0.33748431755958924, 0.5162258074013709],
+        "maximum_negative_ipsae_min": 0.44246015508782677,
+        "separated": false,
+        "source": {
+          "file": "FULLPANEL.md",
+          "lines": "The four configurations; Against the Fast panel, seed by seed"
+        }
+      },
+      "fold_recapitulation": {
+        "pass": true,
+        "ca_rmsd_threshold_angstrom": 2.0,
+        "observed_max_ca_rmsd_angstrom": 0.5354,
+        "minimum_aligned_target_residues_threshold": 50,
+        "observed_minimum_aligned_target_residues": 115,
+        "observed_aligned_row_count": 12,
+        "core_scoping": "full 115 residue target chain",
+        "source": {
+          "file": "BOLTZ-COND-A.md",
+          "lines": "Which number belongs in the gate"
+        }
+      },
+      "positive_control_separation": {
+        "pass": true,
+        "ranking_metric": "ipsae_min",
+        "separation_predicate": "min_positive_strictly_exceeds_max_negative",
+        "separation_margin": 0.12360793812919146,
+        "reason": "The repaired positive minimum exceeds the maximum negative score.",
+        "positive_control": {
+          "id": "pd1-pdl1-4zqk-repaired",
+          "source_id": "4ZQK",
+          "stoichiometry": "full native PD-1:PD-L1 complex",
+          "score_by_seed": [
+            {"seed": 0, "value": 0.5971572471855452},
+            {"seed": 1, "value": 0.5894251051862275},
+            {"seed": 2, "value": 0.5852508983985003},
+            {"seed": 3, "value": 0.5660680932170182},
+            {"seed": 4, "value": 0.5912759572196989}
+          ],
+          "score_range": [0.5660680932170182, 0.5971572471855452]
+        },
+        "negative_controls": [
+          {
+            "id": "negative_crosspair_A_pdl1_barnase",
+            "score_by_seed": [
+              {"seed": 0, "value": 0.44246015508782677},
+              {"seed": 1, "value": 0.4267320507052712},
+              {"seed": 2, "value": 0.39787681538179825},
+              {"seed": 3, "value": 0.43480575634716945},
+              {"seed": 4, "value": 0.4118182203981891}
+            ],
+            "score_range": [0.39787681538179825, 0.44246015508782677]
+          },
+          {
+            "id": "negative_shuffled_barstar_seed20260823",
+            "score_by_seed": [
+              {"seed": 0, "value": 0.0},
+              {"seed": 1, "value": 0.0},
+              {"seed": 2, "value": 0.0},
+              {"seed": 3, "value": 0.0},
+              {"seed": 4, "value": 0.0}
+            ],
+            "score_range": [0.0, 0.0]
+          }
+        ],
+        "evidence_metrics": {
+          "sc_dockq": {
+            "panel": "repaired-positive-control",
+            "positive_control": {
+              "score_by_seed": [
+                {"seed": 0, "value": 0.9200458277595324},
+                {"seed": 1, "value": 0.9229867412611729},
+                {"seed": 2, "value": 0.9081210979903643},
+                {"seed": 3, "value": 0.8774009637140351},
+                {"seed": 4, "value": 0.9356205259716232}
+              ],
+              "score_range": [0.8774009637140351, 0.9356205259716232]
+            },
+            "negative_controls": [
+              {
+                "id": "negative_crosspair_A_pdl1_barnase",
+                "availability": "UNDEFINED",
+                "reason": "The wrong-partner pair has no true complex reference by design."
+              },
+              {
+                "id": "negative_shuffled_barstar_seed20260823",
+                "availability": "UNDEFINED",
+                "reason": "The shuffled pair has no true complex reference by design."
+              }
+            ]
+          }
+        },
+        "source": {
+          "file": "FULLPANEL.md",
+          "lines": "The four configurations; On the repaired construct"
+        }
+      }
+    },
+    "boltz2": {
+      "arm_name": "boltz2",
+      "model": "Boltz-2",
+      "configuration": "alignments on both chains",
+      "status": "PASS",
+      "sampling": {
+        "unit": "sample",
+        "count": 5,
+        "seed_parameter_available": false,
+        "protocol_requirement": "five distinct seeds per arm",
+        "source": {
+          "file": "BOLTZ-COND-A.md",
+          "lines": "Samples, not seeds"
+        }
+      },
+      "fold_recapitulation": {
+        "pass": true,
+        "measurement_selection": "target chain folded alone",
+        "measurement_selection_reason": "The target-alone measurement is the condition (a) value because it measures target fold recapitulation without the condition (b) ligand.",
+        "ca_rmsd_threshold_angstrom": 2.0,
+        "observed_max_ca_rmsd_angstrom": 0.8546478007344834,
+        "minimum_aligned_target_residues_threshold": 50,
+        "observed_minimum_aligned_target_residues": 115,
+        "observed_aligned_row_count": 5,
+        "core_scoping": "full 115 residue target chain",
+        "supporting_complex_measurement": {
+          "label": "target chain inside the condition (b) positive-control complex",
+          "observed_max_ca_rmsd_angstrom": 0.5082776504102962,
+          "observed_minimum_aligned_target_residues": 115,
+          "observed_aligned_row_count": 5,
+          "core_scoping": "full 115 residue target chain"
+        },
+        "source": {
+          "file": "BOLTZ-COND-A.md and BOLTZ-COND-A.tsv",
+          "lines": "Answer; Per-sample values; target_alone and target_in_complex rows"
+        }
+      },
+      "positive_control_separation": {
+        "pass": true,
+        "ranking_metric": "ipsae_min",
+        "separation_predicate": "min_positive_strictly_exceeds_max_negative",
+        "separation_margin": 0.3736270004923296,
+        "reason": "The positive minimum exceeds the maximum of both negative panels.",
+        "positive_control": {
+          "id": "pd1-pdl1-4zqk",
+          "source_id": "4ZQK",
+          "stoichiometry": "full native PD-1:PD-L1 complex",
+          "score_by_sample": [
+            {"sample": 0, "value": 0.8214478475215027},
+            {"sample": 1, "value": 0.887065950839685},
+            {"sample": 2, "value": 0.8356546815963839},
+            {"sample": 3, "value": 0.8227411763499402},
+            {"sample": 4, "value": 0.8712126579881594}
+          ],
+          "score_range": [0.8214478475215027, 0.887065950839685]
+        },
+        "negative_controls": [
+          {
+            "id": "negative_crosspair_barnase_pdl1binder",
+            "score_by_sample": [
+              {"sample": 0, "value": 0.40330956779890087},
+              {"sample": 1, "value": 0.4240307362012496},
+              {"sample": 2, "value": 0.41827254510176076},
+              {"sample": 3, "value": 0.4472169459044366},
+              {"sample": 4, "value": 0.41341438230051114}
+            ],
+            "score_range": [0.40330956779890087, 0.4472169459044366]
+          },
+          {
+            "id": "negative_shuffled_barstar",
+            "score_by_sample": [
+              {"sample": 0, "value": 0.4478208470291731},
+              {"sample": 1, "value": 0.08604694032466763},
+              {"sample": 2, "value": 0.029168990188945164},
+              {"sample": 3, "value": 0.24533711374019873},
+              {"sample": 4, "value": 0.1205121531985883}
+            ],
+            "score_range": [0.029168990188945164, 0.4478208470291731]
+          }
+        ],
+        "evidence_metrics": {
+          "sc_dockq": {
+            "panel": "boltz-panel",
+            "positive_control": {
+              "score_by_sample": [
+                {"sample": 0, "value": 0.7605289559445678},
+                {"sample": 1, "value": 0.8062928503722456},
+                {"sample": 2, "value": 0.7303812657282052},
+                {"sample": 3, "value": 0.762046842659451},
+                {"sample": 4, "value": 0.6724074379541648}
+              ],
+              "score_range": [0.6724074379541648, 0.8062928503722456]
+            },
+            "negative_controls": [
+              {
+                "id": "negative_crosspair_barnase_pdl1binder",
+                "availability": "UNDEFINED",
+                "reason": "The wrong-partner pair has no true complex reference by design."
+              },
+              {
+                "id": "negative_shuffled_barstar",
+                "availability": "UNDEFINED",
+                "reason": "The shuffled pair has no true complex reference by design."
+              }
+            ]
+          }
+        },
+        "source": {
+          "file": "Existing pdl1 gate record",
+          "lines": "Boltz-2 positive-control separation"
+        }
+      }
+    },
+    "ef2full": {
+      "arm_name": "ef2full",
+      "model": "ESMFold2-Full",
+      "configuration": "alignments on both chains",
+      "status": "FAIL",
+      "worker_environment_revision": "ef2full-bothmsa-v1:GPU-H100:1:py3.12:b28433167b2e7633",
+      "worker_environment_source": {
+        "file": "FULLPANEL.md",
+        "lines": "The deployment"
+      },
+      "sampling": {
+        "unit": "seed",
+        "count": 5,
+        "values": [0, 1, 2, 3, 4],
+        "source": {
+          "file": "FULLPANEL.md",
+          "lines": "The four configurations; All twenty folds"
+        }
+      },
+      "superseded_panel": {
+        "label": "spliced positive control",
+        "positive_ipsae_min_by_seed": [
+          0.5856248096746416,
+          0.6131818467246467,
+          0.15687161413890882,
+          0.45401897969619825,
+          0.15657688299383368
+        ],
+        "positive_score_range": [0.15657688299383368, 0.6131818467246467],
+        "maximum_negative_ipsae_min": 0.17414815527212488,
+        "separated": false,
+        "source": {
+          "file": "FULLPANEL.md and FULLPANEL.tsv",
+          "lines": "The four configurations; All twenty folds; rows 2-16"
+        }
+      },
+      "fold_recapitulation": {
+        "pass": false,
+        "measurement_status": "NOT_MEASURED",
+        "reason": "FULLPANEL.md does not measure ef2full condition (a) fold recapitulation.",
+        "source": {
+          "file": "FULLPANEL.md",
+          "lines": "The four configurations; All twenty folds"
+        }
+      },
+      "positive_control_separation": {
+        "pass": true,
+        "ranking_metric": "ipsae_min",
+        "separation_predicate": "min_positive_strictly_exceeds_max_negative",
+        "separation_margin": 0.48073147324400967,
+        "reason": "The repaired positive minimum exceeds the maximum negative score.",
+        "positive_control": {
+          "id": "pd1-pdl1-4zqk-repaired",
+          "source_id": "4ZQK",
+          "stoichiometry": "full native PD-1:PD-L1 complex",
+          "score_by_seed": [
+            {"seed": 0, "value": 0.6601590810657654},
+            {"seed": 1, "value": 0.6609340232431106},
+            {"seed": 2, "value": 0.6637675188685311},
+            {"seed": 3, "value": 0.6619724502550091},
+            {"seed": 4, "value": 0.6548796285161346}
+          ],
+          "score_range": [0.6548796285161346, 0.6637675188685311]
+        },
+        "negative_controls": [
+          {
+            "id": "negative_crosspair_A_pdl1_barnase",
+            "score_by_seed": [
+              {"seed": 0, "value": 0.1740081831731443},
+              {"seed": 1, "value": 0.1679854463195964},
+              {"seed": 2, "value": 0.16603543102924448},
+              {"seed": 3, "value": 0.15517856297814464},
+              {"seed": 4, "value": 0.17414815527212488}
+            ],
+            "score_range": [0.15517856297814464, 0.17414815527212488]
+          },
+          {
+            "id": "negative_shuffled_barstar_seed20260823",
+            "score_by_seed": [
+              {"seed": 0, "value": 0.0},
+              {"seed": 1, "value": 0.0},
+              {"seed": 2, "value": 0.012511619462467214},
+              {"seed": 3, "value": 0.0},
+              {"seed": 4, "value": 0.0}
+            ],
+            "score_range": [0.0, 0.012511619462467214]
+          }
+        ],
+        "evidence_metrics": {
+          "sc_dockq": {
+            "panel": "repaired-positive-control",
+            "positive_control": {
+              "score_by_seed": [
+                {"seed": 0, "value": 0.8849044211541388},
+                {"seed": 1, "value": 0.8870250600106754},
+                {"seed": 2, "value": 0.8749199536330625},
+                {"seed": 3, "value": 0.8710322430594175},
+                {"seed": 4, "value": 0.9010686581784227}
+              ],
+              "score_range": [0.8710322430594175, 0.9010686581784227]
+            },
+            "negative_controls": [
+              {
+                "id": "negative_crosspair_A_pdl1_barnase",
+                "availability": "UNDEFINED",
+                "reason": "The wrong-partner pair has no true complex reference by design."
+              },
+              {
+                "id": "negative_shuffled_barstar_seed20260823",
+                "availability": "UNDEFINED",
+                "reason": "The shuffled pair has no true complex reference by design."
+              }
+            ]
+          }
+        },
+        "source": {
+          "file": "FULLPANEL.md and FULLPANEL-REPAIRED.tsv",
+          "lines": "The four configurations; All twenty folds; rows 2-6"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+flowchart LR
+  A[Materialize Targets, Sites, And Controls] --> B[Validate Runtime And Adapters]
+  B --> C[Predict And Measure Controls With Every Predictor]
+  B --> D{Generator Adapters}
+  D --> D1[Backbone Generators]
+  D --> D2[Sequence-Structure Co-design Generators]
+  D1 --> E{Sequence-Designer Adapters}
+  D2 --> F[Normalize Candidate Lineage]
+  E --> F
+  F --> G[Integrity, Deduplication, And Composition]
+  G --> H[Sequence Novelty And Likelihood]
+  H --> I{Screen Predictors: One Seed}
+  C --> J[Verify Control Identity, Chains, Sources, And Separation]
+  I --> K[Join Measurements To Raw Complex, PAE, And Metric Sources]
+  J --> L[Recompute Promotion From Screen Scores, Controls, And Gates]
+  K --> L
+  L --> M[Write Round Summary]
+  M --> M1[Validate Bounded Next-Round Decision]
+  M1 --> M2[Generate Children With The Selected Optimizer]
+  M2 --> M3[Apply The Six Registered Filters To Every Child]
+  M3 --> M4{Predict Every Passing Child With The Screen Ensemble}
+  M4 --> M5[Join Measurements To Raw Prediction Hashes]
+  M5 --> M6[Select Eligible Parents]
+  M6 -->|Next registered round| M
+  M6 -->|Final round| N{Uniform Five-Seed Predictor Rescore}
+  N --> O[Normalize Within Each Predictor]
+  O --> P[Apply Site, Pose, Confidence, Custom-Metric, And Counter-Target Gates]
+  P --> Q[Select A Generator-Balanced Portfolio]
+  Q --> R[Validate Artifacts, Hashes, And Run Status]

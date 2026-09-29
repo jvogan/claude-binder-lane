@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 632" width="1000" height="632" role="img" aria-labelledby="title description">
+<title id="title">The computational workflow</title>
+<desc id="description">Six stages in one path, top to bottom. One: prepare the target and site. Two: check prediction and scoring methods against controls. Three: generate and filter candidates. Four: predict target-binder complexes and score them. Five: rescore and refine promising designs. Six: report a computational shortlist with structures, uncertainty, provenance, and costs. Stages three, four, and five sit in one group: refinement can return to generation for another round within the approved plan.</desc>
+<rect x="0" y="0" width="1000" height="632" fill="#faf9f5"/>
+<text x="48" y="58" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#30302b"><tspan x="48" dy="0">The computational workflow</tspan></text>
+<rect x="48" y="248" width="904" height="276" rx="28" fill="#e6edf8"/>
+<rect x="66" y="82" width="620" height="56" rx="16" fill="#f3ead6"/>
+<circle cx="100" cy="110" r="18" fill="#30302b"/>
+<text x="100" y="117.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">1</tspan></text>
+<text x="136" y="118.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#30302b"><tspan x="136" dy="0">Prepare target</tspan></text>
+<text x="396" y="116.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="396" dy="0">Construct and binding site</tspan></text>
+<rect x="66" y="174" width="620" height="56" rx="16" fill="#f3ead6"/>
+<circle cx="100" cy="202" r="18" fill="#30302b"/>
+<text x="100" y="209.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">2</tspan></text>
+<text x="136" y="210.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#30302b"><tspan x="136" dy="0">Check controls</tspan></text>
+<text x="396" y="208.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="396" dy="0">Positive and negative controls</tspan></text>
+<rect x="66" y="266" width="620" height="56" rx="16" fill="#cfdcf3"/>
+<circle cx="100" cy="294" r="18" fill="#30302b"/>
+<text x="100" y="301.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">3</tspan></text>
+<text x="136" y="302.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#30302b"><tspan x="136" dy="0">Generate and filter</tspan></text>
+<text x="396" y="300.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="396" dy="0">Design methods and filters</tspan></text>
+<rect x="66" y="358" width="620" height="56" rx="16" fill="#cfdcf3"/>
+<circle cx="100" cy="386" r="18" fill="#30302b"/>
+<text x="100" y="393.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">4</tspan></text>
+<text x="136" y="394.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#30302b"><tspan x="136" dy="0">Predict and score</tspan></text>
+<text x="396" y="392.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="396" dy="0">Target-binder complexes</tspan></text>
+<rect x="66" y="450" width="620" height="56" rx="16" fill="#cfdcf3"/>
+<circle cx="100" cy="478" r="18" fill="#30302b"/>
+<text x="100" y="485.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">5</tspan></text>
+<text x="136" y="486.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#30302b"><tspan x="136" dy="0">Rescore and refine</tspan></text>
+<text x="396" y="484.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="396" dy="0">Promising designs</tspan></text>
+<rect x="66" y="542" width="620" height="56" rx="16" fill="#5c6487"/>
+<circle cx="100" cy="570" r="18" fill="#30302b"/>
+<text x="100" y="577.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="100" dy="0">6</tspan></text>
+<text x="136" y="578.6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#faf9f5"><tspan x="136" dy="0">Report</tspan></text>
+<text x="396" y="565.5" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#e6edf8"><tspan x="396" dy="0">Shortlist, structures, uncertainty,</tspan><tspan x="396" dy="22">provenance, costs</tspan></text>
+<polygon points="100,166 88,148 112,148" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 143 L100 155.2" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="100,258 88,240 112,240" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 235 L100 247.2" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="100,350 88,332 112,332" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 327 L100 339.2" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="100,442 88,424 112,424" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 419 L100 431.2" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="100,534 88,516 112,516" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M100 511 L100 523.2" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="697,294 714,282 714,306" fill="#5c6487" stroke="#5c6487" stroke-width="4" stroke-linejoin="round"/>
+<path d="M688 478 L712 478 Q732 478 732 458 L732 306.4 Q732 294 719.6 294 L707.2 294" fill="none" stroke="#5c6487" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 11"/>
+<text x="756" y="392.5" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#5c6487"><tspan x="756" dy="0">Next approved round</tspan></text>
+</svg>

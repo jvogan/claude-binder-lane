@@ -1,0 +1,1651 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "rfdiffusion3-two-arm",
+        "purpose": "Bind RFdiffusion3 as a second backbone arm beside RFdiffusion, each with its own ProteinMPNN sequence designer. small-run.template.json reaches the same module by replacing the RFdiffusion command, which leaves one arm running under another arm's name. This profile gives RFdiffusion3 its own adapter id, stage, and designer, so both arms can run in one campaign and be told apart in the candidate manifest.",
+        "claim_level": "candidate",
+        "baseline_fidelity": false,
+        "optimization_enabled": true,
+        "production_scoring": false,
+        "production_scoring_reason": "The RFdiffusion3 arm reaches its model only through a fal application, and this file names no endpoint. The co-folding arms are unchanged from the reference configuration, which runs none of them.",
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "ESMFold2-Full was not run. This profile is a reference configuration and does not dispatch a deployed campaign."
+          },
+          {
+            "published_arm": "esmfold2-fast",
+            "status": "not_run",
+            "reason": "ESMFold2-Fast was not run. This profile is a reference configuration and does not dispatch a deployed campaign."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 2,
+        "minimum_backbones_per_generator": 50,
+        "minimum_scored_candidates_per_generator": 50,
+        "published_generator_requirements": {
+          "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+          "methods": [
+            "rfdiffusion",
+            "rfdiffusion3",
+            "freebindcraft",
+            "boltzgen",
+            "pxdesign",
+            "proteina-complexa",
+            "genie3"
+          ],
+          "minimum_scored_backbones_per_method": 50,
+          "configured_methods": [
+            "rfdiffusion",
+            "rfdiffusion3",
+            "freebindcraft",
+            "boltzgen",
+            "pxdesign",
+            "proteina-complexa",
+            "genie3"
+          ],
+          "missing_methods": [],
+          "baseline_satisfied": true,
+          "method_binding_states": {
+            "rfdiffusion": "adapter-shipped",
+            "rfdiffusion3": "adapter-shipped",
+            "freebindcraft": "adapter-shipped",
+            "boltzgen": "adapter-shipped",
+            "pxdesign": "adapter-shipped",
+            "proteina-complexa": "adapter-shipped",
+            "genie3": "adapter-shipped"
+          },
+          "binding_states_derived_by": "claude_binder.reproduction_readiness"
+        },
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-rfdiffusion"
+          },
+          {
+            "id": "genie3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "emits": "c-alpha-trace",
+            "adapter_id": "genie3-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-genie3"
+          },
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion3-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-rfdiffusion3"
+          },
+          {
+            "id": "pxdesign",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "pxdesign-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-pxdesign"
+          },
+          {
+            "id": "proteina-complexa",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "proteina-complexa-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-proteina-complexa"
+          },
+          {
+            "id": "boltzgen",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "boltzgen-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-boltzgen"
+          },
+          {
+            "id": "freebindcraft",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "freebindcraft-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-freebindcraft"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 2,
+        "published_designer_requirements": {
+          "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+          "methods": [
+            "solublempnn",
+            "solublecaliby"
+          ],
+          "configured_methods": [
+            "solublempnn",
+            "solublecaliby"
+          ],
+          "missing_methods": [],
+          "substituted_methods": [],
+          "baseline_satisfied": true,
+          "method_binding_states": {
+            "solublempnn": "adapter-shipped",
+            "solublecaliby": "adapter-shipped"
+          }
+        },
+        "designers": [
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublempnn-designer",
+            "command_stage": "sequence-solublempnn"
+          },
+          {
+            "id": "solublecaliby",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublecaliby-designer",
+            "command_stage": "sequence-solublecaliby"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer-rfd3",
+            "command_stage": "sequence-proteinmpnn-rfd3"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "genie3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer-genie3",
+            "command_stage": "sequence-proteinmpnn-genie3"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "pxdesign"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer-pxdesign",
+            "command_stage": "sequence-proteinmpnn-pxdesign"
+          }
+        ]
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "solublecaliby-designer",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "fixed-chain-conditioning",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest",
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "ProteinDesignLab/caliby@41d31560c3c73d7980d94f40f3c852b90bfab5c0",
+        "model_revision": "ProteinDesignLab/caliby-weights@a51f011f4ec7ffe2daad3ab9b2bfb67ff628a096; caliby/soluble_caliby_v1.ckpt sha256:__REQUIRED__",
+        "environment_identity": "__REQUIRED__ Caliby Python 3.12 environment identity",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.solublecaliby_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.solublecaliby_designer",
+          "run",
+          "--caliby-root",
+          "__REQUIRED__ Caliby checkout",
+          "--tool-python",
+          "__REQUIRED__ Caliby Python interpreter",
+          "--checkpoint",
+          "__REQUIRED__ local soluble_caliby_v1.ckpt",
+          "--checkpoint-sha256",
+          "__REQUIRED__ soluble_caliby_v1 SHA-256",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--target-manifest",
+          "{{artifact_root}}/inputs/target-manifest.json",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.solublecaliby_designer",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--manifest-path",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 1,
+          "gpu": 0,
+          "memory_gb": 1,
+          "sizing_status": "unmeasured; schema minima only, not a measured Caliby runtime request"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "claude_binder/adapters/solublecaliby_designer.py",
+            "note": "No completed run on this local Caliby route records a measured cost."
+          }
+        }
+      },
+      {
+        "adapter_id": "rfdiffusion3-generator",
+        "role": "backbone-generator",
+        "capabilities": [
+          "target-conditioned-backbones",
+          "hotspot-conditioning",
+          "seeded-generation"
+        ],
+        "accepted_artifacts": [
+          "target-manifest",
+          "rfd3-specification"
+        ],
+        "produced_artifacts": [
+          "backbone-candidate-manifest",
+          "design-pose-files"
+        ],
+        "source_revision": "rc-foundry 0.2.0+app-09dd49945f0e6142",
+        "model_revision": "rfd3_latest.ckpt sha256:9b3f85923e0d51e9453e15cdd2f8c666e7ce096a60577f57d11bbc54ae6d67c1",
+        "environment_identity": "fal-rf3-binder-v1:GPU-H100:1:python-3.12:rc-foundry-rfd3:09dd49945f0e6142:torch-2.13.0+cu130",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3-toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "run",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--specification",
+          "{{artifact_root}}/inputs/{{target_id}}-rfd3.json",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3",
+          "--receipt",
+          "{{attempt_dir}}/{{phase}}/rf3/receipt.json",
+          "--diffusion-batch-size",
+          "{{count}}",
+          "--n-batches",
+          "1",
+          "--step-scale",
+          "3",
+          "--gamma-0",
+          "0.2"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "parse",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3",
+          "--manifest-path",
+          "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "--generator-id",
+          "rfdiffusion3",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--target-chain",
+          "{{target_chain}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "not_applicable: the fal production deployment identifies its environment without a Modal image digest"
+        },
+        "qualification": {
+          "cost_per_design_usd": 0.05237,
+          "cost_basis": {
+            "kind": "provider-reported rate",
+            "machine": "fal, H100",
+            "measurement_unit": "design",
+            "amount_usd": 1.0474,
+            "unit_count": 20,
+            "source": "one completed fal RFdiffusion3 run, 2026-08-24",
+            "note": "One completed run on 2026-08-24 made 20 usable backbones plus one probe in 3 application calls and 288.865 measured runner seconds. Its billing block prices the generator two ways: USD 1.0474 from settled per-unit rates and USD 0.7558 from client wall clock. The first applies the provider's published per-unit rates, USD 0.00125 per H100 second and USD 0.00007 per machine second, to 288.865 measured runner seconds. This rate divides that dearer figure by the 20 usable designs, so a ceiling refuses rather than under-quotes. No settled fal invoice line was captured for that run."
+          }
+        }
+      },
+      {
+        "adapter_id": "proteinmpnn-designer-rfd3",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "fixed-position-mask",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--adapter-id",
+          "proteinmpnn-designer-rfd3"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion3",
+          "--backbone-artifact-id",
+          "rfdiffusion3-candidates",
+          "--designer-id",
+          "proteinmpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8
+        },
+        "qualification": {
+          "cost_per_design_usd": 0.000497905,
+          "cost_basis": {
+            "kind": "settled billed amount",
+            "machine": "Modal CPU container",
+            "measurement_unit": "sequence",
+            "amount_usd": 0.00099581,
+            "unit_count": 2,
+            "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+            "note": "One settled Modal CPU run produced 2 validated 80-residue sequences for USD 0.00099581 in 3.102723 seconds. This rate divides that amount by 2, so it spreads container startup across both sequences."
+          }
+        }
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--adapter-id",
+          "proteinmpnn-designer"
+        ]
+      },
+      {
+        "adapter_id": "pxdesign-generator",
+        "role": "backbone-generator",
+        "capabilities": [
+          "target-conditioned-backbones",
+          "hotspot-conditioning",
+          "unseeded-generation-recorded"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "backbone-candidate-manifest",
+          "raw-mmcif-files",
+          "design-pose-files"
+        ],
+        "source_revision": "bytedance/PXDesign@f788441313c84c3074fe9596ac2433f96b15c763",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.pxdesign_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{pxdesign_fal_url}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.pxdesign_generator",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--fal-url",
+          "{{pxdesign_fal_url}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--binder-length",
+          "{{binder_length_min}}",
+          "--binder-length-min",
+          "{{binder_length_min}}",
+          "--binder-length-max",
+          "{{binder_length_max}}",
+          "--generator-id",
+          "pxdesign",
+          "--seed",
+          "37"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.pxdesign_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 12,
+          "gpu": 1,
+          "memory_gb": 96,
+          "gpu_memory_gb": 80,
+          "container_image_digest": "not_applicable: the fal deployment identifies its environment without a Modal image digest"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+            "note": "No figure in this package prices PXDesign on any provider. The recorded served run produced one 64-residue backbone and no billing line was captured for it."
+          }
+        }
+      },
+      {
+        "adapter_id": "proteinmpnn-designer-pxdesign",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "fixed-position-mask",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--adapter-id",
+          "proteinmpnn-designer-pxdesign"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-pxdesign",
+          "--backbone-artifact-id",
+          "pxdesign-candidates",
+          "--designer-id",
+          "proteinmpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8
+        },
+        "qualification": {
+          "cost_per_design_usd": 0.000497905,
+          "cost_basis": {
+            "kind": "settled billed amount",
+            "machine": "Modal CPU container",
+            "measurement_unit": "sequence",
+            "amount_usd": 0.00099581,
+            "unit_count": 2,
+            "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+            "note": "One settled Modal CPU run produced 2 validated 80-residue sequences for USD 0.00099581 in 3.102723 seconds. This rate divides that amount by 2, so it spreads container startup across both sequences."
+          }
+        }
+      },
+      {
+        "adapter_id": "proteina-complexa-generator",
+        "role": "codesign-generator",
+        "capabilities": [
+          "supplied-single-chain-codesign",
+          "joint-sequence-structure-generation",
+          "hotspot-conditioning",
+          "seeded-generation"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "NVIDIA-BioNeMo/Proteina-Complexa@54058860d43444c7289873f77d3e50b5b02348cd",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteina_complexa_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{proteina_complexa_fal_url}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteina_complexa_generator",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--fal-url",
+          "{{proteina_complexa_fal_url}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--binder-length",
+          "64",
+          "--binder-length-min",
+          "{{binder_length_min}}",
+          "--binder-length-max",
+          "{{binder_length_max}}",
+          "--generator-id",
+          "proteina-complexa",
+          "--seed",
+          "37"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteina_complexa_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 12,
+          "gpu": 1,
+          "memory_gb": 96,
+          "gpu_memory_gb": 80,
+          "container_image_digest": "not_applicable: the fal deployment identifies its environment without a Modal image digest"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+            "note": "No figure in this package prices Proteina-Complexa on any provider. The recorded served run produced one 64-residue candidate and no billing line was captured for it."
+          }
+        }
+      },
+      {
+        "adapter_id": "boltzgen-generator",
+        "role": "codesign-generator",
+        "capabilities": [
+          "joint-sequence-structure-generation",
+          "target-conditioned-complexes",
+          "hotspot-conditioning",
+          "binder-length-range",
+          "unseeded-generation-recorded"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "sequence-files",
+          "design-pose-files",
+          "raw-mmcif-files",
+          "native-metric-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltzgen_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{boltzgen_fal_url}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltzgen_generator",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--fal-url",
+          "{{boltzgen_fal_url}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--binder-length-min",
+          "{{binder_length_min}}",
+          "--binder-length-max",
+          "{{binder_length_max}}",
+          "--generator-id",
+          "boltzgen",
+          "--seed",
+          "37"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltzgen_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 12,
+          "gpu": 1,
+          "memory_gb": 96,
+          "gpu_memory_gb": 80,
+          "container_image_digest": "not_applicable: the fal deployment identifies its environment without a Modal image digest"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+            "note": "No figure in this package prices BoltzGen on any provider. The recorded served run returned one 64-residue candidate that failed BoltzGen's own filter, and no billing line was captured for it."
+          }
+        }
+      },
+      {
+        "adapter_id": "freebindcraft-generator",
+        "role": "codesign-generator",
+        "capabilities": [
+          "target-conditioned-codesign",
+          "joint-sequence-structure-generation",
+          "hotspot-conditioning",
+          "internal-sequence-redesign",
+          "staging-retention"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "cytokineking/FreeBindCraft@8b8d4c4627da06f084f46b7007450048fe3ca22f",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.freebindcraft_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{freebindcraft_fal_url}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.freebindcraft_generator",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--fal-url",
+          "{{freebindcraft_fal_url}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--generator-id",
+          "freebindcraft",
+          "--binder-name",
+          "freebindcraft"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.freebindcraft_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 12,
+          "gpu": 1,
+          "memory_gb": 96,
+          "gpu_memory_gb": 80,
+          "container_image_digest": "not_applicable: the fal deployment identifies its environment without a Modal image digest"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+            "note": "No figure in this package prices FreeBindCraft on any provider. The measured-costs page carries a modeled H100 estimate for one design runner, and a model is not a measurement."
+          }
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "sequence-solublecaliby",
+        "adapter_id": "solublecaliby-designer",
+        "required_role": "sequence-designer",
+        "description": "Design fixed-backbone SolubleCaliby v1 sequences for the RFdiffusion backbone arm. Ensemble conditioning is a separate adapter subcommand and is not selected by this profile.",
+        "depends_on": [
+          "target-prepare",
+          "generate-rfdiffusion"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest",
+          "generate-rfdiffusion:rfdiffusion-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "solublecaliby-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-rfdiffusion",
+            "artifact_id": "rfdiffusion-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "generate-rfdiffusion3",
+        "adapter_id": "rfdiffusion3-generator",
+        "required_role": "backbone-generator",
+        "description": "Generate the RFdiffusion3 backbone arm.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest",
+          "target-prepare:rfd3-specification"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "rfdiffusion3-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 50
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 360,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "sequence-proteinmpnn-rfd3",
+        "adapter_id": "proteinmpnn-designer-rfd3",
+        "required_role": "sequence-designer",
+        "description": "Design ProteinMPNN sequences for the RFdiffusion3 backbone arm.",
+        "depends_on": [
+          "generate-rfdiffusion3"
+        ],
+        "inputs": [
+          "generate-rfdiffusion3:rfdiffusion3-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-rfd3-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-rfdiffusion3",
+            "artifact_id": "rfdiffusion3-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "generate-pxdesign",
+        "adapter_id": "pxdesign-generator",
+        "required_role": "backbone-generator",
+        "description": "Generate the PXDesign arm on a fal deployment. The application returns its engine-native mmCIF and a chain-relabelled PDB bridge. It caps one request at 4 designs, so the adapter dispatches this phase as whole requests and records which one produced each row.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "pxdesign-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "generator_mode",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "raw_design_pose_path",
+              "raw_design_pose_sha256",
+              "binder_chain_id",
+              "binder_length",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "raw-mmcif-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/raw-poses/*.cif",
+            "kind": "cif",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 50
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 360,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "sequence-proteinmpnn-pxdesign",
+        "adapter_id": "proteinmpnn-designer-pxdesign",
+        "required_role": "sequence-designer",
+        "description": "Design ProteinMPNN sequences for the PXDesign arm. The recorded PXDesign output carries placeholder residue names on the binder chain, so a sequence designer assigns residues downstream.",
+        "depends_on": [
+          "generate-pxdesign"
+        ],
+        "inputs": [
+          "generate-pxdesign:pxdesign-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-pxdesign-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-pxdesign",
+            "artifact_id": "pxdesign-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "generate-proteina-complexa",
+        "adapter_id": "proteina-complexa-generator",
+        "required_role": "codesign-generator",
+        "description": "Generate the Proteina-Complexa arm on a fal deployment. The application co-designs a complex and its binder sequence, so no sequence-designer stage follows it. It serves one normalized chain A numbered from one and a fixed 64-residue binder, and it caps one request at 4 designs, so the adapter dispatches this phase as whole requests.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "proteina-complexa-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "generator_mode",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "binder_chain_id",
+              "binder_length",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 50
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 360,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "generate-boltzgen",
+        "adapter_id": "boltzgen-generator",
+        "required_role": "codesign-generator",
+        "description": "Generate BoltzGen complexes and binder sequences through the declared fal application; retain the native structures and metric evidence.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "boltzgen-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "generator_mode",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "binder_chain_id",
+              "binder_length",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "raw-design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/raw-poses/*.cif",
+            "kind": "cif",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "native-metrics",
+            "path_template": "{{attempt_dir}}/{{phase}}/metrics/*.json",
+            "kind": "json",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 50
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 360,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "sequence-solublempnn",
+          "sequence-solublecaliby",
+          "sequence-proteinmpnn",
+          "sequence-proteinmpnn-genie3",
+          "sequence-proteinmpnn-rfd3",
+          "sequence-proteinmpnn-pxdesign",
+          "generate-proteina-complexa",
+          "generate-freebindcraft",
+          "generate-boltzgen"
+        ],
+        "inputs": [
+          "sequence-solublempnn:solublempnn-candidates",
+          "sequence-solublecaliby:solublecaliby-candidates",
+          "sequence-proteinmpnn:proteinmpnn-candidates",
+          "sequence-proteinmpnn-genie3:proteinmpnn-genie3-candidates",
+          "sequence-proteinmpnn-rfd3:proteinmpnn-rfd3-candidates",
+          "sequence-proteinmpnn-pxdesign:proteinmpnn-pxdesign-candidates",
+          "generate-proteina-complexa:proteina-complexa-candidates",
+          "generate-freebindcraft:freebindcraft-candidates",
+          "generate-boltzgen:boltzgen-candidates"
+        ]
+      },
+      {
+        "stage_id": "generate-freebindcraft",
+        "adapter_id": "freebindcraft-generator",
+        "required_role": "codesign-generator",
+        "description": "Design the FreeBindCraft arm end to end on a fal deployment: AlphaFold 2 multimer hallucination, the tool's own ProteinMPNN redesign, and re-prediction, with PyRosetta bypassed behind --no-pyrosetta. The stage publishes a staging set rather than the tool's accepted subset, because four of the tool's default filter thresholds compare a constant on that path, so every row carries the tool's verdict and this lane's screen ranks all of them. The application caps one request at 32 designs, so the adapter dispatches this phase as whole requests. No sequence-design stage follows, because the generator designs the sequence.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "freebindcraft-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "generator_mode",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "binder_chain_id",
+              "export_set",
+              "retention",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 50
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 1440,
+        "heartbeat_seconds": 120
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/next-round-decision.v1",
+  "title": "Next Round Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "round",
+    "summary_sha256",
+    "config_sha256",
+    "selected_parent_ids",
+    "adapter_id",
+    "operation",
+    "parameter_overrides",
+    "seeds",
+    "candidate_count",
+    "expected_fanout",
+    "stop",
+    "stop_reason"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "round": {"type": "integer", "minimum": 1},
+    "summary_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "selected_parent_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "adapter_id": {"type": "string"},
+    "operation": {"enum": ["partial-diffusion", "inverse-folding-resample", "predict-redesign", "point-mutation"]},
+    "parameter_overrides": {"type": "object"},
+    "seeds": {"type": "array", "items": {"type": "integer"}, "uniqueItems": true},
+    "candidate_count": {"type": "integer", "minimum": 0},
+    "expected_fanout": {"type": "integer", "minimum": 0},
+    "stop": {"type": "boolean"},
+    "stop_reason": {"type": ["string", "null"]},
+    "termination_reason": {"type": ["string", "null"]},
+    "outcome": {
+      "enum": [
+        "continue",
+        "converged",
+        "all_metric_floor",
+        "candidate_budget_exhausted",
+        "prediction_budget_exhausted",
+        "round_budget_spent"
+      ]
+    }
+  }
+}

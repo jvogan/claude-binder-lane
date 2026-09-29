@@ -1,0 +1,14 @@
+{
+  "volume_name": null,
+  "volume_mount": "/data",
+  "repo_dir": "/data/claude-binder-lane/repo",
+  "workspace_staging": "dispatch",
+  "finalize_script": "claude_binder",
+  "default_shard_width": 6,
+  "shard_width": {},
+  "seconds_per_candidate": {},
+  "startup_allowance_s": 300,
+  "finalize_timeout_s": 1800,
+  "container_timeout_s": null,
+  "finalize_subcommand": "merge-shards"
+}

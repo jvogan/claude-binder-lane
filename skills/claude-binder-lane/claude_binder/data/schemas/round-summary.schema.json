@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/round-summary.v1",
+  "title": "Optimization Round Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "round", "source_manifest_sha256", "candidates", "budget", "failures"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "round": {"type": "integer", "minimum": 1},
+    "source_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["candidate_id", "origin_generator", "status"],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "origin_generator": {"type": "string", "minLength": 1},
+          "status": {"enum": ["promoted", "eligible", "failed", "rejected"]}
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["remaining_candidates", "remaining_predictions"],
+      "properties": {
+        "remaining_candidates": {"type": "integer", "minimum": 0},
+        "remaining_predictions": {"type": "integer", "minimum": 0}
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {"type": "object"}
+    }
+  }
+}

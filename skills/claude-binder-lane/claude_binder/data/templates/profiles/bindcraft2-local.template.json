@@ -1,0 +1,305 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "bindcraft2-local",
+        "purpose": "Design the binder arm with BindCraft2 running as a local process on an installation the scientist owns, and screen its output on the inherited ESMFold2-Fast predictor, rebound here to its own local route. No stage of this profile reaches a network service, so it asks for no provider endpoint at all. This is one reproducible configuration rather than a general BindCraft2 substitute: it fixes --core benchmark and --modality binder, exposes neither --property nor --set, and the adapter refuses a multi-chain binder modality because the lane has no rule for publishing one.",
+        "claim_level": "unqualified",
+        "production_scoring": false,
+        "production_scoring_reason": "No campaign has run the BindCraft2 arm, so it carries no qualification receipt, no measured cost and no timing basis.",
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "claim_level_reason": "The complete Binder arm remains unqualified. A 2026-09-21 Modal run verified the toolcheck, upstream execution, and package parser, but did not execute this profile or its downstream screen. Ranking resolves on the configured weighted score.",
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "bindcraft2",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "bindcraft2-generator",
+            "backbone_count": 10,
+            "command_stage": "generate-bindcraft2"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": []
+      }
+    },
+    "remove_adapters": [
+      "rfdiffusion-generator",
+      "proteinmpnn-designer"
+    ],
+    "remove_stages": [
+      "generate-rfdiffusion",
+      "sequence-proteinmpnn"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "bindcraft2-generator",
+        "role": "codesign-generator",
+        "capabilities": [
+          "target-conditioned-codesign",
+          "joint-sequence-structure-generation",
+          "hotspot-conditioning",
+          "internal-sequence-redesign",
+          "installed-vocabulary-validation",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "PacesaLab/BindCraft2@18a9042fbe9a5373a5b7d98fe82335127c2fd70d",
+        "model_revision": "__REQUIRED__ the weights identity your installation loads, declared before the run; BindCraft2 also reports it in campaign_metadata.json and parse carries that into the receipt",
+        "environment_identity": "__REQUIRED__ the machine and environment identity the campaign runs in",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.bindcraft2_generator",
+          "toolcheck",
+          "--bindcraft-executable",
+          "__REQUIRED__ the bindcraft entry point from your own BindCraft2 installation",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/bindcraft2"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.bindcraft2_generator",
+          "run",
+          "--bindcraft-executable",
+          "__REQUIRED__ the bindcraft entry point from your own BindCraft2 installation",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-manifest",
+          "{{artifact_root}}/inputs/target-manifest.json",
+          "--core",
+          "benchmark",
+          "--modality",
+          "binder",
+          "--binder-length-min",
+          "{{binder_length_min}}",
+          "--binder-length-max",
+          "{{binder_length_max}}",
+          "--binder-name",
+          "bindcraft2"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.bindcraft2_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--manifest-path",
+          "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 8,
+          "gpu": 1,
+          "memory_gb": 32,
+          "sizing_status": "A100-80GB executed the recorded bring-up; peak device memory and other GPU shapes remain unmeasured"
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/tool-catalogue.md#bindcraft2-bound-on-2026-09-21",
+            "note": "Recorded Modal A100-80GB wall times are 17.3 seconds for toolcheck and 619.0 and 370.2 seconds for upstream execution on 2026-09-21. Settled dollars remain pending. Build a workload-specific estimate from the selected account rate; these timings do not price a complete campaign."
+          }
+        }
+      },
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12",
+        "environment_identity": "__REQUIRED__ the machine and environment identity the local screen runs in",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/tool-catalogue.md#bindcraft2-bound-on-2026-09-21",
+            "note": "This route runs in process on the operator's own GPU, so no rate here predicts theirs. The same adapter module has run: the 2026-09-02 Modal v14 shard invoked claude_binder.adapters.esmfold2_fast_predictor directly and its receipt reports ok true with no errors, settling at 0.02712564 USD per fold on a Modal L40S. That figure is evidence about that machine and not a planning rate for an arbitrary one, so this profile carries no price."
+          }
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "generate-bindcraft2",
+        "adapter_id": "bindcraft2-generator",
+        "required_role": "codesign-generator",
+        "description": "Design the BindCraft2 arm end to end on an installation the scientist owns: AlphaFold 2 sequence optimization on the ColabDesign framework, the tool's own ProteinMPNN redesign, and validation with separate AlphaFold models and structural filters. The stage validates every modality, property, core profile and setting name against the installed copy's own --list-* output before it starts the subprocess, and it runs --core benchmark so the seed is pinned and the adaptive tuning is off. No sequence-design stage follows, because the generator designs the sequence. Acceptance is the tool's own computational verdict, so every published row stays status generated and the lane's own screen ranks it. The argv names --modality binder deliberately. Upstream applies no modality layer when none is named, and naming binder reads settings/modality/binder.json, which bans cysteine through aa_bias, sets min_monomer_plddt_final to 0.7 and adds a Binder_RMSD filter at 3.5. The composed binder_lengths override the preset's own range, because the request is the last layer upstream applies.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "bindcraft2-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "generator_mode",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 10
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 1440,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "generate-bindcraft2"
+        ],
+        "inputs": [
+          "generate-bindcraft2:bindcraft2-candidates"
+        ]
+      }
+    ]
+  }
+}

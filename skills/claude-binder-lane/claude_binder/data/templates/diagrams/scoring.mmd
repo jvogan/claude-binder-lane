@@ -1,0 +1,17 @@
+flowchart LR
+  R[Receipt-Owned Complex, PAE, Metric Source, And Record Hash] --> B
+  A[Candidate × Target × Predictor × Registered Seed] --> B[Validate Lineage, Phase, Revisions, Hashes, And Metric Ranges]
+  B --> C[Select Maximum ipSAEmin Seed Per Predictor]
+  C --> D[Use sc-DockQ From The Same Seed]
+  D --> E[Z-Score ipSAEmin Within Each Predictor]
+  D --> F[Z-Score sc-DockQ Within Each Predictor]
+  E --> G[0.8 × ipSAEmin Z]
+  F --> H[0.2 × sc-DockQ Z]
+  G --> I[Mean Across Predictors]
+  H --> I
+  I --> J[Apply Predictor Coverage And Control Separation]
+  J --> K[Apply Site, Registered Contact Chemistry, Clash, And Target-Role Gates]
+  K --> L[Rank Candidates]
+  L --> M[Enforce Origin-Generator Quotas]
+  M --> N[Final Candidate Portfolio]
+  N --> O[Copy And Rehash One Final FASTA Per Candidate]

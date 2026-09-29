@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/campaign.v1",
+  "title": "Binder Lane Campaign Use Declaration",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["declared_use"],
+  "properties": {
+    "declared_use": {
+      "type": "string",
+      "enum": ["commercial", "non-commercial"]
+    },
+    "viewer_renderer": {
+      "type": "string",
+      "enum": ["auto", "pymol", "browser"],
+      "default": "auto"
+    }
+  }
+}

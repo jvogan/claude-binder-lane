@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "campaign_id": "pdl1-small-run-example",
+  "run_id": "pdl1-small-run-example-v1",
+  "purpose": "Non-evaluative PD-L1 wiring fixture built from an RFdiffusion3 canary output; compose only and make no target, control-calibration, or binder-quality claim.",
+  "declared_use": "non-commercial",
+  "viewer_renderer": "browser",
+  "targets": [
+    {
+      "target_id": "pdl1-primary",
+      "gate_id": "pdl1",
+      "role": "primary",
+      "source_id": "Q9NZQ7",
+      "entities": [
+        {
+          "entity_id": "target-protein",
+          "type": "protein",
+          "chain_ids": [
+            "B"
+          ],
+          "required": true
+        }
+      ],
+      "structure_path": "../roster-evidence/canary/rf3/structures/design-spec_pdl1_binder_0_model_0.cif",
+      "chains": [
+        {
+          "chain_id": "B",
+          "role": "design-target"
+        }
+      ],
+      "site": {
+        "mode": "reference-pose-contacts",
+        "design_residues": [
+          "B:37",
+          "B:39",
+          "B:41",
+          "B:44",
+          "B:45",
+          "B:46",
+          "B:49",
+          "B:51",
+          "B:52",
+          "B:61",
+          "B:96",
+          "B:98",
+          "B:100",
+          "B:104",
+          "B:105",
+          "B:106"
+        ],
+        "reference_contact_residues": [
+          "B:37",
+          "B:39",
+          "B:41",
+          "B:44",
+          "B:45",
+          "B:46",
+          "B:49",
+          "B:51",
+          "B:52",
+          "B:61",
+          "B:96",
+          "B:98",
+          "B:100",
+          "B:104",
+          "B:105",
+          "B:106"
+        ],
+        "contact_cutoff_angstrom": 5.0,
+        "atom_selection": "heavy-atoms",
+        "residue_map_path": "campaign.example.residue-map.json"
+      }
+    }
+  ],
+  "binder": {
+    "minimum_length": 60,
+    "maximum_length": 90,
+    "target_chain_id": "B",
+    "binder_chain_id": "A"
+  },
+  "controls": {
+    "minimum_positive_controls": 1,
+    "minimum_negative_controls": 1,
+    "positive": [
+      {
+        "id": "provider-derived-pose-recovery",
+        "role": "provider-derived-pose-recovery-fixture",
+        "enabled": true,
+        "structure_path": "../roster-evidence/canary/rf3/structures/design-spec_pdl1_binder_0_model_0.cif",
+        "target_chain": "B",
+        "binder_chain": "A",
+        "gates": [
+          {
+            "metric": "ipsae_min",
+            "operator": "minimum",
+            "threshold": 0.8
+          },
+          {
+            "metric": "sc_dockq",
+            "operator": "minimum",
+            "threshold": 0.1
+          },
+          {
+            "metric": "site_contact_iou",
+            "operator": "minimum",
+            "threshold": 0.1
+          },
+          {
+            "metric": "target_contact_recall",
+            "operator": "minimum",
+            "threshold": 0.1
+          }
+        ]
+      }
+    ],
+    "negative": [
+      {
+        "id": "pdl1-sequence-decoy",
+        "role": "sequence-decoy",
+        "enabled": true,
+        "structure_path": "campaign.example.negative-control.cif",
+        "target_chain": "B",
+        "binder_chain": "A",
+        "gates": [
+          {
+            "metric": "ipsae_min",
+            "operator": "maximum",
+            "threshold": 0.2
+          },
+          {
+            "metric": "site_contact_iou",
+            "operator": "maximum",
+            "threshold": 0.1
+          }
+        ]
+      }
+    ],
+    "supported_roles": [
+      "known-same-site-complex",
+      "provider-derived-pose-recovery-fixture",
+      "matched-wrong-pair",
+      "sequence-decoy",
+      "pose-decoy",
+      "alternate-site-complex"
+    ]
+  },
+  "filters": {
+    "disabled_checks": [],
+    "liability_rules": {
+      "reject_odd_cysteine_count": true,
+      "maximum_homopolymer_run": 4,
+      "hydrophobic_window_length": 12,
+      "maximum_hydrophobic_residues": 7
+    },
+    "required_checks": [
+      "composition",
+      "exact_duplicates",
+      "liability_chemistry",
+      "sequence_novelty",
+      "model_likelihood"
+    ],
+    "contracts": [
+      {
+        "filter_id": "composition",
+        "stage_id": "filter-integrity",
+        "metric": "composition-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "local-fixture-v1",
+        "reference_revision": "local-fixture-reference-v1",
+        "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      {
+        "filter_id": "exact_duplicates",
+        "stage_id": "filter-integrity",
+        "metric": "unique-sequence-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "local-fixture-v1",
+        "reference_revision": "local-fixture-reference-v1",
+        "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      {
+        "filter_id": "liability_chemistry",
+        "stage_id": "filter-integrity",
+        "metric": "liability-chemistry-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "claude-binder-liability-v1",
+        "reference_revision": "none",
+        "reference_sha256": "not_applicable: reference revision none uses no external reference data"
+      },
+      {
+        "filter_id": "sequence_novelty",
+        "stage_id": "filter-novelty",
+        "metric": "maximum-target-chain-window-identity",
+        "operator": "maximum",
+        "threshold": 0.6,
+        "tool_revision": "claude-binder-target-chain-window-v1",
+        "reference_revision": "local",
+        "reference_sha256": "not_applicable: reference revision local uses no external reference data"
+      },
+      {
+        "filter_id": "model_likelihood",
+        "stage_id": "filter-novelty",
+        "metric": "model-likelihood-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "local-fixture-v1",
+        "reference_revision": "local-fixture-reference-v1",
+        "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      }
+    ],
+    "metric_sources": {
+      "sequence_novelty": {
+        "kind": "target-chain-sliding-window",
+        "window_length": 40,
+        "include_positive_controls": true,
+        "description": "Compare every design with every protein chain in each target structure and enabled positive-control structure. The 40-residue window is the protocol's minimum local-alignment span. Applying it as an ungapped window is a configurable product judgement."
+      }
+    }
+  },
+  "scoring": {
+    "primary_metric": "ipsae_min",
+    "pose_metric": "sc_dockq",
+    "rank_weights": {
+      "ipsae_min_z": 0.8,
+      "sc_dockq_z": 0.2
+    },
+    "counter_screen": {
+      "off_target_paralog_id": "TODO: set off_target_paralog_id to a configured antitarget target_id"
+    },
+    "seed_aggregation": "max",
+    "minimum_seed_observations": 5,
+    "seed_reduction": "maximum-ipsae_min-per-predictor",
+    "normalization": "population-z-score-within-target-predictor-and-metric",
+    "implementations": {
+      "ipsae_revision": "fixture-ipsae-v1",
+      "ipsae_interface_cutoff_angstrom": 10.0,
+      "dockq_revision": "fixture-dockq-v1",
+      "site_scorer_revision": "fixture-site-scorer-v1",
+      "site_metric_basis": "selected-cofold-pose",
+      "minimum_aligned_target_residues": 20,
+      "maximum_target_alignment_rmsd": 2.0
+    },
+    "required_observation_fields": [
+      "target_id",
+      "candidate_id",
+      "generator",
+      "predictor",
+      "score_instrument",
+      "seed",
+      "phase",
+      "attempt_id",
+      "model_revision",
+      "control_type",
+      "control_role",
+      "control_structure_sha256",
+      "status",
+      "filter_pass",
+      "target_sha256",
+      "sequence_sha256",
+      "target_chain_id",
+      "binder_chain_id",
+      "design_pose_path",
+      "design_pose_sha256",
+      "predicted_complex_path",
+      "predicted_complex_sha256",
+      "pae_path",
+      "pae_sha256",
+      "metric_source_path",
+      "metric_source_sha256",
+      "raw_prediction_record_sha256",
+      "chain_mapping",
+      "aligned_target_residue_count",
+      "target_alignment_rmsd",
+      "ipsae_implementation_revision",
+      "ipsae_interface_cutoff_angstrom",
+      "dockq_implementation_revision",
+      "site_scorer_revision",
+      "site_residue_map_sha256",
+      "site_contact_cutoff_angstrom",
+      "site_atom_selection",
+      "site_metric_basis",
+      "ipsae_target_to_binder",
+      "ipsae_binder_to_target",
+      "ipsae_min",
+      "sc_dockq",
+      "dockq",
+      "fnat",
+      "interface_rmsd",
+      "ligand_rmsd",
+      "mapping_status",
+      "site_contact_iou",
+      "target_contact_recall",
+      "target_contact_precision",
+      "hotspot_recovery",
+      "offsite_contact_fraction",
+      "iptm",
+      "interface_pae",
+      "interface_plddt",
+      "clash_count",
+      "contact_count"
+    ],
+    "thresholds": {
+      "minimum_ipsae_min_ensemble": 0.1,
+      "minimum_sc_dockq_ensemble": 0.1,
+      "minimum_site_contact_iou": 0.1,
+      "minimum_target_contact_recall": 0.1,
+      "maximum_clash_count": 10,
+      "positive_control_minimum_ipsae_min": 0.8,
+      "positive_control_minimum_sc_dockq": 0.1,
+      "positive_control_minimum_site_contact_iou": 0.1,
+      "positive_control_minimum_target_contact_recall": 0.1,
+      "negative_control_maximum_ipsae_min": 0.2
+    }
+  },
+  "optimization": {
+    "enabled": true,
+    "rounds": 2,
+    "early_stop_margin": null,
+    "parent_count_per_round": 3,
+    "variants_per_parent": 1,
+    "operators": [
+      "partial-diffusion",
+      "inverse-folding-resample",
+      "predict-redesign",
+      "point-mutation"
+    ],
+    "adapter_policies": [
+      {
+        "adapter_id": "optimization-controller",
+        "operations": [
+          "partial-diffusion",
+          "inverse-folding-resample",
+          "predict-redesign",
+          "point-mutation"
+        ],
+        "parameter_ranges": {
+          "diffusion_fraction": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 0.5
+          },
+          "sampling_temperature": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 1.0
+          },
+          "mutation_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      }
+    ]
+  },
+  "selection": {
+    "final_count": 3,
+    "minimum_generators": 3,
+    "maximum_fraction_per_generator": 0.5,
+    "structural_diversity_surrogate": {
+      "all_alpha_fraction_threshold": 0.5,
+      "contact_map_overlap_cutoff": 0.5,
+      "enabled": false,
+      "minimum_non_all_alpha_fraction": 0.5,
+      "reason": "Calibrate a contact-map-overlap cutoff and an all-alpha definition on the local anchor set before enabling the structural diversity rule. The three thresholds are declared because promotion_selector reads them whenever the rule is enabled, and a key the adapter reads has to be visible on the shipped surface. With enabled=false the adapter returns before reading them, so they carry no calibration claim."
+    },
+    "tie_breakers": [
+      "site-contact-iou",
+      "target-contact-recall",
+      "lower-clash-count",
+      "candidate-id"
+    ]
+  }
+}

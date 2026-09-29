@@ -1,0 +1,434 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "gap_notes": {
+    "read_me": "This profile is the small run on user-owned RunPod compute. It inherits every scientific choice from small-run.template.json and replaces only the provider-facing adapter bindings. A value written __REQUIRED__ comes from the operator's own account. compose accepts those placeholders and materialize refuses them, so a run cannot start on an unread value.",
+    "no_measured_rate": "No arm in this profile has a measured rate on RunPod. The three inherited fal prices are dropped rather than carried, because a rate measured on one provider loosens a ceiling by whatever the two providers differ by. Every arm here is unpriced, so qualify cannot quote the plan and budget_plan refuses to size one. That refusal is the correct state, not a defect. Record a rate from a single-candidate canary on your own RunPod account, then add a qualification block whose cost_basis.machine names that machine. references/measured-costs.md does carry RunPod rows, for SolubleMPNN, RFdiffusion3 and Genie3 on an L40 or L40S. None of them is a settled bill and none of them is an arm this profile binds, so none of them prices this plan.",
+    "backbone_generator": "The RunPod route generates with RFdiffusion, not RFdiffusion3. rfdiffusion3_generator.py reaches its model over an HTTPS deployment and requires --fal-url, so it has no container binding. This profile restores the RFdiffusion command that full-ensemble.template.json declares. --contigs stays __REQUIRED__ because the contig string describes one target and one binder length window.",
+    "image_is_yours": "RunPod runs the operator's own container image. Modal profiles name bundled environments such as proteomics_gpu because the platform ships them. Nothing here ships an image, so --rfdiffusion-root, --weights-dir, --proteinmpnn-root and every container_image_digest are operator-resolved. Record the digest before the first job so the receipt names the bytes that ran.",
+    "credentials": "runpod_platform reads the credential variable the caller names and defaults to RUNPOD_API_KEY. Export it in the session that dispatches. Do not write the key into this profile, a config file, or a note.",
+    "control_builder": "control_builder.py runs the rescore arm as a child process rather than as its own stage, so the arm inherits whatever container the builder is in. The builder therefore carries the same predictor binding. Without it the control panel would fold on the session kernel, which has neither CUDA nor MPS.",
+    "generator_identity": "This profile substitutes RFdiffusion for the RFdiffusion3 its base runs. The base reaches RFdiffusion3 over an HTTPS deployment, which no container route provides, so the generator here is RFdiffusion and the tool id says so. The adapter id stays rfdiffusion-generator because that names the backbone generator slot, not the tool filling it.",
+    "provider_parameters": "RunPod Serverless is addressed by endpoint id. `clients/runpod_client.py` builds POST /v2/<endpoint_id>/run and validates the id, so `endpoint_id` is the one value the shipped client cannot proceed without. GPU type and region are properties of the endpoint you deploy, not of the request, so they are not declared here. Deploy the endpoint on your own account, then record its id."
+  },
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "small-run-runpod",
+        "purpose": "Run the small-run design and scoring shape on user-owned RunPod compute. One RFdiffusion route, one ProteinMPNN design route, and ESMFold2-Fast co-folding for a small candidate set.",
+        "claim_level": "provider-canary",
+        "production_scoring": false,
+        "production_scoring_reason": "No RunPod job has run from this package. The lifecycle module ships and the provider id is registered, but no environment identity, image digest, price record, or target control has been measured on this provider. This profile stays at provider-canary until a single-candidate canary settles those.",
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile inherits the ESMFold2-Fast arm only. Qualifying Fast does not establish the separate full-MSA arm, and no image here carries the full checkpoint."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "The inherited profile removes the protenix-v2-predictor adapter. No RunPod image in this package installs Protenix, so the arm has nothing to run in."
+          }
+        ]
+      },
+      "provider": {
+        "provider_id": "runpod",
+        "surface": "native-cloud-host-binding",
+        "workspace": "__REQUIRED__",
+        "credential_lane": "user-owned-runpod",
+        "access": "account-only",
+        "persistent_root": "{{data_root}}",
+        "artifact_return_mode": "harvested-receipt-and-outputs",
+        "budget": {
+          "maximum_spend_usd": "__REQUIRED__",
+          "ceiling_stated_by": "__REQUIRED__",
+          "currency": "USD",
+          "pricing_source": "__REQUIRED__",
+          "pricing_checked_at": "__REQUIRED__"
+        },
+        "lifecycle": {
+          "no_retry": true,
+          "verify_bundle_hash_before_run": true,
+          "verify_artifact_hashes_after_run": true,
+          "request_timeout_seconds": 1800,
+          "keep_alive_seconds": 0
+        }
+      },
+      "runpod_platform": {
+        "promotion_destination": "__REQUIRED__",
+        "approval_briefing": [
+          "Jobs run on your own RunPod account. Your budget pays.",
+          "Two approvals are coming: one to set up the compute, one to submit the job.",
+          "Declining either card aborts cleanly. Receipts record where the campaign stopped.",
+          "RunPod runs your container image, not a bundled environment. Record its digest before the first job.",
+          "Cleanup stops billable compute even when artifact recovery is incomplete. A missing receipt blocks success and still terminates the job."
+        ],
+        "bindings": [
+          {
+            "stage_id": "generate-rfdiffusion",
+            "adapter_id": "rfdiffusion-generator",
+            "gpu_type": "__REQUIRED__",
+            "egress_domains": [
+              "dl.fbaipublicfiles.com"
+            ],
+            "weights": {
+              "hydrated": false,
+              "pin": "No checkpoint digest is recorded for this image. Record one."
+            },
+            "concurrency": 1,
+            "concurrency_limit": 1,
+            "timeout_seconds": 21600
+          },
+          {
+            "stage_id": "sequence-proteinmpnn",
+            "adapter_id": "proteinmpnn-designer",
+            "gpu_type": "__REQUIRED__",
+            "egress_domains": [],
+            "weights": {
+              "hydrated": false,
+              "pin": "v_48_020@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57"
+            },
+            "concurrency": 1,
+            "concurrency_limit": 1,
+            "timeout_seconds": 14400
+          },
+          {
+            "stage_id": "cofold-screen-esmfold2-fast",
+            "adapter_id": "esmfold2-fast-predictor",
+            "gpu_type": "__REQUIRED__",
+            "egress_domains": [],
+            "weights": {
+              "hydrated": false,
+              "pin": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12"
+            },
+            "concurrency": 1,
+            "concurrency_limit": 1,
+            "timeout_seconds": 43200
+          },
+          {
+            "stage_id": "control-calibration",
+            "adapter_id": "control-builder",
+            "gpu_type": "__REQUIRED__",
+            "egress_domains": [],
+            "weights": {
+              "hydrated": false,
+              "pin": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12"
+            },
+            "concurrency": 1,
+            "concurrency_limit": 1,
+            "timeout_seconds": 21600
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 10,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      }
+    },
+    "remove_adapter_fields": [
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "fields": [
+          "qualification"
+        ]
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "fields": [
+          "qualification"
+        ]
+      },
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "fields": [
+          "qualification"
+        ]
+      },
+      {
+        "adapter_id": "control-builder",
+        "fields": [
+          "timing_basis"
+        ]
+      }
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "source_revision": "RosettaCommons/RFdiffusion@2d0c003df46b9db41d119321f15403dec3716cd9",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "runpod-image@digest=__REQUIRED__",
+        "environment": {
+          "CLAUDE_BINDER_EXECUTION_ROUTE": "runpod-platform"
+        },
+        "runpod": {
+          "endpoint_id": "__REQUIRED__"
+        },
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "toolcheck",
+          "--runner-protocol",
+          "local",
+          "--rfdiffusion-root",
+          "__REQUIRED__",
+          "--weights-dir",
+          "__REQUIRED__",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "run",
+          "--runner-protocol",
+          "local",
+          "--rfdiffusion-root",
+          "__REQUIRED__",
+          "--weights-dir",
+          "__REQUIRED__",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--contigs",
+          "__REQUIRED__",
+          "--hotspot-csv",
+          "{{reference_contact_residues_csv}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--target-chain",
+          "{{target_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json"
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "source_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "model_revision": "v_48_020@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "environment_identity": "runpod-image@digest=__REQUIRED__",
+        "environment": {
+          "CLAUDE_BINDER_EXECUTION_ROUTE": "runpod-platform"
+        },
+        "runpod": {
+          "endpoint_id": "__REQUIRED__"
+        },
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--runner-protocol",
+          "local",
+          "--proteinmpnn-root",
+          "__REQUIRED__",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--runner-protocol",
+          "local",
+          "--proteinmpnn-root",
+          "__REQUIRED__",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--designer-id",
+          "proteinmpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json"
+      },
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12",
+        "environment_identity": "runpod-image@digest=__REQUIRED__",
+        "environment": {
+          "CLAUDE_BINDER_EXECUTION_ROUTE": "runpod-platform"
+        },
+        "runpod": {
+          "endpoint_id": "__REQUIRED__"
+        },
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json"
+      },
+      {
+        "adapter_id": "control-builder",
+        "environment_identity": "runpod-image@digest=__REQUIRED__",
+        "environment": {
+          "CLAUDE_BINDER_EXECUTION_ROUTE": "runpod-platform"
+        },
+        "runpod": {
+          "endpoint_id": "__REQUIRED__"
+        },
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "__REQUIRED__"
+        }
+      }
+    ]
+  }
+}

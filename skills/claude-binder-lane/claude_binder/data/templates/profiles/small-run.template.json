@@ -1,0 +1,729 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "small-run",
+        "purpose": "Run one RFdiffusion route, one ProteinMPNN design route, and ESMFold2-Fast co-folding for a small candidate set.",
+        "claim_level": "candidate",
+        "production_scoring": true,
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 10,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": [
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion",
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          }
+        ]
+      },
+      "cofold": {
+        "minimum_predictors": 1,
+        "screen_seeds": [
+          0
+        ],
+        "rescore_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "predictors": [
+          {
+            "id": "esmfold2-fast",
+            "enabled": true,
+            "adapter_id": "esmfold2-fast-predictor",
+            "screen_stage": "cofold-screen-esmfold2-fast",
+            "rescore_stage": "cofold-rescore-esmfold2-fast"
+          }
+        ]
+      },
+      "runtime": {
+        "run_root": "{{data_root}}/runs/{{run_id}}",
+        "model_roster_path": "data/model-roster.json",
+        "model_roster_evidence_root": "data/roster-evidence",
+        "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+        "maximum_generated_candidates": 2000,
+        "maximum_screen_predictions": 20000,
+        "maximum_rescore_predictions": 10000,
+        "maximum_optimization_predictions": 10000
+      }
+    },
+    "remove_adapters": [
+      "genie3-generator",
+      "proteinmpnn-designer-genie3",
+      "solublempnn-designer",
+      "esmfold2-predictor",
+      "protenix-v2-predictor"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "msa-builder",
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--source",
+          "query-only"
+        ]
+      },
+      {
+        "adapter_id": "control-builder",
+        "role": "control-builder",
+        "capabilities": [
+          "same-path-control-scoring",
+          "matched-negatives"
+        ],
+        "accepted_artifacts": [
+          "target-manifest",
+          "control-structures",
+          "target-msa-manifest"
+        ],
+        "produced_artifacts": [
+          "raw-prediction-manifest"
+        ],
+        "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+        "model_revision": "none",
+        "environment_identity": "standard-library-python",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.control_builder",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.control_builder",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.control_builder",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16
+        },
+        "timing_basis": {
+          "startup_seconds": 0,
+          "item_seconds": {
+            "minimum": 214.6,
+            "maximum": 337.1
+          },
+          "machine": "GPU-H100",
+          "measurement_unit": "fold",
+          "source": "cost-per-N timing measurement taken 2026-08-23"
+        }
+      },
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "source_revision": "rc-foundry 0.2.0+app-09dd49945f0e6142",
+        "model_revision": "rfd3_latest.ckpt sha256:9b3f85923e0d51e9453e15cdd2f8c666e7ce096a60577f57d11bbc54ae6d67c1",
+        "environment_identity": "fal-rf3-binder-v1:GPU-H100:1:python-3.12:rc-foundry-rfd3:09dd49945f0e6142:torch-2.13.0+cu130",
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "not_applicable: the fal production deployment identifies its environment without a Modal image digest"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "toolcheck",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3-toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "run",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--specification",
+          "{{artifact_root}}/inputs/{{target_id}}-rfd3.json",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3",
+          "--receipt",
+          "{{attempt_dir}}/{{phase}}/rf3/receipt.json",
+          "--diffusion-batch-size",
+          "{{count}}",
+          "--n-batches",
+          "1",
+          "--step-scale",
+          "3",
+          "--gamma-0",
+          "0.2"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion3_generator",
+          "parse",
+          "--fal-url",
+          "{{rfdiffusion3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/rf3",
+          "--manifest-path",
+          "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "--generator-id",
+          "rfdiffusion",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--target-chain",
+          "{{target_chain}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "qualification": {
+          "cost_per_design_usd": 0.063990375,
+          "cost_basis": {
+            "kind": "modeled estimate",
+            "machine": "fal GPU-H100",
+            "measurement_unit": "design",
+            "amount_usd": 0.063990375,
+            "unit_count": 1,
+            "source": "claude_binder/data/model-roster.json",
+            "note": "51.1923 client wall seconds per design, measured on fal in the 2026-08-24T00:38:46Z canary, at the reference GPU-H100 rate of USD 0.00125 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. The roster publishes 0.064 for this arm; this rate is the derivation rounded up, because a quote rounded down under-quotes the ceiling. Modeled, not settled: no fal invoice line has been read against this measurement, so the rate rests on measured wall time at the reference rate. Client wall brackets runner uptime from above."
+          },
+          "command_argv": [
+            "{{python_executable}}",
+            "-m",
+            "claude_binder.canary_runner",
+            "run",
+            "--config",
+            "{{config_path}}",
+            "--adapter-id",
+            "{{adapter_id}}",
+            "--canary-count",
+            "{{canary_count}}",
+            "--evidence-root",
+            "{{evidence_root}}",
+            "--run-dir",
+            "{{run_dir}}",
+            "--receipt",
+            "{{receipt_path}}",
+            "--fal-url",
+            "{{rfdiffusion3_fal_url}}"
+          ],
+          "receipt_path": "receipt.json"
+        }
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "source_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "model_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57:vanilla_model_weights/v_48_020.pt sha256:c9cb4a671d79604111231f8dbfc7c590e06f1197453b7a6854ac6661a642f5bd",
+        "environment_identity": "fal-mpnn-binder-v1:M:0:python-3.11:torch-2.6.0:proteinmpnn-8907e6671bfbfc92303b5f79c4b5e6ce47cdef57:torch-2.6.0+cu124",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--fal-url",
+          "{{proteinmpnn_fal_url}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--fal-url",
+          "{{proteinmpnn_fal_url}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--designer-id",
+          "proteinmpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "qualification": {
+          "cost_per_design_usd": 0.004308689,
+          "cost_basis": {
+            "kind": "modeled estimate",
+            "machine": "fal M, device cpu",
+            "measurement_unit": "sequence",
+            "amount_usd": 0.004308689,
+            "unit_count": 1,
+            "source": "claude_binder/data/model-roster.json",
+            "note": "61.5527 client wall seconds per sequence, measured on fal in the 2026-08-24T00:42:18Z canary, at the reference M rate of USD 7e-05 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. The roster publishes 0.004309 for this arm; this rate is the derivation rounded up, because a quote rounded down under-quotes the ceiling. Modeled, not settled: no fal invoice line has been read against this measurement, so the rate rests on measured wall time at the reference rate. Client wall brackets runner uptime from above."
+          },
+          "command_argv": [
+            "{{python_executable}}",
+            "-m",
+            "claude_binder.canary_runner",
+            "run",
+            "--config",
+            "{{config_path}}",
+            "--adapter-id",
+            "{{adapter_id}}",
+            "--canary-count",
+            "{{canary_count}}",
+            "--evidence-root",
+            "{{evidence_root}}",
+            "--run-dir",
+            "{{run_dir}}",
+            "--receipt",
+            "{{receipt_path}}",
+            "--fal-url",
+            "{{proteinmpnn_fal_url}}"
+          ],
+          "receipt_path": "receipt.json"
+        }
+      },
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+        "model_revision": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12; biohub/ESMC-6B@45b0fa5d7fb06faefbd5e3b89bdcef35d564e79a",
+        "environment_identity": "ef2fast-v1:GPU-H100:1:py3.12:71d7fdd1ca21ebb2",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_esmfold2_fast_predictor",
+          "toolcheck",
+          "--fal-url",
+          "{{esmfold2_fast_fal_url}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/ef2fast-toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_esmfold2_fast_predictor",
+          "run",
+          "--fal-url",
+          "{{esmfold2_fast_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/ef2fast-run-index.jsonl",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}",
+          "--max-seconds",
+          "1700",
+          "--timeout-seconds",
+          "1850"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_esmfold2_fast_predictor",
+          "parse",
+          "--fal-url",
+          "{{esmfold2_fast_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/ef2fast-run-index.jsonl",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "qualification": {
+          "cost_per_design_usd": 0.61573375,
+          "cost_basis": {
+            "kind": "modeled estimate",
+            "machine": "fal GPU-H100",
+            "measurement_unit": "fold",
+            "amount_usd": 0.61573375,
+            "unit_count": 1,
+            "source": "claude_binder/data/model-roster.json",
+            "note": "492.587 client wall seconds per fold, measured on fal in the 2026-08-24T01:37:19Z canary, at the reference GPU-H100 rate of USD 0.00125 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. The roster publishes 0.6157 for this arm; this rate is the derivation rounded up, because a quote rounded down under-quotes the ceiling. Modeled, not settled: no fal invoice line has been read against this measurement, so the rate rests on measured wall time at the reference rate. Client wall brackets runner uptime from above."
+          },
+          "command_argv": [
+            "{{python_executable}}",
+            "-m",
+            "claude_binder.canary_runner",
+            "run",
+            "--config",
+            "{{config_path}}",
+            "--adapter-id",
+            "{{adapter_id}}",
+            "--canary-count",
+            "{{canary_count}}",
+            "--evidence-root",
+            "{{evidence_root}}",
+            "--run-dir",
+            "{{run_dir}}",
+            "--receipt",
+            "{{receipt_path}}",
+            "--fal-url",
+            "{{esmfold2_fast_fal_url}}"
+          ],
+          "receipt_path": "receipt.json"
+        }
+      }
+    ],
+    "remove_stages": [
+      "generate-genie3",
+      "sequence-proteinmpnn-genie3",
+      "sequence-solublempnn",
+      "cofold-screen-esmfold2",
+      "cofold-rescore-esmfold2",
+      "cofold-screen-protenix-v2",
+      "cofold-rescore-protenix-v2"
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 10
+        }
+      },
+      {
+        "stage_id": "control-calibration",
+        "description": "Run every registered control through the configured predictor and publish raw observations with the calibration band.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare",
+          "stage-msa"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest",
+          "run-bundle:controls",
+          "stage-msa:target-msa-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "control-observations",
+            "artifact_type": "raw-prediction-manifest",
+            "path_template": "{{attempt_dir}}/{{phase}}/control-observations.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "required_fields": [
+              "target_id",
+              "candidate_id",
+              "control_type",
+              "control_role",
+              "control_structure_sha256",
+              "predictor",
+              "model_revision",
+              "seed",
+              "phase",
+              "status"
+            ],
+            "publish_path": "controls/control-observations.jsonl"
+          }
+        ],
+        "fanout": {},
+        "mode": "single",
+        "timeout_minutes": 360,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "sequence-proteinmpnn"
+        ],
+        "inputs": [
+          "sequence-proteinmpnn:proteinmpnn-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "normalized-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "schema_path": "schemas/candidate-manifest.schema.json",
+            "minimum_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ],
+            "publish_path": "candidates/candidate-manifest.jsonl"
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "score-screen",
+        "depends_on": [
+          "control-calibration",
+          "cofold-screen-esmfold2-fast"
+        ],
+        "inputs": [
+          "control-calibration:control-observations",
+          "cofold-screen-esmfold2-fast:esmfold2-fast-screen"
+        ]
+      },
+      {
+        "stage_id": "uniform-rescore",
+        "depends_on": [
+          "control-calibration",
+          "cofold-rescore-esmfold2-fast"
+        ],
+        "inputs": [
+          "cofold-rescore-esmfold2-fast:esmfold2-fast-rescore",
+          "control-calibration:control-observations"
+        ]
+      }
+    ],
+    "campaign_overrides": {
+      "optimization": {
+        "enabled": false
+      },
+      "selection": {
+        "final_count": 10,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0,
+        "diversity": {
+          "min_levenshtein_distance": 6,
+          "max_root_backbone_fraction": 0.05,
+          "max_tm90_cluster_fraction": 0.1,
+          "max_structure_method_fraction": 1.0,
+          "max_seq_method_fraction": 1.0,
+          "minimum_structure_methods": 1
+        },
+        "disabled_caps": {
+          "maximum_fraction_per_generator": "The profile configures one enabled generator, rfdiffusion.",
+          "max_structure_method_fraction": "The profile configures one structural method, rfdiffusion.",
+          "max_seq_method_fraction": "The profile configures one sequence-design method, proteinmpnn.",
+          "minimum_structure_methods": "The profile configures one structural method, rfdiffusion."
+        }
+      },
+      "filters": {
+        "disabled_checks": [
+          "model_likelihood"
+        ],
+        "required_checks": [
+          "composition",
+          "exact_duplicates",
+          "liability_chemistry",
+          "sequence_novelty"
+        ],
+        "metric_sources": {
+          "model_likelihood": {
+            "path": "artifacts/candidates/candidate-manifest.jsonl",
+            "produced_by": "normalize-candidates:normalized-candidates",
+            "description": "The designed-residue ProteinMPNN score, the mean negative log-likelihood the designer reports as score= on each FASTA header. The normalize-candidates stage copies it onto every candidate row as value."
+          }
+        }
+      },
+      "scoring": {
+        "custom_metric_gates": [],
+        "custom_control_metric_gates": {
+          "positive": [],
+          "negative": []
+        }
+      }
+    }
+  }
+}

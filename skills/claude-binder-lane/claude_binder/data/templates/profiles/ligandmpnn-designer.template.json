@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "ligandmpnn-designer",
+        "production_scoring": false,
+        "production_scoring_reason": "No campaign has run the LigandMPNN arm, so it carries no qualification receipt and no measured cost.",
+        "purpose": "Substitute LigandMPNN for ProteinMPNN on the sequence-design decision, keeping every other stage of the small run.",
+        "claim_level": "unqualified"
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": [
+          {
+            "id": "ligandmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion",
+              "rfdiffusion3"
+            ],
+            "adapter_id": "ligandmpnn-designer",
+            "command_stage": "sequence-ligandmpnn"
+          }
+        ]
+      }
+    },
+    "remove_adapters": [
+      "proteinmpnn-designer"
+    ],
+    "remove_stages": [
+      "sequence-proteinmpnn"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "ligandmpnn-designer",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "fixed-position-mask",
+          "seeded-design",
+          "ligand-context"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.ligandmpnn_designer",
+          "toolcheck",
+          "--model-type",
+          "ligand_mpnn",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.ligandmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--designer-id",
+          "ligandmpnn",
+          "--model-type",
+          "ligand_mpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+            "note": "No campaign has run this arm, so it carries no charge of its own. The ProteinMPNN Modal amount prices a different model and is not carried across. A CPU design of 93 residues finished in seconds during bring-up, which bounds the wall time and not the cost."
+          }
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "sequence-ligandmpnn",
+        "adapter_id": "ligandmpnn-designer",
+        "required_role": "sequence-designer",
+        "description": "Design LigandMPNN sequences for the RFdiffusion backbone arm, with ligand, nucleic acid and metal context.",
+        "depends_on": [
+          "generate-rfdiffusion"
+        ],
+        "inputs": [
+          "generate-rfdiffusion:rfdiffusion-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "ligandmpnn-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-rfdiffusion",
+            "artifact_id": "rfdiffusion-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "sequence-ligandmpnn"
+        ],
+        "inputs": [
+          "sequence-ligandmpnn:ligandmpnn-candidates"
+        ]
+      }
+    ]
+  }
+}

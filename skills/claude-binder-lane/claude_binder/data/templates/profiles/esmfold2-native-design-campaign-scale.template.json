@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "esmfold2-native-design.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "esmfold2-native-design-campaign-scale",
+        "purpose": "Configure 100 ESMFold2 native whole-surface binder designs with ESMFold2-Fast folding and scoring. The native route generates backbone and sequence together. This profile runs the route unaimed, and the adapter's epitope aiming is available but unmeasured.",
+        "claim_level": "candidate",
+        "production_scoring": false,
+        "production_scoring_reason": "The ESMFold2 native-design runtime requires operator-confirmed source, checkpoint, environment, hardware, network, and step values before dispatch.",
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "native_design_aiming": {
+          "status": "whole-surface-only",
+          "note": "This profile runs the route unaimed. It passes --acknowledge-unaimed and supplies no epitope residues, so the interface contact loss averages over the whole target surface. The adapter does support aiming, so a campaign that wants a chosen site changes this profile rather than the tool. ESMFold2-Fast scoring remains configured after generation."
+        },
+        "native_design_operator_values": {
+          "source_revision": "__REQUIRED__ ESMFold2-Experimental source revision",
+          "checkpoint_pin": "__REQUIRED__ immutable ESMFold2-Experimental checkpoint pin",
+          "runtime_environment": "__REQUIRED__ native design runtime environment identity",
+          "runtime_image_digest": "__REQUIRED__ native runtime image digest",
+          "runtime_resources": "__REQUIRED__ operator-selected CPU, memory, and GPU request",
+          "runtime_network": "__REQUIRED__ native runtime network requirements",
+          "steps": "__REQUIRED__ native design step count",
+          "critic_num_sampling_steps": "__REQUIRED__ native design critic sampling step count"
+        },
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 100,
+        "minimum_scored_candidates_per_generator": 100,
+        "generators": [
+          {
+            "id": "esmfold2-native-design",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "adapter_id": "esmfold2-native-design",
+            "backbone_count": 100,
+            "command_stage": "design-native"
+          }
+        ]
+      }
+    },
+    "stage_overrides": [
+      {
+        "stage_id": "design-native",
+        "fanout": {
+          "scale_count": 100
+        }
+      }
+    ],
+    "campaign_overrides": {
+      "selection": {
+        "final_count": 100,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0,
+        "disabled_caps": {
+          "maximum_fraction_per_generator": "The profile configures one whole-surface native design generator.",
+          "max_structure_method_fraction": "The profile configures one native structure method.",
+          "max_seq_method_fraction": "The profile configures one native sequence-design method.",
+          "minimum_structure_methods": "The profile configures one native structure method."
+        },
+        "diversity": {
+          "min_levenshtein_distance": 6,
+          "max_root_backbone_fraction": 0.05,
+          "max_tm90_cluster_fraction": 0.1,
+          "max_structure_method_fraction": 1.0,
+          "max_seq_method_fraction": 1.0,
+          "minimum_structure_methods": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "current-configured-stack",
+        "purpose": "Describe an operator-configured Boltz route beside documented generator and designer adapters. The adapter contract and pinned profile values ship; the Boltz executable/runtime and egress still require operator qualification.",
+        "claim_level": "candidate",
+        "baseline_fidelity": false,
+        "production_scoring": false,
+        "production_scoring_reason": "The Boltz route still needs a qualified executable/runtime, immutable environment identity, and declared runtime egress. This profile carries no completed production-scoring run.",
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "ESMFold2-Full was not run. This operator-configured Boltz route does not select the deployed ESMFold2-Full mode."
+          },
+          {
+            "published_arm": "esmfold2-fast",
+            "status": "not_run",
+            "reason": "ESMFold2-Fast was not run. This operator-configured Boltz route does not select the deployed ESMFold2-Fast mode."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 2,
+        "designers": [
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": ["rfdiffusion"],
+            "accepts_backbone_shapes": {"full-backbone": [], "c-alpha-trace": ["--ca-only"]},
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": ["genie3"],
+            "accepts_backbone_shapes": {"full-backbone": [], "c-alpha-trace": ["--ca-only"]},
+            "adapter_id": "proteinmpnn-designer-genie3",
+            "command_stage": "sequence-proteinmpnn-genie3"
+          }
+        ]
+      },
+      "cofold": {
+        "minimum_predictors": 1,
+        "screen_seeds": [0],
+        "rescore_seeds": [0, 1, 2, 3, 4],
+        "predictors": [
+          {
+            "id": "boltz",
+            "enabled": true,
+            "adapter_id": "boltz-predictor",
+            "screen_stage": "cofold-screen-boltz",
+            "rescore_stage": "cofold-rescore-boltz"
+          }
+        ]
+      }
+    },
+    "remove_adapters": [
+      "solublempnn-designer",
+      "esmfold2-predictor",
+      "esmfold2-fast-predictor",
+      "protenix-v2-predictor"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "boltz-predictor",
+        "binding_status": "operator-configured",
+        "role": "cofold-predictor",
+        "capabilities": ["complex-structure-prediction", "five-seed-rescore", "full-pae"],
+        "supported_entity_types": ["protein"],
+        "accepted_artifacts": ["passing-candidate-manifest", "optimized-candidate-manifest", "rescore-candidate-manifest", "target-msa-manifest"],
+        "produced_artifacts": ["raw-prediction-manifest"],
+        "source_revision": "sha256:591a2255c3637d3854a5dbd4c2c7185eeb59ca037123f349ca1eb5549205161a",
+        "model_revision": "boltz-2.1@v2026-03-01",
+        "environment_identity": "boltz-cloud-cli",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltz2_predictor",
+          "toolcheck",
+          "--boltz-executable",
+          "boltz-api"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltz2_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/boltz-run-index.jsonl",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--target-msa-a3m",
+          "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}",
+          "--boltz-executable",
+          "boltz-api"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.boltz2_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/boltz-run-index.jsonl"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {"cpu": 4, "gpu": 1, "memory_gb": 32, "gpu_memory_gb": 24}
+      }
+    ],
+    "remove_stages": [
+      "sequence-solublempnn",
+      "cofold-screen-esmfold2",
+      "cofold-screen-esmfold2-fast",
+      "cofold-screen-protenix-v2",
+      "cofold-rescore-esmfold2",
+      "cofold-rescore-esmfold2-fast",
+      "cofold-rescore-protenix-v2"
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": ["sequence-proteinmpnn", "sequence-proteinmpnn-genie3"],
+        "inputs": ["sequence-proteinmpnn:proteinmpnn-candidates", "sequence-proteinmpnn-genie3:proteinmpnn-genie3-candidates"]
+      },
+      {
+        "stage_id": "cofold-screen-boltz",
+        "adapter_id": "boltz-predictor",
+        "required_role": "cofold-predictor",
+        "description": "Run the one-seed Boltz screen.",
+        "depends_on": ["filter-novelty", "stage-msa"],
+        "inputs": ["filter-novelty:passing-candidates", "stage-msa:target-msa-manifest"],
+        "outputs": [{"artifact_id": "boltz-screen", "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl", "kind": "jsonl", "minimum_count": 1, "smoke_minimum_count": 1, "records_per_count": 1, "required_fields": ["target_id", "target_sha256", "candidate_id", "origin_generator", "predictor", "model_revision", "seed", "phase", "sequence_sha256", "design_pose_path", "design_pose_sha256", "chain_mapping", "msa_path", "msa_sha256", "status"]}],
+        "fanout": {"count_from": {"stage_id": "filter-novelty", "artifact_id": "passing-candidates", "value": "records"}},
+        "mode": "smoke_scale",
+        "timeout_minutes": 720,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "score-screen",
+        "depends_on": ["control-calibration", "cofold-screen-boltz"],
+        "inputs": ["control-calibration:control-observations", "cofold-screen-boltz:boltz-screen"]
+      },
+      {
+        "stage_id": "cofold-rescore-boltz",
+        "adapter_id": "boltz-predictor",
+        "required_role": "cofold-predictor",
+        "description": "Run the five-seed Boltz uniform rescore.",
+        "depends_on": ["optimize", "stage-msa"],
+        "inputs": ["optimize:rescore-candidates", "stage-msa:target-msa-manifest"],
+        "outputs": [{"artifact_id": "boltz-rescore", "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl", "kind": "jsonl", "minimum_count": 1, "smoke_minimum_count": 1, "records_per_count": 5, "required_fields": ["target_id", "target_sha256", "candidate_id", "predictor", "model_revision", "seed", "phase", "sequence_sha256", "design_pose_path", "design_pose_sha256", "chain_mapping", "msa_path", "msa_sha256", "status"]}],
+        "fanout": {"count_from": {"stage_id": "optimize", "artifact_id": "rescore-candidates", "value": "records"}},
+        "mode": "smoke_scale",
+        "timeout_minutes": 720,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "uniform-rescore",
+        "depends_on": ["control-calibration", "cofold-rescore-boltz"],
+        "inputs": ["cofold-rescore-boltz:boltz-rescore", "control-calibration:control-observations"]
+      }
+    ]
+  }
+}

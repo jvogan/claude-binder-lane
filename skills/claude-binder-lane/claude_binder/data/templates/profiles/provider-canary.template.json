@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "current-proven-stack.template.json",
+  "overlay": {
+    "campaign_overrides": {
+      "optimization": {
+        "rounds": 1,
+        "early_stop_margin": 0.029008,
+        "parent_count_per_round": 3,
+        "variants_per_parent": 1
+      },
+      "selection": {
+        "final_count": 2,
+        "minimum_generators": 2,
+        "maximum_fraction_per_generator": 0.5
+      }
+    },
+    "top_level": {
+      "profile": {
+        "profile_id": "provider-canary",
+        "purpose": "Describe one candidate through every enabled adapter before scaling. The inherited Boltz route is operator-configured and still needs runtime qualification.",
+        "claim_level": "canary",
+        "production_scoring": false,
+        "production_scoring_reason": "The inherited Boltz route still needs a qualified executable/runtime, immutable environment identity, and declared runtime egress. This profile produces no deployed co-folding result."
+      },
+      "generation": {
+        "minimum_generators": 2,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-rfdiffusion"
+          },
+          {
+            "id": "genie3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "emits": "c-alpha-trace",
+            "adapter_id": "genie3-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-genie3"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": [
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "genie3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer-genie3",
+            "command_stage": "sequence-proteinmpnn-genie3"
+          }
+        ]
+      },
+      "runtime": {
+        "run_root": "{{data_root}}/runs/{{run_id}}",
+        "model_roster_path": "data/model-roster.json",
+        "model_roster_evidence_root": "data/roster-evidence",
+        "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+        "maximum_generated_candidates": 20,
+        "maximum_screen_predictions": 100,
+        "maximum_rescore_predictions": 2000,
+        "maximum_optimization_predictions": 1000
+      }
+    },
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 1
+        }
+      },
+      {
+        "stage_id": "generate-genie3",
+        "fanout": {
+          "scale_count": 1
+        }
+      },
+      {
+        "stage_id": "sequence-proteinmpnn",
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "sequence-proteinmpnn-genie3",
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-genie3-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "source": "Reference per-machine rates read from one provider usage export on 2026-08-23. These are not Modal rates and the machine names are that provider's, not Modal's. Re-measure against your own account and supply the result to --rate-record before you price a run. Omitting --rate-record yields an UNKNOWN price, which is safer than a transplanted one.",
+  "read_at": "2026-08-23T21:20:00Z",
+  "rates": [
+    {
+      "machine": "GPU-H100",
+      "rate_usd_per_second": 0.00125
+    },
+    {
+      "machine": "M",
+      "rate_usd_per_second": 7e-05
+    },
+    {
+      "machine": "XS",
+      "rate_usd_per_second": 3e-05
+    }
+  ]
+}

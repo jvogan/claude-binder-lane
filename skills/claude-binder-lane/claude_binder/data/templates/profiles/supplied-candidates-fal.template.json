@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane-profile-v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "supplied-candidates-fal",
+        "purpose": "Fold, score, rank, and package complete user-supplied candidate records on user-owned fal compute.",
+        "claim_level": "candidate",
+        "production_scoring": false,
+        "production_scoring_reason": "Production scoring still requires a current target-bound validation gate for the selected predictor runtime.",
+        "baseline_fidelity": false,
+        "scores_ungated": false
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "supplied-candidates",
+            "enabled": true,
+            "source": "supplied",
+            "mode": "sequence-structure-codesign",
+            "adapter_id": "candidate-normalizer",
+            "backbone_count": 1,
+            "command_stage": "normalize-candidates"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": []
+      }
+    },
+    "remove_adapters": [
+      "rfdiffusion-generator",
+      "proteinmpnn-designer"
+    ],
+    "remove_stages": [
+      "generate-rfdiffusion",
+      "sequence-proteinmpnn"
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "normalize-candidates",
+        "description": "Validate and bundle complete supplied candidate records before filtering and co-folding.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [],
+        "mode": "smoke_scale",
+        "fanout": {
+          "scale_count": 1
+        },
+        "outputs": [
+          {
+            "artifact_id": "normalized-candidates",
+            "artifact_type": "normalized-candidate-manifest",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "publish_path": "candidates/candidate-manifest.jsonl",
+            "records_per_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ],
+            "schema_path": "schemas/candidate-manifest.schema.json",
+            "smoke_minimum_count": 1
+          },
+          {
+            "artifact_id": "sequence-files",
+            "artifact_type": "sequence-files",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "artifact_type": "design-pose-files",
+            "kind": "structure",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1
+          }
+        ]
+      }
+    ],
+    "campaign_overrides": {
+      "selection": {
+        "final_count": 1,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0,
+        "disabled_caps": {
+          "maximum_fraction_per_generator": "The profile enables one generator, the supplied-candidate normalizer, so a per-generator cap cannot separate arms.",
+          "max_structure_method_fraction": "Supplied candidates carry one structure method, the structure the operator provides.",
+          "max_seq_method_fraction": "The profile enables no sequence designer, because supplied candidates arrive with their sequences already fixed.",
+          "minimum_structure_methods": "Supplied candidates carry one structure method, so the published floor of three cannot be met."
+        },
+        "diversity": {
+          "min_levenshtein_distance": 6,
+          "max_root_backbone_fraction": 0.05,
+          "max_tm90_cluster_fraction": 0.1,
+          "max_structure_method_fraction": 1.0,
+          "max_seq_method_fraction": 1.0,
+          "minimum_structure_methods": 1
+        }
+      },
+      "optimization": {
+        "enabled": false
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "not_applicable: the fal production deployment identifies its environment without a Modal image digest"
+        }
+      },
+      {
+        "adapter_id": "candidate-normalizer",
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.candidate_normalizer",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--structure",
+          "{{attempt_dir}}/{{phase}}/poses/*"
+        ]
+      }
+    ]
+  }
+}

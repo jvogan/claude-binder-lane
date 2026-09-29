@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 615" width="1000" height="615" role="img" aria-labelledby="title description">
+<title id="title">From your question to a recorded campaign</title>
+<desc id="description">You give Claude Science a target, the tools you name, compute routes, a budget, and your approval. Claude Science discovers tools and routes, compares them by runtime, cost, and evidence, proposes the plan, and asks only about choices that change the work. The bundled Binder runtime validates the plan before executing, runs the stages, hashes artifacts, and records receipts and costs. Each stage can use Modal, fal, RunPod, Lambda Cloud, a managed endpoint or NVIDIA BioNeMo NIM, or a local or SSH/HPC route. The campaign returns ranked candidates, predicted structures, uncertainty, provenance, costs, and an offline viewer.</desc>
+<rect x="0" y="0" width="1000" height="615" fill="#faf9f5"/>
+<text x="48" y="58" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#30302b"><tspan x="48" dy="0">From your question to a recorded campaign</tspan></text>
+<rect x="48" y="88" width="204" height="251" rx="18" fill="#f3ead6"/>
+<text x="70" y="132" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="70" dy="0">You</tspan></text>
+<circle cx="75" cy="165.54" r="4.5" fill="#5c6487"/>
+<text x="90" y="172" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="90" dy="0">Target</tspan></text>
+<circle cx="75" cy="197.54" r="4.5" fill="#5c6487"/>
+<text x="90" y="204" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="90" dy="0">Tools you name</tspan></text>
+<circle cx="75" cy="229.54" r="4.5" fill="#5c6487"/>
+<text x="90" y="236" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="90" dy="0">Compute routes</tspan></text>
+<circle cx="75" cy="261.54" r="4.5" fill="#5c6487"/>
+<text x="90" y="268" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="90" dy="0">Budget</tspan></text>
+<circle cx="75" cy="293.54" r="4.5" fill="#5c6487"/>
+<text x="90" y="300" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="90" dy="0">Approval</tspan></text>
+<rect x="299" y="88" width="306" height="251" rx="18" fill="#cfdcf3"/>
+<text x="321" y="132" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="321" dy="0">Claude Science</tspan></text>
+<circle cx="326" cy="165.54" r="4.5" fill="#5c6487"/>
+<text x="341" y="172" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="341" dy="0">Discovers tools and routes</tspan></text>
+<circle cx="326" cy="197.54" r="4.5" fill="#5c6487"/>
+<text x="341" y="204" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="341" dy="0">Compares by runtime, cost,</tspan><tspan x="341" dy="23">and evidence</tspan></text>
+<circle cx="326" cy="252.54" r="4.5" fill="#5c6487"/>
+<text x="341" y="259" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="341" dy="0">Proposes the plan</tspan></text>
+<circle cx="326" cy="284.54" r="4.5" fill="#5c6487"/>
+<text x="341" y="291" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="341" dy="0">Asks only about choices that</tspan><tspan x="341" dy="23">change the work</tspan></text>
+<rect x="652" y="88" width="300" height="251" rx="18" fill="#e9e7ee"/>
+<text x="674" y="132" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="674" dy="0">Binder runtime</tspan></text>
+<circle cx="679" cy="165.54" r="4.5" fill="#5c6487"/>
+<text x="694" y="172" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="694" dy="0">Validates the plan before</tspan><tspan x="694" dy="23">executing</tspan></text>
+<circle cx="679" cy="220.54" r="4.5" fill="#5c6487"/>
+<text x="694" y="227" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="694" dy="0">Runs the stages</tspan></text>
+<circle cx="679" cy="252.54" r="4.5" fill="#5c6487"/>
+<text x="694" y="259" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="694" dy="0">Hashes artifacts</tspan></text>
+<circle cx="679" cy="284.54" r="4.5" fill="#5c6487"/>
+<text x="694" y="291" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="694" dy="0">Records receipts and costs</tspan></text>
+<polygon points="290,213.5 270,226.5 270,200.5" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M259 213.5 L278 213.5" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="643,213.5 623,226.5 623,200.5" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M612 213.5 L631 213.5" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="48" y="389" width="386" height="196" rx="18" fill="#5c6487"/>
+<text x="70" y="433" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#faf9f5"><tspan x="70" dy="0">What comes back</tspan></text>
+<circle cx="75" cy="468.54" r="4.5" fill="#f3ead6"/>
+<text x="92" y="475" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="92" dy="0">Ranked candidates</tspan></text>
+<circle cx="75" cy="508.54" r="4.5" fill="#f3ead6"/>
+<text x="92" y="515" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="92" dy="0">Predicted structures</tspan></text>
+<circle cx="75" cy="548.54" r="4.5" fill="#f3ead6"/>
+<text x="92" y="555" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="92" dy="0">Uncertainty</tspan></text>
+<circle cx="277.96" cy="468.54" r="4.5" fill="#f3ead6"/>
+<text x="294.96" y="475" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="294.96" dy="0">Provenance</tspan></text>
+<circle cx="277.96" cy="508.54" r="4.5" fill="#f3ead6"/>
+<text x="294.96" y="515" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="294.96" dy="0">Costs</tspan></text>
+<circle cx="277.96" cy="548.54" r="4.5" fill="#f3ead6"/>
+<text x="294.96" y="555" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#faf9f5"><tspan x="294.96" dy="0">Offline viewer</tspan></text>
+<rect x="480" y="389" width="472" height="196" rx="18" fill="#cfdcf3"/>
+<text x="502" y="433" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="502" dy="0">Compute routes</tspan></text>
+<text x="713.35" y="433" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="713.35" dy="0">Chosen for each stage</tspan></text>
+<rect x="502" y="455" width="79.03" height="40" rx="14" fill="#faf9f5"/>
+<text x="517" y="481.48" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="517" dy="0">Modal</tspan></text>
+<rect x="591.03" y="455" width="49.01" height="40" rx="14" fill="#faf9f5"/>
+<text x="606.03" y="481.48" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="606.03" dy="0">fal</tspan></text>
+<rect x="650.04" y="455" width="95.05" height="40" rx="14" fill="#faf9f5"/>
+<text x="665.04" y="481.48" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="665.04" dy="0">RunPod</tspan></text>
+<rect x="755.09" y="455" width="147.08" height="40" rx="14" fill="#faf9f5"/>
+<text x="770.09" y="481.48" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="770.09" dy="0">Lambda Cloud</tspan></text>
+<rect x="502" y="507" width="206.05" height="62" rx="14" fill="#faf9f5"/>
+<text x="517" y="533" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="517" dy="0">Managed endpoint or</tspan><tspan x="517" dy="22">NVIDIA BioNeMo NIM</tspan></text>
+<rect x="718.05" y="507" width="179.06" height="40" rx="14" fill="#faf9f5"/>
+<text x="733.05" y="533.48" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#30302b"><tspan x="733.05" dy="0">Local or SSH/HPC</tspan></text>
+<polygon points="892,380 879,360 905,360" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M892 345 L892 368" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="241,380 228,360 254,360" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M702 345 L702 357.5 Q702 370 689.5 370 L242 370 Q241 370 241 369 L241 368" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "local-contract-test.json",
+  "overlay": {
+    "campaign_overrides": {
+      "optimization": {
+        "rounds": 2,
+        "early_stop_margin": 0.029008,
+        "parent_count_per_round": 1,
+        "variants_per_parent": 1,
+        "operators": [
+          "point-mutation"
+        ],
+        "adapter_policies": [
+          {
+            "adapter_id": "optimization-controller",
+            "operations": [
+              "point-mutation"
+            ],
+            "parameter_ranges": {
+              "mutation_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20
+              }
+            }
+          }
+        ]
+      },
+      "selection": {
+        "final_count": 3,
+        "minimum_generators": 3,
+        "maximum_fraction_per_generator": 0.5
+      }
+    }
+  }
+}

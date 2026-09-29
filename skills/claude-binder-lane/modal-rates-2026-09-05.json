@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "source": "Effective all-in rate derived from one settled Modal invoice recorded in references/measured-costs.md: ESMFold2 on a Modal L40S, EGFR, 16 candidates, 664.606 s of job wall, USD 0.38812749. That is 0.000583996 USD per second, or 2.102387 USD per hour. It is an observed effective rate for ESMFold2-shaped work, not Modal's L40S list price: Modal bills sandbox lifetime rather than job wall, so this figure already contains CPU, memory, and idle sandbox time for that run's shape. It is one observation and carries no distribution. Only L40S is listed because it is the only Modal machine in the package's records with both a settled amount and a recorded wall clock. Supply your own record instead of this one where you have read your own account.",
+  "read_at": "2026-09-05T00:00:00Z",
+  "rates": [
+    {
+      "machine": "L40S",
+      "rate_usd_per_second": 0.000583996
+    }
+  ]
+}

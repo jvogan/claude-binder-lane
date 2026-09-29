@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "small-run-optimized",
+        "purpose": "Run two RFdiffusion candidates through two bounded optimization rounds with ESMFold2-Fast scoring.",
+        "claim_level": "candidate",
+        "production_scoring": true,
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "optimization_enabled": true,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 2,
+        "minimum_scored_candidates_per_generator": 2,
+        "generators": [
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 2,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      }
+    },
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 2
+        }
+      }
+    ],
+    "campaign_overrides": {
+      "selection": {
+        "final_count": 2,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0
+      },
+      "filters": {
+        "disabled_checks": [],
+        "required_checks": [
+          "composition",
+          "exact_duplicates",
+          "liability_chemistry",
+          "sequence_novelty",
+          "model_likelihood"
+        ],
+        "metric_sources": {
+          "model_likelihood": {
+            "path": "artifacts/candidates/candidate-manifest.jsonl",
+            "produced_by": "normalize-candidates:normalized-candidates",
+            "description": "The designed-residue ProteinMPNN score, the mean negative log-likelihood the designer reports as score= on each FASTA header. The normalize-candidates stage copies it onto every candidate row as value."
+          }
+        },
+        "TODO_threshold_model_likelihood": "filters.contracts[model_likelihood].threshold is 0.7 and no source supports it. The published protocol gives no model-likelihood threshold, as novelty_filter.py records. The only executed ProteinMPNN run in this campaign scored 36 of 36 candidates between 0.7088 and 1.0200, so a maximum of 0.7 rejects all of them. Set and record a threshold before a real run."
+      },
+      "scoring": {
+        "custom_metric_gates": [],
+        "custom_control_metric_gates": {
+          "positive": [],
+          "negative": []
+        },
+        "thresholds": {
+          "maximum_clash_count": 0,
+          "minimum_ipsae_min_ensemble": 0.5660680932170182,
+          "negative_control_maximum_ipsae_min": 0.44246015508782677,
+          "positive_control_minimum_ipsae_min": 0.5660680932170182,
+          "positive_control_minimum_sc_dockq": 0.8774009637140351
+        },
+        "threshold_basis": {
+          "maximum_clash_count": "Project control measurement. The repaired positive control was observed with no clashes. That control record does not ship with this package. This is a maximum gate, so zero admits only zero observed clashes.",
+          "minimum_ipsae_min_ensemble": "Packaged gate measurement. claude_binder/data/gates/pdl1.json records the repaired ESMFold2-Fast positive minimum, 0.5660680932170182. This is a minimum gate.",
+          "negative_control_maximum_ipsae_min": "Packaged gate measurement. claude_binder/data/gates/pdl1.json records the wrong-pair ESMFold2-Fast maximum, 0.44246015508782677. This is a maximum gate.",
+          "positive_control_minimum_ipsae_min": "Packaged gate measurement. claude_binder/data/gates/pdl1.json records the repaired ESMFold2-Fast positive minimum, 0.5660680932170182. This is a minimum gate.",
+          "positive_control_minimum_sc_dockq": "Packaged gate measurement. claude_binder/data/gates/pdl1.json records the repaired ESMFold2-Fast positive sc_DockQ minimum, 0.8774009637140351. This is a minimum gate."
+        }
+      },
+      "optimization": {
+        "enabled": true,
+        "rounds": 2,
+        "early_stop_margin": 0.029008,
+        "parent_count_per_round": 2,
+        "variants_per_parent": 2,
+        "operators": [
+          "point-mutation",
+          "inverse-folding-resample"
+        ],
+        "adapter_policies": [
+          {
+            "adapter_id": "optimization-controller",
+            "operations": [
+              "point-mutation",
+              "inverse-folding-resample"
+            ],
+            "parameter_ranges": {
+              "sampling_temperature": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 1.0
+              },
+              "mutation_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

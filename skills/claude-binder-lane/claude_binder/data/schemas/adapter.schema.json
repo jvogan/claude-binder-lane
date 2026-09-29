@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/adapter.v1",
+  "title": "Binder Lane Adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "adapter_id",
+    "role",
+    "capabilities",
+    "accepted_artifacts",
+    "produced_artifacts",
+    "source_revision",
+    "model_revision",
+    "environment_identity",
+    "toolcheck_argv",
+    "command_argv_template",
+    "parser_argv_template",
+    "parser_result_path_template",
+    "environment",
+    "resources"
+  ],
+  "properties": {
+    "adapter_id": {"type": "string", "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$"},
+    "role": {"type": "string"},
+    "binding_status": {"enum": ["deployed", "operator-configured", "unbound"]},
+    "provider_facing": {"type": "boolean"},
+    "capabilities": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "supported_entity_types": {"type": "array", "minItems": 1, "items": {"enum": ["protein", "rna", "dna", "ligand", "cofactor"]}, "uniqueItems": true},
+    "accepted_artifacts": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "produced_artifacts": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "source_revision": {"type": "string", "minLength": 1},
+    "model_revision": {"type": "string", "minLength": 1},
+    "environment_identity": {"type": "string", "minLength": 1},
+    "toolcheck_argv": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "command_argv_template": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "parser_argv_template": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "support_files": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "parser_result_path_template": {"type": "string", "pattern": "^\\{\\{attempt_dir\\}\\}/"},
+    "environment": {"type": "object", "additionalProperties": {"type": "string"}},
+    "runpod": {"type": "object"},
+    "lambda": {"type": "object"},
+    "resources": {
+      "type": "object",
+      "required": ["cpu", "gpu", "memory_gb"],
+      "properties": {
+        "cpu": {"type": "integer", "minimum": 1},
+        "gpu": {"type": "integer", "minimum": 0},
+        "memory_gb": {"type": "integer", "minimum": 1},
+        "gpu_memory_gb": {"type": "integer", "minimum": 1},
+        "container_image_digest": {"type": "string"},
+        "environment_lock_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "weights_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "timing_basis": {
+      "type": "object",
+      "required": ["startup_seconds", "item_seconds", "machine", "measurement_unit", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "startup_seconds": {"type": "number", "minimum": 0},
+        "item_seconds": {
+          "type": "object",
+          "required": ["minimum", "maximum"],
+          "additionalProperties": false,
+          "properties": {
+            "minimum": {"type": "number", "minimum": 0},
+            "maximum": {"type": "number", "minimum": 0}
+          }
+        },
+        "machine": {"type": "string", "minLength": 1},
+        "measurement_unit": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1}
+      }
+    },
+    "qualification": {
+      "type": "object",
+      "required": ["cost_basis"],
+      "additionalProperties": false,
+      "properties": {
+        "command_argv": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "receipt_path": {"type": "string", "minLength": 1},
+        "cost_per_design_usd": {"type": "number", "minimum": 0},
+        "estimated_cost_usd": {"type": "number", "minimum": 0},
+        "cost_basis": {
+          "type": "object",
+          "required": ["kind", "source", "note"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "settled billed amount",
+                "modeled estimate",
+                "provider-reported rate",
+                "unpriced"
+              ]
+            },
+            "machine": {"type": "string", "minLength": 1},
+            "measurement_unit": {"type": "string", "minLength": 1},
+            "amount_usd": {"type": "number", "minimum": 0},
+            "unit_count": {"type": "number", "exclusiveMinimum": 0},
+            "source": {"type": "string", "minLength": 1},
+            "note": {"type": "string", "minLength": 1}
+          },
+          "if": {
+            "required": ["kind"],
+            "properties": {"kind": {"const": "unpriced"}}
+          },
+          "else": {
+            "required": ["machine", "measurement_unit", "amount_usd", "unit_count"]
+          }
+        }
+      }
+    }
+  }
+}

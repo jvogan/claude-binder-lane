@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "browser-viewer",
+        "purpose": "Run the small campaign with a self-contained browser viewer page for ranked designs.",
+        "claim_level": "candidate",
+        "production_scoring": true,
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "browser-viewer",
+        "role": "renderer",
+        "capabilities": [
+          "viewer-page",
+          "offline-structure-viewer",
+          "viewer-images"
+        ],
+        "accepted_artifacts": [
+          "output-check"
+        ],
+        "produced_artifacts": [
+          "viewer-manifest",
+          "viewer-page",
+          "viewer-images"
+        ],
+        "source_revision": "repository-source",
+        "model_revision": "none",
+        "environment_identity": "standard-library-python",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-dir",
+          "{{run_root}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/viewer"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 1,
+          "gpu": 0,
+          "memory_gb": 1
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "render-viewer",
+        "adapter_id": "browser-viewer",
+        "required_role": "renderer",
+        "description": "Build a self-contained HTML viewer page and Python-rendered PNG for ranked designs.",
+        "outputs": [
+          {
+            "artifact_id": "viewer-manifest",
+            "artifact_type": "viewer-manifest",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/manifest.json",
+            "kind": "json",
+            "minimum_count": 1,
+            "required_fields": [
+              "schema_version",
+              "run_id",
+              "campaign_id",
+              "designs",
+              "how_to_open",
+              "warnings"
+            ],
+            "publish_path": "viewer/manifest.json"
+          },
+          {
+            "artifact_id": "viewer-page",
+            "artifact_type": "viewer-page",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/index.html",
+            "kind": "file",
+            "minimum_count": 1,
+            "publish_path": "viewer/index.html"
+          },
+          {
+            "artifact_id": "viewer-thumbnails",
+            "artifact_type": "viewer-images",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/thumbnails/*.png",
+            "kind": "image",
+            "minimum_count": 1,
+            "publish_path": "viewer/thumbnails"
+          }
+        ]
+      }
+    ]
+  }
+}

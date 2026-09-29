@@ -1,0 +1,24 @@
+stateDiagram-v2
+  [*] --> Prepared
+  Prepared --> Toolcheck
+  Toolcheck --> Smoke
+  Smoke --> ParseAndHash
+  ParseAndHash --> Scale
+  Scale --> Complete
+  Complete --> [*]
+  Toolcheck --> Failed
+  Smoke --> Failed
+  ParseAndHash --> Failed
+  Scale --> Failed
+  Toolcheck --> Interrupted
+  Smoke --> Interrupted
+  ParseAndHash --> Interrupted
+  Scale --> Interrupted
+  Failed --> PartialSummary
+  Interrupted --> PartialSummary
+  PartialSummary --> ResumeIdentityCheck
+  ResumeIdentityCheck --> DependencyClosureCheck: matching run fingerprint
+  DependencyClosureCheck --> ReceiptArtifactCheck: all upstream receipts and outputs match
+  DependencyClosureCheck --> Toolcheck: missing or changed dependency
+  ReceiptArtifactCheck --> Toolcheck: missing, changed, or mismatched output
+  ReceiptArtifactCheck --> Complete: receipt, parser, attempt, and published hashes match

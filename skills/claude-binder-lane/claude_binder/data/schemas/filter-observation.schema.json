@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/filter-observation.v1",
+  "title": "Filter Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "origin_generator",
+    "sequence_sha256",
+    "optimization_round",
+    "filter_id",
+    "metric",
+    "operator",
+    "value",
+    "threshold",
+    "pass",
+    "reason",
+    "tool_revision",
+    "reference_revision",
+    "reference_sha256"
+  ],
+  "properties": {
+    "candidate_id": {
+      "type": "string"
+    },
+    "origin_generator": {
+      "type": "string"
+    },
+    "sequence_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "optimization_round": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "filter_id": {
+      "type": "string"
+    },
+    "metric": {
+      "type": "string"
+    },
+    "operator": {
+      "enum": [
+        "minimum",
+        "maximum"
+      ]
+    },
+    "value": {},
+    "threshold": {},
+    "pass": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "tool_revision": {
+      "type": "string"
+    },
+    "reference_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reference_sha256": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{64}|not_applicable: .+)$"
+    },
+    "threshold_source": {
+      "type": "string",
+      "enum": [
+        "campaign-config",
+        "product-default"
+      ],
+      "description": "Whether the threshold came from the campaign or from a product default. The integrity filter defaults the only threshold that can separate a metric emitting exactly 0.0 or 1.0, and a value nobody chose still has to be visible in the observations."
+    },
+    "surrogate": {
+      "type": "string",
+      "description": "The in-house replacement that calculated this observation."
+    },
+    "surrogate_disclosure": {
+      "type": "string",
+      "description": "The required provisional-result disclosure for a reported surrogate value."
+    }
+  }
+}

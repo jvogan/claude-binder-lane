@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 572" width="1000" height="572" role="img" aria-labelledby="title description">
+<title id="title">Planned, approved, tested small, then scaled</title>
+<desc id="description">A paid run moves through four steps. First, Claude Science shows the plan with its provider, route, hardware, data destination, and budget ceiling. Second, you approve it, the approval is recorded against the plan, and the Binder runtime refuses a paid stage without it. Third, a new route is qualified at N=1 before scaling, and each test run has its own cost ceiling. Fourth, the run continues within the approved plan and budget. Claude Science asks again only if the plan exceeds the approval or the approval expires. The Binder runtime records a receipt and the cost of each stage. If a run stops, you correct the cause and resume the same run.</desc>
+<rect x="0" y="0" width="1000" height="572" fill="#faf9f5"/>
+<text x="48" y="58" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#30302b"><tspan x="48" dy="0">Planned, approved, tested small, then scaled</tspan></text>
+<rect x="48" y="100" width="208" height="242" rx="18" fill="#f3ead6"/>
+<circle cx="88" cy="100" r="19" fill="#30302b"/>
+<text x="88" y="107.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="88" dy="0">1</tspan></text>
+<text x="70" y="150" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="70" dy="0">Plan and</tspan><tspan x="70" dy="31">budget</tspan><tspan x="70" dy="31">ceiling</tspan></text>
+<text x="70" y="244" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="70" dy="0">Provider, route,</tspan><tspan x="70" dy="24">hardware, and data</tspan><tspan x="70" dy="24">destination.</tspan></text>
+<rect x="280" y="100" width="208" height="242" rx="18" fill="#e9e7ee"/>
+<circle cx="320" cy="100" r="19" fill="#30302b"/>
+<text x="320" y="107.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="320" dy="0">2</tspan></text>
+<text x="302" y="150" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="302" dy="0">Approval</tspan><tspan x="302" dy="31">before paid</tspan><tspan x="302" dy="31">work</tspan></text>
+<text x="302" y="244" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="302" dy="0">Recorded against</tspan><tspan x="302" dy="24">the plan. Paid</tspan><tspan x="302" dy="24">stages need it.</tspan></text>
+<rect x="512" y="100" width="208" height="242" rx="18" fill="#cfdcf3"/>
+<circle cx="552" cy="100" r="19" fill="#30302b"/>
+<text x="552" y="107.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="552" dy="0">3</tspan></text>
+<text x="534" y="150" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="534" dy="0">Test at N=1</tspan></text>
+<text x="534" y="244" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="534" dy="0">Qualify a new route</tspan><tspan x="534" dy="24">before scaling. Each</tspan><tspan x="534" dy="24">test run has its own</tspan><tspan x="534" dy="24">cost ceiling.</tspan></text>
+<rect x="744" y="100" width="208" height="242" rx="18" fill="#5c6487"/>
+<circle cx="784" cy="100" r="19" fill="#30302b"/>
+<text x="784" y="107.2" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#faf9f5"><tspan x="784" dy="0">4</tspan></text>
+<text x="766" y="150" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#faf9f5"><tspan x="766" dy="0">Scale within</tspan><tspan x="766" dy="31">the plan</tspan></text>
+<text x="766" y="244" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#e6edf8"><tspan x="766" dy="0">The run continues</tspan><tspan x="766" dy="24">within the approved</tspan><tspan x="766" dy="24">plan and budget.</tspan></text>
+<circle cx="268" cy="221" r="17" fill="#faf9f5"/>
+<circle cx="268" cy="221" r="14" fill="#5c6487"/>
+<path d="M264.5 214.5 L272 221 L264.5 227.5" fill="none" stroke="#faf9f5" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="500" cy="221" r="17" fill="#faf9f5"/>
+<circle cx="500" cy="221" r="14" fill="#5c6487"/>
+<path d="M496.5 214.5 L504 221 L496.5 227.5" fill="none" stroke="#faf9f5" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="732" cy="221" r="17" fill="#faf9f5"/>
+<circle cx="732" cy="221" r="14" fill="#5c6487"/>
+<path d="M728.5 214.5 L736 221 L728.5 227.5" fill="none" stroke="#faf9f5" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="384,351 396,368 372,368" fill="#5c6487" stroke="#5c6487" stroke-width="4" stroke-linejoin="round"/>
+<path d="M848 349 L848 365.5 Q848 382 831.5 382 L394.4 382 Q384 382 384 371.6 L384 361.2" fill="none" stroke="#5c6487" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 11"/>
+<text x="616" y="412" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#5c6487"><tspan x="616" dy="0">Claude Science asks again only if the plan exceeds the</tspan><tspan x="616" dy="24">approval, or the approval expires.</tspan></text>
+<rect x="48" y="472" width="440" height="70" rx="18" fill="#e9e7ee"/>
+<rect x="512" y="472" width="440" height="70" rx="18" fill="#f3ead6"/>
+<text x="70" y="501.84" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="70" dy="0">The Binder runtime records a receipt and the</tspan><tspan x="70" dy="24">cost of each stage.</tspan></text>
+<text x="534" y="501.84" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#30302b"><tspan x="534" dy="0">If a run stops, correct the cause, then resume</tspan><tspan x="534" dy="24">the same run.</tspan></text>
+</svg>

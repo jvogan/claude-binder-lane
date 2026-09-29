@@ -1,0 +1,16 @@
+flowchart TB
+  C[Campaign: Targets, Sites, Controls, Thresholds, Scale] --> S[Typed Stage]
+  P[Profile: Provider, Environment, Resources, Caps] --> S
+  A[Adapter: Role, Capabilities, Revisions, Argv, Parser] --> S
+  I[Normalized Input Artifact And Hash] --> S
+  S --> X[Toolcheck]
+  X --> Y[N=1 Smoke]
+  Y --> Z[Smoke Parser And Output Hashes]
+  Z --> W[Scale]
+  W --> W1[Scale Parser, Exact Counts, And Hashes]
+  W1 --> WS[Validate Registered Artifact Schema]
+  WS --> OW[Hash Sequences, Design Poses, Complexes, PAE, And Metric Sources]
+  OW --> O[Publish Normalized Outputs As One Transaction]
+  O --> R[Stage Receipt And Identity Hash]
+  R --> RV[Revalidate Manifest And Referenced Files On Resume]
+  RV --> N[Next Adapter Role]

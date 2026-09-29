@@ -1,0 +1,637 @@
+{
+  "schema_version": 1,
+  "template_id": "published-baseline-fidelity",
+  "base_profile": "rfdiffusion3-two-arm.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "published-baseline-fidelity",
+        "purpose": "Select the published seven generators, SolubleMPNN and SolubleCaliby, and three co-fold modes, with a disclosed C-alpha ProteinMPNN route for Genie3. Configure the campaign with the published protocol and resolve each selected route before execution.",
+        "claim_level": "candidate",
+        "baseline_fidelity": false,
+        "optimization_enabled": true,
+        "production_scoring": false,
+        "production_scoring_reason": "This profile states a selection, not a completed run. Genie3 emits a C-alpha trace and uses ProteinMPNN C-alpha weights because SolubleMPNN has no C-alpha checkpoint. Five generators reach their models through operator-deployed fal applications; no endpoint is named here.",
+        "published_predictor_deviations": [],
+        "published_designer_deviations": [
+          {
+            "published_arm": "genie3",
+            "status": "substituted",
+            "selected_designer": "proteinmpnn",
+            "reason": "Genie3 emits a C-alpha trace. SolubleMPNN has no C-alpha checkpoint and cannot be combined with --ca-only; ProteinMPNN with --ca-only selects the compatible C-alpha checkpoint. This changes the published designer roster."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 2,
+        "minimum_backbones_per_generator": 50,
+        "minimum_scored_candidates_per_generator": 50,
+        "published_generator_requirements": {
+          "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+          "methods": [
+            "rfdiffusion",
+            "rfdiffusion3",
+            "freebindcraft",
+            "boltzgen",
+            "pxdesign",
+            "proteina-complexa",
+            "genie3"
+          ],
+          "minimum_scored_backbones_per_method": 50,
+          "configured_methods": [
+            "rfdiffusion",
+            "rfdiffusion3",
+            "freebindcraft",
+            "boltzgen",
+            "pxdesign",
+            "proteina-complexa",
+            "genie3"
+          ],
+          "missing_methods": [],
+          "baseline_satisfied": true,
+          "method_binding_states": {
+            "rfdiffusion": "adapter-shipped",
+            "rfdiffusion3": "adapter-shipped",
+            "freebindcraft": "adapter-shipped",
+            "boltzgen": "adapter-shipped",
+            "pxdesign": "adapter-shipped",
+            "proteina-complexa": "adapter-shipped",
+            "genie3": "adapter-shipped"
+          },
+          "binding_states_derived_by": "claude_binder.reproduction_readiness"
+        },
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-rfdiffusion"
+          },
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion3-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-rfdiffusion3"
+          },
+          {
+            "id": "freebindcraft",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "freebindcraft-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-freebindcraft"
+          },
+          {
+            "id": "boltzgen",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "boltzgen-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-boltzgen"
+          },
+          {
+            "id": "pxdesign",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "pxdesign-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-pxdesign"
+          },
+          {
+            "id": "proteina-complexa",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "standalone_without_designer": true,
+            "adapter_id": "proteina-complexa-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-proteina-complexa"
+          },
+          {
+            "id": "genie3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "emits": "c-alpha-trace",
+            "adapter_id": "genie3-generator",
+            "backbone_count": 50,
+            "command_stage": "generate-genie3"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 2,
+        "published_designer_requirements": {
+          "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+          "methods": [
+            "solublempnn",
+            "solublecaliby"
+          ],
+          "configured_methods": [
+            "solublempnn",
+            "solublecaliby"
+          ],
+          "missing_methods": [],
+          "substituted_methods": [
+            "proteinmpnn (Genie3 C-alpha arm)"
+          ],
+          "baseline_satisfied": false,
+          "method_binding_states": {
+            "solublempnn": "adapter-shipped",
+            "solublecaliby": "adapter-shipped"
+          }
+        },
+        "designers": [
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublempnn-designer",
+            "command_stage": "sequence-solublempnn"
+          },
+          {
+            "id": "solublecaliby",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublecaliby-designer",
+            "command_stage": "sequence-solublecaliby"
+          },
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "adapter_id": "solublempnn-designer-rfd3",
+            "compatible_generators": [
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "command_stage": "sequence-solublempnn-rfd3"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "adapter_id": "proteinmpnn-designer-genie3",
+            "compatible_generators": [
+              "genie3"
+            ],
+            "accepts_backbone_shapes": {
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "command_stage": "sequence-proteinmpnn-genie3"
+          },
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "adapter_id": "solublempnn-designer-pxdesign",
+            "compatible_generators": [
+              "pxdesign"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "command_stage": "sequence-solublempnn-pxdesign"
+          }
+        ]
+      }
+    },
+    "remove_adapters": [
+      "proteinmpnn-designer",
+      "proteinmpnn-designer-rfd3",
+      "proteinmpnn-designer-pxdesign"
+    ],
+    "remove_stages": [
+      "sequence-proteinmpnn",
+      "sequence-proteinmpnn-rfd3",
+      "sequence-proteinmpnn-pxdesign"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "solublempnn-designer-rfd3",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "soluble-sequence-bias",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--designer-id",
+          "solublempnn",
+          "--adapter-id",
+          "solublempnn-designer-rfd3",
+          "--soluble-model"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion3",
+          "--backbone-artifact-id",
+          "rfdiffusion3-candidates",
+          "--designer-id",
+          "solublempnn",
+          "--adapter-id",
+          "solublempnn-designer-rfd3",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--soluble-model"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+            "note": "The one recorded SolubleMPNN run, a single design on a RunPod L40, carries no separately recorded charge. The ProteinMPNN Modal amount prices a different model on a different provider and is not carried across."
+          }
+        }
+      },
+      {
+        "adapter_id": "solublempnn-designer-pxdesign",
+        "role": "sequence-designer",
+        "capabilities": [
+          "inverse-folding",
+          "soluble-sequence-bias",
+          "seeded-design"
+        ],
+        "accepted_artifacts": [
+          "backbone-candidate-manifest"
+        ],
+        "produced_artifacts": [
+          "sequence-candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--designer-id",
+          "solublempnn",
+          "--adapter-id",
+          "solublempnn-designer-pxdesign",
+          "--soluble-model"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-pxdesign",
+          "--backbone-artifact-id",
+          "pxdesign-candidates",
+          "--designer-id",
+          "solublempnn",
+          "--adapter-id",
+          "solublempnn-designer-pxdesign",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--soluble-model"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8
+        },
+        "qualification": {
+          "cost_basis": {
+            "kind": "unpriced",
+            "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+            "note": "The one recorded SolubleMPNN run, a single design on a RunPod L40, carries no separately recorded charge. The ProteinMPNN Modal amount prices a different model on a different provider and is not carried across."
+          }
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "sequence-solublempnn-rfd3",
+        "adapter_id": "solublempnn-designer-rfd3",
+        "required_role": "sequence-designer",
+        "description": "Design SolubleMPNN sequences for the rfdiffusion3 backbone arm. The published roster names SolubleMPNN and SolubleCaliby and no other designer, so every backbone-only generator is served by one of those two.",
+        "depends_on": [
+          "generate-rfdiffusion3"
+        ],
+        "inputs": [
+          "generate-rfdiffusion3:rfdiffusion3-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "solublempnn-rfd3-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-rfdiffusion3",
+            "artifact_id": "rfdiffusion3-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "sequence-solublempnn-pxdesign",
+        "adapter_id": "solublempnn-designer-pxdesign",
+        "required_role": "sequence-designer",
+        "description": "Design SolubleMPNN sequences for the pxdesign backbone arm. The published roster names SolubleMPNN and SolubleCaliby and no other designer, so every backbone-only generator is served by one of those two.",
+        "depends_on": [
+          "generate-pxdesign"
+        ],
+        "inputs": [
+          "generate-pxdesign:pxdesign-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "solublempnn-pxdesign-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status",
+              "optimization_round",
+              "last_optimizer"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 2
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "generate-pxdesign",
+            "artifact_id": "pxdesign-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 240,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "adapter_id": "candidate-normalizer",
+        "required_role": "candidate-normalizer",
+        "description": "Join co-design and inverse-folding outputs into one candidate lineage table.",
+        "depends_on": [
+          "sequence-solublempnn",
+          "sequence-solublecaliby",
+          "generate-proteina-complexa",
+          "generate-freebindcraft",
+          "generate-boltzgen",
+          "sequence-solublempnn-rfd3",
+          "sequence-proteinmpnn-genie3",
+          "sequence-solublempnn-pxdesign"
+        ],
+        "inputs": [
+          "sequence-solublempnn:solublempnn-candidates",
+          "sequence-solublecaliby:solublecaliby-candidates",
+          "generate-proteina-complexa:proteina-complexa-candidates",
+          "generate-freebindcraft:freebindcraft-candidates",
+          "generate-boltzgen:boltzgen-candidates",
+          "sequence-solublempnn-rfd3:solublempnn-rfd3-candidates",
+          "sequence-proteinmpnn-genie3:proteinmpnn-genie3-candidates",
+          "sequence-solublempnn-pxdesign:solublempnn-pxdesign-candidates"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "normalized-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "schema_path": "schemas/candidate-manifest.schema.json",
+            "minimum_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ],
+            "publish_path": "candidates/candidate-manifest.jsonl"
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1
+          }
+        ],
+        "fanout": {},
+        "mode": "single",
+        "timeout_minutes": 30,
+        "heartbeat_seconds": 60
+      }
+    ]
+  }
+}

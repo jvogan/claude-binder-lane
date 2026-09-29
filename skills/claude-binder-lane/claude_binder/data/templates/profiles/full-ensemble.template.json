@@ -1,0 +1,3662 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "profile": {
+    "profile_id": "full-ensemble",
+    "purpose": "Record the published three configured co-folding predictor modes, optimization, and a five-seed uniform rescore as a reference configuration. ESMFold2-Full and ESMFold2-Fast are two modes of one predictor lineage.",
+    "claim_level": "candidate",
+    "baseline_fidelity": false,
+    "optimization_enabled": true,
+    "production_scoring": false,
+    "production_scoring_reason": "This file records a partial reference configuration. ESMFold2-Full and ESMFold2-Fast have deployed applications; Protenix v2 still needs an immutable official artifact receipt, qualified CUDA image, and completed validation.",
+    "published_predictor_deviations": [
+      {
+        "published_arm": "esmfold2",
+        "status": "not_run",
+        "reason": "ESMFold2-Full was not run. This profile is a reference configuration and does not dispatch a deployed campaign."
+      },
+      {
+        "published_arm": "esmfold2-fast",
+        "status": "not_run",
+        "reason": "ESMFold2-Fast was not run. This profile is a reference configuration and does not dispatch a deployed campaign."
+      },
+      {
+        "published_arm": "protenix-v2",
+        "status": "not_run",
+        "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+      }
+    ]
+  },
+  "rfd3_specification": {
+    "dialect": 2,
+    "infer_ori_strategy": "hotspots",
+    "is_non_loopy": true
+  },
+  "generation": {
+    "minimum_generators": 2,
+    "minimum_backbones_per_generator": 50,
+    "minimum_scored_candidates_per_generator": 50,
+    "published_generator_requirements": {
+      "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+      "methods": [
+        "rfdiffusion",
+        "rfdiffusion3",
+        "freebindcraft",
+        "boltzgen",
+        "pxdesign",
+        "proteina-complexa",
+        "genie3"
+      ],
+      "minimum_scored_backbones_per_method": 50,
+      "configured_methods": [
+        "rfdiffusion",
+        "genie3"
+      ],
+      "missing_methods": [
+        "rfdiffusion3",
+        "freebindcraft",
+        "boltzgen",
+        "pxdesign",
+        "proteina-complexa"
+      ],
+      "baseline_satisfied": false,
+      "method_binding_states": {
+        "rfdiffusion": "adapter-shipped",
+        "rfdiffusion3": "unbound-module",
+        "freebindcraft": "unbound-module",
+        "boltzgen": "unbound-module",
+        "pxdesign": "unbound-module",
+        "proteina-complexa": "unbound-module",
+        "genie3": "adapter-shipped"
+      },
+      "binding_states_derived_by": "claude_binder.reproduction_readiness"
+    },
+    "generators": [
+      {
+        "id": "rfdiffusion",
+        "enabled": true,
+        "mode": "backbone-only",
+        "adapter_id": "rfdiffusion-generator",
+        "backbone_count": 50,
+        "command_stage": "generate-rfdiffusion"
+      },
+      {
+        "id": "genie3",
+        "enabled": true,
+        "mode": "backbone-only",
+        "emits": "c-alpha-trace",
+        "adapter_id": "genie3-generator",
+        "backbone_count": 50,
+        "command_stage": "generate-genie3"
+      }
+    ]
+  },
+  "sequence_design": {
+    "sequences_per_backbone": 2,
+    "published_designer_requirements": {
+      "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md",
+      "methods": [
+        "solublempnn",
+        "solublecaliby"
+      ],
+      "configured_methods": [
+        "solublempnn",
+        "proteinmpnn"
+      ],
+      "missing_methods": [
+        "solublecaliby"
+      ],
+      "substituted_methods": [
+        "proteinmpnn"
+      ],
+      "baseline_satisfied": false
+    },
+    "designers": [
+      {
+        "id": "solublempnn",
+        "enabled": true,
+        "compatible_generators": [
+          "rfdiffusion"
+        ],
+        "accepts_backbone_shapes": {
+          "full-backbone": []
+        },
+        "adapter_id": "solublempnn-designer",
+        "command_stage": "sequence-solublempnn"
+      },
+      {
+        "id": "proteinmpnn",
+        "enabled": true,
+        "compatible_generators": [
+          "rfdiffusion"
+        ],
+        "accepts_backbone_shapes": {
+          "full-backbone": [],
+          "c-alpha-trace": [
+            "--ca-only"
+          ]
+        },
+        "adapter_id": "proteinmpnn-designer",
+        "command_stage": "sequence-proteinmpnn"
+      },
+      {
+        "id": "proteinmpnn",
+        "enabled": true,
+        "compatible_generators": [
+          "genie3"
+        ],
+        "accepts_backbone_shapes": {
+          "full-backbone": [],
+          "c-alpha-trace": [
+            "--ca-only"
+          ]
+        },
+        "adapter_id": "proteinmpnn-designer-genie3",
+        "command_stage": "sequence-proteinmpnn-genie3"
+      }
+    ]
+  },
+  "cofold": {
+    "minimum_predictors": 3,
+    "screen_seeds": [
+      0
+    ],
+    "rescore_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "predictors": [
+      {
+        "id": "esmfold2",
+        "enabled": true,
+        "adapter_id": "esmfold2-predictor",
+        "screen_stage": "cofold-screen-esmfold2",
+        "rescore_stage": "cofold-rescore-esmfold2"
+      },
+      {
+        "id": "esmfold2-fast",
+        "enabled": true,
+        "adapter_id": "esmfold2-fast-predictor",
+        "screen_stage": "cofold-screen-esmfold2-fast",
+        "rescore_stage": "cofold-rescore-esmfold2-fast"
+      },
+      {
+        "id": "protenix-v2",
+        "enabled": true,
+        "adapter_id": "protenix-v2-predictor",
+        "screen_stage": "cofold-screen-protenix-v2",
+        "rescore_stage": "cofold-rescore-protenix-v2"
+      }
+    ]
+  },
+  "runtime": {
+    "run_root": "{{data_root}}/runs/{{run_id}}",
+    "model_roster_path": "data/model-roster.json",
+    "model_roster_evidence_root": "data/roster-evidence",
+    "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+    "maximum_generated_candidates": 2000,
+    "maximum_screen_predictions": 20000,
+    "maximum_rescore_predictions": 10000,
+    "maximum_optimization_predictions": 10000
+  },
+  "license_gates": [],
+  "adapters": [
+    {
+      "adapter_id": "target-preparer",
+      "role": "target-preparer",
+      "capabilities": [
+        "multi-chain-target",
+        "residue-map",
+        "site-definition"
+      ],
+      "accepted_artifacts": [
+        "run-bundle"
+      ],
+      "produced_artifacts": [
+        "target-manifest",
+        "rfd3-specification"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_prep_adapter",
+        "toolcheck",
+        "--source-structure",
+        "{{target_structure}}",
+        "--residue-map",
+        "{{residue_map}}"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_prep_adapter",
+        "run",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--target-id",
+        "{{target_id}}",
+        "--source-id",
+        "{{target_source_id}}",
+        "--source-structure",
+        "{{target_structure}}",
+        "--chains",
+        "{{target_chains_csv}}",
+        "--design-target-chain",
+        "{{target_chain}}",
+        "--binder-chain",
+        "{{binder_chain}}",
+        "--site-residues",
+        "{{target_residues_csv}}",
+        "--reference-contact-residues",
+        "{{reference_contact_residues_csv}}",
+        "--site-mode",
+        "{{site_mode}}",
+        "--contact-cutoff-angstrom",
+        "{{site_contact_cutoff_angstrom}}",
+        "--atom-selection",
+        "{{site_atom_selection}}",
+        "--residue-map",
+        "{{residue_map}}",
+        "--config",
+        "{{config_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_prep_parser",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--config",
+        "{{config_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 0,
+        "memory_gb": 4
+      }
+    },
+    {
+      "adapter_id": "runtime-validator",
+      "role": "runtime-validator",
+      "capabilities": [
+        "adapter-toolcheck",
+        "revision-check",
+        "weights-check"
+      ],
+      "accepted_artifacts": [
+        "target-manifest"
+      ],
+      "produced_artifacts": [
+        "runtime-report"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.runtime_validator",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.runtime_validator",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.runtime_validator",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 1,
+        "memory_gb": 8
+      }
+    },
+    {
+      "adapter_id": "msa-builder",
+      "role": "msa-builder",
+      "capabilities": [
+        "unpaired-target-msa",
+        "shared-per-target-cache"
+      ],
+      "accepted_artifacts": [
+        "target-manifest",
+        "control-structures"
+      ],
+      "produced_artifacts": [
+        "target-msa-files",
+        "target-msa-manifest"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_msa_builder",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_msa_builder",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--route",
+        "public-server",
+        "--allow-public-msa"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.target_msa_builder",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 8,
+        "gpu": 0,
+        "memory_gb": 16
+      }
+    },
+    {
+      "adapter_id": "control-builder",
+      "role": "control-builder",
+      "capabilities": [
+        "same-path-control-scoring",
+        "matched-negatives"
+      ],
+      "accepted_artifacts": [
+        "target-manifest",
+        "control-structures",
+        "target-msa-manifest"
+      ],
+      "produced_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "__REQUIRED__"
+      ],
+      "command_argv_template": [
+        "__REQUIRED__"
+      ],
+      "parser_argv_template": [
+        "__REQUIRED__"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 16
+      }
+    },
+    {
+      "adapter_id": "rfdiffusion-generator",
+      "role": "backbone-generator",
+      "capabilities": [
+        "target-conditioned-backbones",
+        "hotspot-conditioning",
+        "seeded-generation"
+      ],
+      "accepted_artifacts": [
+        "target-manifest"
+      ],
+      "produced_artifacts": [
+        "backbone-candidate-manifest",
+        "design-pose-files"
+      ],
+      "source_revision": "RosettaCommons/RFdiffusion@2d0c003df46b9db41d119321f15403dec3716cd9",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "modal-env:rfdiffusion_generator_gpu@spec_sha=__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.rfdiffusion_generator",
+        "toolcheck",
+        "--runner-protocol",
+        "modal",
+        "--rfdiffusion-root",
+        "/opt/rfd",
+        "--weights-dir",
+        "/weights",
+        "--checkpoint-name",
+        "Complex_base_ckpt.pt",
+        "--config",
+        "{{config_path}}"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.rfdiffusion_generator",
+        "run",
+        "--runner-protocol",
+        "modal",
+        "--rfdiffusion-root",
+        "/opt/rfd",
+        "--weights-dir",
+        "/weights",
+        "--checkpoint-name",
+        "Complex_base_ckpt.pt",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--contigs",
+        "__REQUIRED__",
+        "--hotspot-csv",
+        "{{reference_contact_residues_csv}}",
+        "--binder-chain",
+        "{{binder_chain}}",
+        "--target-chain",
+        "{{target_chain}}",
+        "--minimum-length",
+        "{{binder_length_min}}",
+        "--maximum-length",
+        "{{binder_length_max}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.rfdiffusion_generator",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 16,
+        "gpu_memory_gb": 16,
+        "container_image_digest": "__REQUIRED__"
+      },
+      "qualification": {
+        "cost_per_design_usd": 0.008571111,
+        "cost_basis": {
+          "kind": "settled billed amount",
+          "machine": "Modal, GPU unrecorded",
+          "measurement_unit": "design",
+          "amount_usd": 0.17142222,
+          "unit_count": 20,
+          "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+          "note": "Ten settled Modal waves of 20 designs each settled between USD 0.03147459 and USD 0.17142222 per wave. This rate divides the dearest wave by its 20 designs, so a ceiling refuses rather than under-quotes."
+        }
+      }
+    },
+    {
+      "adapter_id": "genie3-generator",
+      "role": "backbone-generator",
+      "capabilities": [
+        "target-conditioned-backbones",
+        "site-hotspot-conditioning",
+        "unseeded-generation-recorded"
+      ],
+      "accepted_artifacts": [
+        "target-manifest"
+      ],
+      "produced_artifacts": [
+        "backbone-candidate-manifest",
+        "design-pose-files"
+      ],
+      "source_revision": "aqlaboratory/genie3@5214459c42e69b01fadfc7d7ebda09d8e5082115",
+      "model_revision": "yeqinglin/genie3@9ae31ebb8c56eebdc05ab282a8fd3f6a6d2a03a2",
+      "environment_identity": "modal-env:genie3_generator_gpu@spec_sha=__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.genie3_generator",
+        "toolcheck",
+        "--runner-protocol",
+        "modal",
+        "--genie3-home",
+        "/weights",
+        "--model-version",
+        "v1",
+        "--genie3-command",
+        "genie3"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.genie3_generator",
+        "run",
+        "--runner-protocol",
+        "modal",
+        "--genie3-home",
+        "/weights",
+        "--model-version",
+        "v1",
+        "--genie3-command",
+        "genie3",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--target-chain",
+        "{{target_chain}}",
+        "--binder-chain",
+        "{{binder_chain}}",
+        "--binder-length-min",
+        "{{binder_length_min}}",
+        "--binder-length-max",
+        "{{binder_length_max}}",
+        "--generator-id",
+        "genie3",
+        "--allow-unseeded"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.genie3_generator",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 24,
+        "gpu_memory_gb": 24,
+        "container_image_digest": "__REQUIRED__"
+      },
+      "qualification": {
+        "cost_basis": {
+          "kind": "unpriced",
+          "source": "skills/claude-binder-lane/references/measured-costs.md#backbone-generation",
+          "note": "No Modal figure exists for Genie3. The two recorded observations are modeled RunPod estimates that disagree by about thirty times per backbone: about USD 0.31 for 25 backbones on an L40, and about USD 1.50 for 4 candidates across 9 pod fires on an L40S. Neither prices this arm on the provider a campaign dispatches to."
+        }
+      }
+    },
+    {
+      "adapter_id": "proteinmpnn-designer-genie3",
+      "role": "sequence-designer",
+      "capabilities": [
+        "inverse-folding",
+        "fixed-position-mask",
+        "c-alpha-trace-input",
+        "seeded-design"
+      ],
+      "accepted_artifacts": [
+        "backbone-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "sequence-candidate-manifest",
+        "sequence-files",
+        "design-pose-files"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "toolcheck",
+        "--config",
+        "{{config_path}}",
+        "--adapter-id",
+        "proteinmpnn-designer-genie3",
+        "--ca-only"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "run",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--backbone-stage-id",
+        "generate-genie3",
+        "--backbone-artifact-id",
+        "genie3-candidates",
+        "--designer-id",
+        "proteinmpnn",
+        "--sequences-per-backbone",
+        "{{sequences_per_backbone}}",
+        "--seed",
+        "37",
+        "--sampling-temp",
+        "0.1",
+        "--design-chain",
+        "{{binder_chain}}",
+        "--minimum-length",
+        "{{binder_length_min}}",
+        "--maximum-length",
+        "{{binder_length_max}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--ca-only"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_parser",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--result-path",
+        "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "--jsonl",
+        "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+        "--fasta",
+        "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+        "--pdb",
+        "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 12,
+        "gpu_memory_gb": 8
+      },
+      "qualification": {
+        "cost_per_design_usd": 0.000497905,
+        "cost_basis": {
+          "kind": "settled billed amount",
+          "machine": "Modal CPU container",
+          "measurement_unit": "sequence",
+          "amount_usd": 0.00099581,
+          "unit_count": 2,
+          "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+          "note": "One settled Modal CPU run produced 2 validated 80-residue sequences for USD 0.00099581 in 3.102723 seconds. This rate divides that amount by 2, so it spreads container startup across both sequences. The C-alpha checkpoint is the same wrapper on the same container, and no run has timed it, so the rate is carried rather than measured."
+        }
+      }
+    },
+    {
+      "adapter_id": "solublempnn-designer",
+      "role": "sequence-designer",
+      "capabilities": [
+        "inverse-folding",
+        "soluble-sequence-bias",
+        "seeded-design"
+      ],
+      "accepted_artifacts": [
+        "backbone-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "sequence-candidate-manifest",
+        "sequence-files",
+        "design-pose-files"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "toolcheck",
+        "--config",
+        "{{config_path}}",
+        "--designer-id",
+        "solublempnn",
+        "--adapter-id",
+        "solublempnn-designer",
+        "--soluble-model"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "run",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--backbone-stage-id",
+        "generate-rfdiffusion",
+        "--backbone-artifact-id",
+        "rfdiffusion-candidates",
+        "--designer-id",
+        "solublempnn",
+        "--adapter-id",
+        "solublempnn-designer",
+        "--sequences-per-backbone",
+        "{{sequences_per_backbone}}",
+        "--seed",
+        "37",
+        "--sampling-temp",
+        "0.1",
+        "--design-chain",
+        "{{binder_chain}}",
+        "--minimum-length",
+        "{{binder_length_min}}",
+        "--maximum-length",
+        "{{binder_length_max}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--soluble-model"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_parser",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--result-path",
+        "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "--jsonl",
+        "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+        "--fasta",
+        "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+        "--pdb",
+        "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 12,
+        "gpu_memory_gb": 8
+      },
+      "qualification": {
+        "cost_basis": {
+          "kind": "unpriced",
+          "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+          "note": "The one recorded SolubleMPNN run, a single design on a RunPod L40, carries no separately recorded charge. The ProteinMPNN Modal amount prices a different model on a different provider and is not carried across."
+        }
+      }
+    },
+    {
+      "adapter_id": "proteinmpnn-designer",
+      "role": "sequence-designer",
+      "capabilities": [
+        "inverse-folding",
+        "fixed-position-mask",
+        "seeded-design"
+      ],
+      "accepted_artifacts": [
+        "backbone-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "sequence-candidate-manifest",
+        "sequence-files",
+        "design-pose-files"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "toolcheck",
+        "--config",
+        "{{config_path}}",
+        "--adapter-id",
+        "proteinmpnn-designer"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_designer",
+        "run",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--backbone-stage-id",
+        "generate-rfdiffusion",
+        "--backbone-artifact-id",
+        "rfdiffusion-candidates",
+        "--designer-id",
+        "proteinmpnn",
+        "--sequences-per-backbone",
+        "{{sequences_per_backbone}}",
+        "--seed",
+        "37",
+        "--sampling-temp",
+        "0.1",
+        "--design-chain",
+        "{{binder_chain}}",
+        "--minimum-length",
+        "{{binder_length_min}}",
+        "--maximum-length",
+        "{{binder_length_max}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.proteinmpnn_parser",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--result-path",
+        "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "--jsonl",
+        "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+        "--fasta",
+        "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+        "--pdb",
+        "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 12,
+        "gpu_memory_gb": 8
+      },
+      "qualification": {
+        "cost_per_design_usd": 0.000497905,
+        "cost_basis": {
+          "kind": "settled billed amount",
+          "machine": "Modal CPU container",
+          "measurement_unit": "sequence",
+          "amount_usd": 0.00099581,
+          "unit_count": 2,
+          "source": "skills/claude-binder-lane/references/measured-costs.md#sequence-design",
+          "note": "One settled Modal CPU run produced 2 validated 80-residue sequences for USD 0.00099581 in 3.102723 seconds. This rate divides that amount by 2, so it spreads container startup across both sequences."
+        }
+      }
+    },
+    {
+      "adapter_id": "candidate-normalizer",
+      "role": "candidate-normalizer",
+      "capabilities": [
+        "lineage-join",
+        "hash-verification",
+        "generator-attribution"
+      ],
+      "accepted_artifacts": [
+        "backbone-candidate-manifest",
+        "candidate-manifest",
+        "sequence-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "normalized-candidate-manifest",
+        "sequence-files",
+        "design-pose-files"
+      ],
+      "source_revision": "repository",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.candidate_normalizer",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.candidate_normalizer",
+        "run",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.candidate_normalizer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--jsonl",
+        "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+        "--fasta",
+        "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+        "--pdb",
+        "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 0,
+        "memory_gb": 8
+      }
+    },
+    {
+      "adapter_id": "integrity-filter",
+      "role": "sequence-filter",
+      "capabilities": [
+        "integrity",
+        "composition",
+        "exact-duplicates",
+        "liability-chemistry",
+        "near-duplicate-clustering"
+      ],
+      "accepted_artifacts": [
+        "normalized-candidate-manifest",
+        "optimized-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "filter-observations",
+        "passing-candidate-manifest",
+        "filter-report"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.integrity_filter",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.integrity_filter",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.integrity_filter",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 8,
+        "gpu": 0,
+        "memory_gb": 16
+      }
+    },
+    {
+      "adapter_id": "novelty-filter",
+      "role": "structure-filter",
+      "capabilities": [
+        "sequence-novelty",
+        "model-likelihood"
+      ],
+      "accepted_artifacts": [
+        "passing-candidate-manifest",
+        "optimized-candidate-manifest",
+        "filter-observations"
+      ],
+      "produced_artifacts": [
+        "filter-observations",
+        "passing-candidate-manifest",
+        "filter-report"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.novelty_filter",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.novelty_filter",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.novelty_filter",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 16,
+        "gpu": 1,
+        "memory_gb": 32,
+        "gpu_memory_gb": 12
+      }
+    },
+    {
+      "adapter_id": "esmfold2-predictor",
+      "role": "cofold-predictor",
+      "capabilities": [
+        "complex-structure-prediction",
+        "five-seed-rescore",
+        "full-pae"
+      ],
+      "supported_entity_types": [
+        "protein"
+      ],
+      "accepted_artifacts": [
+        "passing-candidate-manifest",
+        "optimized-candidate-manifest",
+        "rescore-candidate-manifest",
+        "target-msa-manifest"
+      ],
+      "produced_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "pip",
+        "show",
+        "esm"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.esmfold2_predictor",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--target-sequence",
+        "{{target_id}}={{target_sequence}}",
+        "--target-msa-a3m",
+        "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m",
+        "--hotspot-residues",
+        "{{target_id}}={{metric_hotspot_residues_csv}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.esmfold2_predictor",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 32,
+        "gpu_memory_gb": 24
+      },
+      "qualification": {
+        "cost_per_design_usd": 0.0325202,
+        "cost_basis": {
+          "kind": "settled billed amount",
+          "machine": "Modal L40S",
+          "measurement_unit": "fold",
+          "amount_usd": 0.0325202,
+          "unit_count": 1,
+          "source": "skills/claude-binder-lane/references/measured-costs.md#co-folding-and-screening",
+          "note": "One settled ESMFold2-Full fold on a Modal L40S. Larger settled Modal waves priced lower per fold, at USD 0.88450719 for 32 designs and USD 0.38812749 for 16. This rate takes the dearest measured fold."
+        }
+      }
+    },
+    {
+      "adapter_id": "esmfold2-fast-predictor",
+      "role": "cofold-predictor",
+      "capabilities": [
+        "complex-structure-prediction",
+        "five-seed-rescore",
+        "full-pae"
+      ],
+      "supported_entity_types": [
+        "protein"
+      ],
+      "accepted_artifacts": [
+        "passing-candidate-manifest",
+        "optimized-candidate-manifest",
+        "rescore-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "source_revision": "__REQUIRED__",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "pip",
+        "show",
+        "esm"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.esmfold2_fast_predictor",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--target-sequence",
+        "{{target_id}}={{target_sequence}}",
+        "--hotspot-residues",
+        "{{target_id}}={{metric_hotspot_residues_csv}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.esmfold2_fast_predictor",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 32,
+        "gpu_memory_gb": 24
+      },
+      "qualification": {
+        "cost_per_design_usd": 0.02712564,
+        "cost_basis": {
+          "kind": "settled billed amount",
+          "machine": "Modal L40S",
+          "measurement_unit": "fold",
+          "amount_usd": 0.02712564,
+          "unit_count": 1,
+          "source": "skills/claude-binder-lane/references/measured-costs.md#co-folding-and-screening",
+          "note": "One settled ESMFold2-Fast fold on a Modal L40S. A four-fold run on the same machine settled at USD 0.01914518 in total, so this cold single fold is the dearer per-fold rate and this rate takes it."
+        }
+      }
+    },
+    {
+      "adapter_id": "protenix-v2-predictor",
+      "binding_status": "operator-configured",
+      "role": "cofold-predictor",
+      "capabilities": [
+        "complex-structure-prediction",
+        "five-seed-rescore",
+        "full-pae"
+      ],
+      "supported_entity_types": [
+        "protein"
+      ],
+      "accepted_artifacts": [
+        "passing-candidate-manifest",
+        "optimized-candidate-manifest",
+        "rescore-candidate-manifest",
+        "target-msa-manifest"
+      ],
+      "produced_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "source_revision": "bytedance/Protenix@2475421477ab414b571149ad4a875c390ff8a35d",
+      "model_revision": "__REQUIRED__",
+      "environment_identity": "__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "pip",
+        "show",
+        "protenix"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.protenix_v2_predictor",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--target-sequence",
+        "{{target_id}}={{target_sequence}}",
+        "--target-unpaired-msa-a3m",
+        "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m",
+        "--hotspot-residues",
+        "{{target_id}}={{metric_hotspot_residues_csv}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.protenix_v2_predictor",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 4,
+        "gpu": 1,
+        "memory_gb": 32,
+        "gpu_memory_gb": 24
+      },
+      "qualification": {
+        "cost_basis": {
+          "kind": "unpriced",
+          "source": "skills/claude-binder-lane/references/measured-costs.md#what-the-anchor-leaves-out",
+          "note": "The one recorded Protenix v2 figure, about USD 1.95, is a modeled estimate on a non-Modal hosted H100 at the USD 4.50 per hour planning rate. The record files it under deploy-time cold starts, because a cold worker spent most of the 1,561 seconds installing its runtime and downloading its checkpoint. It does not measure a per-design rate, and multiplying it by a design count would state a cost the record does not support."
+        }
+      }
+    },
+    {
+      "adapter_id": "interface-scorer",
+      "role": "interface-scorer",
+      "capabilities": [
+        "ipsae",
+        "sc-dockq",
+        "site-contacts",
+        "interface-geometry",
+        "predictor-disagreement"
+      ],
+      "accepted_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "produced_artifacts": [
+        "screen-score-table",
+        "optimization-score-table"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.interface_scorer",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.interface_scorer",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.interface_scorer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 8,
+        "gpu": 0,
+        "memory_gb": 16
+      }
+    },
+    {
+      "adapter_id": "promotion-selector",
+      "role": "promotion-selector",
+      "capabilities": [
+        "control-separation",
+        "site-gates",
+        "diversity-preservation"
+      ],
+      "accepted_artifacts": [
+        "screen-score-table",
+        "optimization-score-table",
+        "optimized-candidate-manifest",
+        "passing-candidate-manifest",
+        "raw-prediction-manifest"
+      ],
+      "produced_artifacts": [
+        "promotion-manifest",
+        "promotion-summary",
+        "eligible-parent-manifest",
+        "rescore-candidate-manifest"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.promotion_selector",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.promotion_selector",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.promotion_selector",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 0,
+        "memory_gb": 8
+      }
+    },
+    {
+      "adapter_id": "optimization-controller",
+      "role": "optimizer",
+      "capabilities": [
+        "validated-agent-decision",
+        "lineage-preservation",
+        "fanout-cap"
+      ],
+      "accepted_artifacts": [
+        "promotion-manifest",
+        "screen-score-table",
+        "eligible-parent-manifest",
+        "optimization-score-table",
+        "next-round-decision"
+      ],
+      "produced_artifacts": [
+        "round-summary",
+        "next-round-decision",
+        "optimized-candidate-manifest",
+        "sequence-files",
+        "design-pose-files"
+      ],
+      "source_revision": "claude-binder@72bac54be4a4df1ad2487f445d7a3136289a84a3",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.optimization_controller",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.optimization_controller",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.optimization_controller",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 8,
+        "gpu": 1,
+        "memory_gb": 24,
+        "gpu_memory_gb": 24
+      }
+    },
+    {
+      "adapter_id": "uniform-rescore-reducer",
+      "role": "ensemble-reducer",
+      "capabilities": [
+        "exact-seed-matrix",
+        "normalized-observation-table",
+        "per-predictor-controls"
+      ],
+      "accepted_artifacts": [
+        "raw-prediction-manifest"
+      ],
+      "produced_artifacts": [
+        "uniform-observations"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.ensemble_reducer",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.ensemble_reducer",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.ensemble_reducer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 8,
+        "gpu": 0,
+        "memory_gb": 16
+      }
+    },
+    {
+      "adapter_id": "portfolio-ranker",
+      "role": "portfolio-selector",
+      "capabilities": [
+        "per-predictor-z-score",
+        "four-to-one-rank",
+        "generator-quotas"
+      ],
+      "accepted_artifacts": [
+        "uniform-observations",
+        "optimized-candidate-manifest",
+        "rescore-candidate-manifest"
+      ],
+      "produced_artifacts": [
+        "ranked-portfolio",
+        "sequence-files"
+      ],
+      "source_revision": "repository",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.portfolio_ranker_parser",
+        "--help"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder",
+        "rank",
+        "--config",
+        "{{config_path}}",
+        "--observations",
+        "{{artifact_root}}/scores/uniform-observations.jsonl",
+        "--candidate-lineage",
+        "{{artifact_root}}/optimization/rescore-candidates.jsonl",
+        "--sequence-out-dir",
+        "{{attempt_dir}}/{{phase}}/sequences",
+        "--out",
+        "{{attempt_dir}}/{{phase}}/ranked-candidates.json",
+        "--json"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.portfolio_ranker_parser",
+        "--phase",
+        "{{phase}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--result-path",
+        "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "--json",
+        "{{attempt_dir}}/{{phase}}/ranked-candidates.json",
+        "--fasta",
+        "{{attempt_dir}}/{{phase}}/sequences/*.fasta"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 0,
+        "memory_gb": 8
+      }
+    },
+    {
+      "adapter_id": "output-validator",
+      "role": "output-validator",
+      "capabilities": [
+        "receipt-validation",
+        "hash-index",
+        "terminal-status"
+      ],
+      "accepted_artifacts": [
+        "ranked-portfolio",
+        "screen-score-table",
+        "uniform-observations",
+        "structure-picture-manifest",
+        "stage-receipts"
+      ],
+      "produced_artifacts": [
+        "output-check"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.output_validator",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.output_validator",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--run-root",
+        "{{run_root}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.output_validator",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 2,
+        "gpu": 0,
+        "memory_gb": 8
+      }
+    },
+    {
+      "adapter_id": "structure-picture-renderer",
+      "role": "renderer",
+      "capabilities": [
+        "static-structure-pictures",
+        "interface-closeups",
+        "promoted-picture-archive"
+      ],
+      "accepted_artifacts": [
+        "ranked-portfolio",
+        "uniform-observations"
+      ],
+      "produced_artifacts": [
+        "structure-picture-manifest",
+        "structure-picture-index",
+        "structure-picture-archive",
+        "structure-pictures"
+      ],
+      "source_revision": "repository-source",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.structure_picture_renderer",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.structure_picture_renderer",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--out-dir",
+        "{{attempt_dir}}/{{phase}}/pictures"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.structure_picture_renderer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 1,
+        "gpu": 0,
+        "memory_gb": 1
+      }
+    },
+    {
+      "adapter_id": "viewer-renderer",
+      "role": "renderer",
+      "capabilities": [
+        "viewer-scripts",
+        "thumbnails"
+      ],
+      "accepted_artifacts": [
+        "output-check"
+      ],
+      "produced_artifacts": [
+        "viewer-manifest",
+        "viewer-images"
+      ],
+      "source_revision": "claude-binder@c451f29d04fe129b8c4ccc3e02f50ff70d22b9f9",
+      "model_revision": "none",
+      "environment_identity": "local-pymol-3.1.7.2:python-3.14.7",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.view_renderer",
+        "toolcheck",
+        "--pymol",
+        "pymol"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.view_renderer",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--run-dir",
+        "{{run_root}}",
+        "--out-dir",
+        "{{attempt_dir}}/{{phase}}/viewer",
+        "--pymol",
+        "pymol"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.view_renderer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 1,
+        "gpu": 0,
+        "memory_gb": 1
+      }
+    },
+    {
+      "adapter_id": "browser-viewer",
+      "role": "renderer",
+      "capabilities": [
+        "viewer-page",
+        "offline-structure-viewer",
+        "viewer-images"
+      ],
+      "accepted_artifacts": [
+        "output-check"
+      ],
+      "produced_artifacts": [
+        "viewer-manifest",
+        "viewer-page",
+        "viewer-images"
+      ],
+      "source_revision": "repository-source",
+      "model_revision": "none",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.browser_renderer",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.browser_renderer",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}",
+        "--run-dir",
+        "{{run_root}}",
+        "--out-dir",
+        "{{attempt_dir}}/{{phase}}/viewer"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.adapters.browser_renderer",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 1,
+        "gpu": 0,
+        "memory_gb": 1
+      }
+    }
+  ],
+  "stages": [
+    {
+      "stage_id": "target-prepare",
+      "adapter_id": "target-preparer",
+      "required_role": "target-preparer",
+      "description": "Prepare target chains, residue maps, and site definitions.",
+      "depends_on": [],
+      "inputs": [
+        "run-bundle"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "target-manifest",
+          "path_template": "{{attempt_dir}}/{{phase}}/target-manifest.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "residue_map_sha256"
+          ],
+          "publish_path": "inputs/target-manifest.json"
+        },
+        {
+          "_note": "The RFdiffusion3 specification the backbone generator reads. The published name carries the target id and bind_rfd3_specification_output sets publish_path from the primary target, because a publish path is a literal in the resolved graph. The attempt-directory name does not, because target_prep_parser renders only attempt_dir, phase and stage_id. It declares no required_fields: derive_specification keys the document by campaign and target, so its top-level key is not a fixed name.",
+          "artifact_id": "rfd3-specification",
+          "path_template": "{{attempt_dir}}/{{phase}}/inputs/rfd3-specification.json",
+          "kind": "json",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 20,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "runtime-check",
+      "adapter_id": "runtime-validator",
+      "required_role": "runtime-validator",
+      "description": "Verify every enabled adapter, revision, model, environment, and weight set.",
+      "depends_on": [
+        "target-prepare"
+      ],
+      "inputs": [
+        "target-prepare:target-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "runtime-report",
+          "path_template": "{{attempt_dir}}/{{phase}}/runtime-report.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "ok",
+            "adapters"
+          ]
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "stage-msa",
+      "adapter_id": "msa-builder",
+      "required_role": "msa-builder",
+      "description": "Stage one unpaired target-chain alignment per target into the cache every MSA-consuming arm reads.",
+      "depends_on": [
+        "runtime-check",
+        "target-prepare"
+      ],
+      "inputs": [
+        "target-prepare:target-manifest",
+        "run-bundle:controls"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "target-msa-manifest",
+          "artifact_type": "target-msa-manifest",
+          "path_template": "{{attempt_dir}}/{{phase}}/msa-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_chain_id",
+            "msa_path",
+            "msa_sha256",
+            "msa_depth",
+            "msa_source",
+            "query_sequence_sha256"
+          ],
+          "publish_path": "inputs/msa-manifest.jsonl"
+        },
+        {
+          "artifact_id": "target-msa-files",
+          "artifact_type": "target-msa-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/msa/*.a3m",
+          "kind": "file",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "control-calibration",
+      "adapter_id": "control-builder",
+      "required_role": "control-builder",
+      "description": "Run every registered control through the configured predictors and measurements.",
+      "depends_on": [
+        "runtime-check",
+        "target-prepare",
+        "stage-msa"
+      ],
+      "inputs": [
+        "target-prepare:target-manifest",
+        "run-bundle:controls",
+        "stage-msa:target-msa-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "control-observations",
+          "path_template": "{{attempt_dir}}/{{phase}}/control-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "candidate_id",
+            "control_type",
+            "control_role",
+            "control_structure_sha256",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "status"
+          ],
+          "publish_path": "controls/control-observations.jsonl"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 360,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "generate-rfdiffusion",
+      "adapter_id": "rfdiffusion-generator",
+      "required_role": "backbone-generator",
+      "description": "Generate the RFdiffusion backbone arm.",
+      "depends_on": [
+        "runtime-check",
+        "target-prepare"
+      ],
+      "inputs": [
+        "target-prepare:target-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "rfdiffusion-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status",
+            "optimization_round",
+            "last_optimizer"
+          ]
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1
+        }
+      ],
+      "fanout": {
+        "scale_count": 50
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 360,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "generate-genie3",
+      "adapter_id": "genie3-generator",
+      "required_role": "backbone-generator",
+      "description": "Generate the Genie 3 backbone arm. Genie 3 writes a C-alpha trace and no sequence, so a sequence designer assigns residues downstream.",
+      "depends_on": [
+        "runtime-check",
+        "target-prepare"
+      ],
+      "inputs": [
+        "target-prepare:target-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "genie3-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status",
+            "optimization_round",
+            "last_optimizer"
+          ]
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1
+        }
+      ],
+      "fanout": {
+        "scale_count": 50
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 360,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "sequence-solublempnn",
+      "adapter_id": "solublempnn-designer",
+      "required_role": "sequence-designer",
+      "description": "Design SolubleMPNN sequences for the RFdiffusion backbone arm.",
+      "depends_on": [
+        "generate-rfdiffusion"
+      ],
+      "inputs": [
+        "generate-rfdiffusion:rfdiffusion-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "solublempnn-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2,
+          "required_fields": [
+            "candidate_id",
+            "parent_candidate_id",
+            "origin_generator",
+            "sequence_designer",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status",
+            "optimization_round",
+            "last_optimizer"
+          ]
+        },
+        {
+          "artifact_id": "sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "generate-rfdiffusion",
+          "artifact_id": "rfdiffusion-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "sequence-proteinmpnn",
+      "adapter_id": "proteinmpnn-designer",
+      "required_role": "sequence-designer",
+      "description": "Design ProteinMPNN sequences for the RFdiffusion backbone arm.",
+      "depends_on": [
+        "generate-rfdiffusion"
+      ],
+      "inputs": [
+        "generate-rfdiffusion:rfdiffusion-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "proteinmpnn-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2,
+          "required_fields": [
+            "candidate_id",
+            "parent_candidate_id",
+            "origin_generator",
+            "sequence_designer",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status",
+            "optimization_round",
+            "last_optimizer"
+          ]
+        },
+        {
+          "artifact_id": "sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "generate-rfdiffusion",
+          "artifact_id": "rfdiffusion-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "sequence-proteinmpnn-genie3",
+      "adapter_id": "proteinmpnn-designer-genie3",
+      "required_role": "sequence-designer",
+      "description": "Design ProteinMPNN sequences for the Genie 3 backbone arm. The arm is a C-alpha trace, so this stage carries --ca-only and loads the C-alpha checkpoint.",
+      "depends_on": [
+        "generate-genie3"
+      ],
+      "inputs": [
+        "generate-genie3:genie3-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "proteinmpnn-genie3-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2,
+          "required_fields": [
+            "candidate_id",
+            "parent_candidate_id",
+            "origin_generator",
+            "sequence_designer",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status",
+            "optimization_round",
+            "last_optimizer"
+          ]
+        },
+        {
+          "artifact_id": "sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 2
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "generate-genie3",
+          "artifact_id": "genie3-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "normalize-candidates",
+      "adapter_id": "candidate-normalizer",
+      "required_role": "candidate-normalizer",
+      "description": "Join co-design and inverse-folding outputs into one candidate lineage table.",
+      "depends_on": [
+        "sequence-solublempnn",
+        "sequence-proteinmpnn",
+        "sequence-proteinmpnn-genie3"
+      ],
+      "inputs": [
+        "sequence-solublempnn:solublempnn-candidates",
+        "sequence-proteinmpnn:proteinmpnn-candidates",
+        "sequence-proteinmpnn-genie3:proteinmpnn-genie3-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "normalized-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+          "kind": "jsonl",
+          "schema_path": "schemas/candidate-manifest.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "parent_candidate_id",
+            "origin_generator",
+            "sequence_designer",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "structure_path",
+            "structure_sha256",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status"
+          ],
+          "publish_path": "candidates/candidate-manifest.jsonl"
+        },
+        {
+          "artifact_id": "sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "filter-integrity",
+      "adapter_id": "integrity-filter",
+      "required_role": "sequence-filter",
+      "description": "Apply composition, duplicate, and sequence-liability checks.",
+      "depends_on": [
+        "normalize-candidates"
+      ],
+      "inputs": [
+        "normalize-candidates:normalized-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "integrity-filter-observations",
+          "path_template": "{{attempt_dir}}/{{phase}}/filter-observations.jsonl",
+          "kind": "jsonl",
+          "schema_path": "schemas/filter-observation.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "sequence_sha256",
+            "filter_id",
+            "metric",
+            "threshold",
+            "value",
+            "pass",
+            "reason",
+            "tool_revision",
+            "reference_revision"
+          ],
+          "publish_path": "filters/integrity-filter-observations.jsonl"
+        },
+        {
+          "artifact_id": "integrity-passing-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/passing-candidates.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "design_pose_path",
+            "design_pose_sha256",
+            "filter_pass",
+            "failed_checks"
+          ],
+          "publish_path": "filters/integrity-passing-candidates.jsonl"
+        },
+        {
+          "artifact_id": "integrity-filter-report",
+          "path_template": "{{attempt_dir}}/{{phase}}/filter-report.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "stage_id",
+            "evaluated_candidate_count",
+            "passing_candidate_count",
+            "evaluated_gates",
+            "gate_statuses"
+          ],
+          "publish_path": "filters/integrity-filter-report.json"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 120,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "filter-novelty",
+      "adapter_id": "novelty-filter",
+      "required_role": "structure-filter",
+      "description": "Apply target-chain sequence mimicry and model-likelihood checks.",
+      "depends_on": [
+        "filter-integrity"
+      ],
+      "inputs": [
+        "filter-integrity:integrity-passing-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "novelty-filter-observations",
+          "path_template": "{{attempt_dir}}/{{phase}}/filter-observations.jsonl",
+          "kind": "jsonl",
+          "schema_path": "schemas/filter-observation.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "sequence_sha256",
+            "filter_id",
+            "metric",
+            "threshold",
+            "value",
+            "pass",
+            "reason",
+            "tool_revision",
+            "reference_revision"
+          ],
+          "publish_path": "filters/novelty-filter-observations.jsonl"
+        },
+        {
+          "artifact_id": "passing-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/passing-candidates.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "design_pose_path",
+            "design_pose_sha256",
+            "filter_pass",
+            "failed_checks"
+          ],
+          "publish_path": "filters/passing-candidates.jsonl"
+        },
+        {
+          "artifact_id": "novelty-filter-report",
+          "path_template": "{{attempt_dir}}/{{phase}}/filter-report.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "stage_id",
+            "evaluated_candidate_count",
+            "passing_candidate_count",
+            "evaluated_gates",
+            "gate_statuses"
+          ],
+          "publish_path": "filters/novelty-filter-report.json"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 360,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-screen-esmfold2",
+      "adapter_id": "esmfold2-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the one-seed ESMFold2 screen.",
+      "depends_on": [
+        "filter-novelty",
+        "stage-msa"
+      ],
+      "inputs": [
+        "filter-novelty:passing-candidates",
+        "stage-msa:target-msa-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "esmfold2-screen",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "origin_generator",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "filter-novelty",
+          "artifact_id": "passing-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-screen-esmfold2-fast",
+      "adapter_id": "esmfold2-fast-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the one-seed ESMFold2-Fast screen.",
+      "depends_on": [
+        "filter-novelty"
+      ],
+      "inputs": [
+        "filter-novelty:passing-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "esmfold2-fast-screen",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "origin_generator",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "filter-novelty",
+          "artifact_id": "passing-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-screen-protenix-v2",
+      "adapter_id": "protenix-v2-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the one-seed Protenix v2 screen.",
+      "depends_on": [
+        "filter-novelty",
+        "stage-msa"
+      ],
+      "inputs": [
+        "filter-novelty:passing-candidates",
+        "stage-msa:target-msa-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "protenix-v2-screen",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "origin_generator",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "filter-novelty",
+          "artifact_id": "passing-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "score-screen",
+      "adapter_id": "interface-scorer",
+      "required_role": "interface-scorer",
+      "description": "Normalize screen confidence, pose consistency, target-site contacts, and interface geometry.",
+      "depends_on": [
+        "control-calibration",
+        "cofold-screen-esmfold2",
+        "cofold-screen-esmfold2-fast",
+        "cofold-screen-protenix-v2"
+      ],
+      "inputs": [
+        "control-calibration:control-observations",
+        "cofold-screen-esmfold2:esmfold2-screen",
+        "cofold-screen-esmfold2-fast:esmfold2-fast-screen",
+        "cofold-screen-protenix-v2:protenix-v2-screen"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "screen-score-table",
+          "path_template": "{{attempt_dir}}/{{phase}}/screen-score-table.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "origin_generator",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "filter_pass",
+            "ipsae_min",
+            "sc_dockq",
+            "site_contact_iou",
+            "status"
+          ],
+          "publish_path": "scores/screen-score-table.jsonl"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "promote",
+      "adapter_id": "promotion-selector",
+      "required_role": "promotion-selector",
+      "description": "Apply control separation, score gates, and diversity rules to choose optimization parents.",
+      "depends_on": [
+        "score-screen",
+        "filter-novelty",
+        "control-calibration"
+      ],
+      "inputs": [
+        "score-screen:screen-score-table",
+        "filter-novelty:passing-candidates",
+        "control-calibration:control-observations"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "promotion-manifest",
+          "path_template": "{{attempt_dir}}/{{phase}}/promotion-manifest.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "candidate_id",
+            "origin_generator",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "design_pose_path",
+            "design_pose_sha256",
+            "promotion_status",
+            "promotion_reason"
+          ],
+          "publish_path": "promotion/promotion-manifest.jsonl"
+        },
+        {
+          "artifact_id": "promotion-summary",
+          "artifact_type": "promotion-summary",
+          "path_template": "{{attempt_dir}}/{{phase}}/promotion-summary.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "requested_count",
+            "delivered_count",
+            "shortfall_count",
+            "binding_rules",
+            "minimum_delivery_fraction",
+            "delivery_fraction",
+            "policy_satisfied",
+            "shortfall_allowed"
+          ],
+          "publish_path": "promotion/promotion-summary.json"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "optimization-plan",
+      "adapter_id": "optimization-controller",
+      "required_role": "optimizer",
+      "description": "Create the round summary and a bounded optimization decision from promoted candidates.",
+      "depends_on": [
+        "promote",
+        "score-screen"
+      ],
+      "inputs": [
+        "promote:promotion-manifest",
+        "score-screen:screen-score-table"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "round-summary",
+          "path_template": "{{attempt_dir}}/{{phase}}/round-summary.json",
+          "kind": "json",
+          "schema_path": "schemas/round-summary.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "round",
+            "candidates",
+            "budget",
+            "failures"
+          ],
+          "publish_path": "optimization/round-summary.json"
+        },
+        {
+          "artifact_id": "next-round-decision",
+          "path_template": "{{attempt_dir}}/{{phase}}/next-round-decision.json",
+          "kind": "json",
+          "schema_path": "schemas/next-round-decision.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "round",
+            "summary_sha256",
+            "config_sha256",
+            "selected_parent_ids",
+            "adapter_id",
+            "operation",
+            "parameter_overrides",
+            "seeds",
+            "candidate_count",
+            "expected_fanout",
+            "stop",
+            "stop_reason"
+          ],
+          "publish_path": "optimization/next-round-decision.json"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "optimize",
+      "adapter_id": "optimization-controller",
+      "required_role": "optimizer",
+      "description": "Run validated optimization rounds and preserve parent-child lineage.",
+      "depends_on": [
+        "optimization-plan"
+      ],
+      "inputs": [
+        "optimization-plan:next-round-decision"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "rescore-candidates",
+          "path_template": "{{attempt_dir}}/{{phase}}/rescore-candidates.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "parent_candidate_id",
+            "root_candidate_id",
+            "origin_generator",
+            "last_optimizer",
+            "optimization_round",
+            "sequence_path",
+            "sequence_sha256",
+            "sequence_length",
+            "design_pose_path",
+            "design_pose_sha256",
+            "status"
+          ],
+          "publish_path": "optimization/rescore-candidates.jsonl"
+        },
+        {
+          "artifact_id": "sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1
+        },
+        {
+          "artifact_id": "design-pose-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+          "kind": "pdb",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-rescore-esmfold2",
+      "adapter_id": "esmfold2-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the five-seed ESMFold2 uniform rescore.",
+      "depends_on": [
+        "optimize",
+        "stage-msa"
+      ],
+      "inputs": [
+        "optimize:rescore-candidates",
+        "stage-msa:target-msa-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "esmfold2-rescore",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 5,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "optimize",
+          "artifact_id": "rescore-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-rescore-esmfold2-fast",
+      "adapter_id": "esmfold2-fast-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the five-seed ESMFold2-Fast uniform rescore.",
+      "depends_on": [
+        "optimize"
+      ],
+      "inputs": [
+        "optimize:rescore-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "esmfold2-fast-rescore",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 5,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "optimize",
+          "artifact_id": "rescore-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "cofold-rescore-protenix-v2",
+      "adapter_id": "protenix-v2-predictor",
+      "required_role": "cofold-predictor",
+      "description": "Run the five-seed Protenix v2 uniform rescore.",
+      "depends_on": [
+        "optimize",
+        "stage-msa"
+      ],
+      "inputs": [
+        "optimize:rescore-candidates",
+        "stage-msa:target-msa-manifest"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "protenix-v2-rescore",
+          "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+          "kind": "jsonl",
+          "minimum_count": 1,
+          "smoke_minimum_count": 1,
+          "records_per_count": 5,
+          "required_fields": [
+            "target_id",
+            "target_sha256",
+            "candidate_id",
+            "predictor",
+            "model_revision",
+            "seed",
+            "phase",
+            "sequence_sha256",
+            "design_pose_sha256",
+            "status"
+          ]
+        }
+      ],
+      "fanout": {
+        "count_from": {
+          "stage_id": "optimize",
+          "artifact_id": "rescore-candidates",
+          "value": "records"
+        }
+      },
+      "mode": "smoke_scale",
+      "timeout_minutes": 720,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "uniform-rescore",
+      "adapter_id": "uniform-rescore-reducer",
+      "required_role": "ensemble-reducer",
+      "description": "Verify the exact predictor-seed matrix and write the normalized observation table.",
+      "depends_on": [
+        "control-calibration",
+        "cofold-rescore-esmfold2",
+        "cofold-rescore-esmfold2-fast",
+        "cofold-rescore-protenix-v2"
+      ],
+      "inputs": [
+        "cofold-rescore-esmfold2:esmfold2-rescore",
+        "cofold-rescore-esmfold2-fast:esmfold2-fast-rescore",
+        "cofold-rescore-protenix-v2:protenix-v2-rescore",
+        "control-calibration:control-observations"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "uniform-observations",
+          "path_template": "{{attempt_dir}}/{{phase}}/uniform-observations.jsonl",
+          "kind": "jsonl",
+          "schema_path": "schemas/cofold-observation.schema.json",
+          "minimum_count": 1,
+          "required_fields": [
+            "target_id",
+            "candidate_id",
+            "predictor",
+            "seed",
+            "phase",
+            "ipsae_min",
+            "sc_dockq",
+            "status"
+          ],
+          "publish_path": "scores/uniform-observations.jsonl"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 240,
+      "heartbeat_seconds": 120
+    },
+    {
+      "stage_id": "final-rank",
+      "adapter_id": "portfolio-ranker",
+      "required_role": "portfolio-selector",
+      "description": "Normalize each predictor, apply the 4:1 score, enforce controls, and select the generator-balanced portfolio.",
+      "depends_on": [
+        "uniform-rescore",
+        "optimize"
+      ],
+      "inputs": [
+        "uniform-rescore:uniform-observations",
+        "optimize:rescore-candidates"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "ranked-portfolio",
+          "path_template": "{{attempt_dir}}/{{phase}}/ranked-candidates.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "ok",
+            "controls",
+            "portfolio",
+            "ranked_candidates"
+          ],
+          "publish_path": "scores/ranked-candidates.json"
+        },
+        {
+          "artifact_id": "final-sequence-files",
+          "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "kind": "fasta",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "render-structure-pictures",
+      "adapter_id": "structure-picture-renderer",
+      "required_role": "renderer",
+      "description": "Render the final-ranked predicted complexes as overview and interface-closeup pictures.",
+      "depends_on": [
+        "final-rank",
+        "uniform-rescore"
+      ],
+      "inputs": [
+        "final-rank:ranked-portfolio",
+        "uniform-rescore:uniform-observations"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "structure-picture-manifest",
+          "artifact_type": "structure-picture-manifest",
+          "path_template": "{{attempt_dir}}/{{phase}}/pictures/manifest.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "renderer",
+            "image_count",
+            "records"
+          ],
+          "publish_path": "pictures/manifest.json"
+        },
+        {
+          "artifact_id": "structure-picture-index",
+          "artifact_type": "structure-picture-index",
+          "path_template": "{{attempt_dir}}/{{phase}}/pictures/index.html",
+          "kind": "file",
+          "minimum_count": 1,
+          "publish_path": "pictures/index.html"
+        },
+        {
+          "artifact_id": "structure-picture-archive",
+          "artifact_type": "structure-picture-archive",
+          "path_template": "{{attempt_dir}}/{{phase}}/pictures/structure-pictures.zip",
+          "kind": "file",
+          "minimum_count": 1,
+          "publish_path": "pictures/structure-pictures.zip"
+        },
+        {
+          "artifact_id": "structure-pictures",
+          "artifact_type": "structure-pictures",
+          "path_template": "{{attempt_dir}}/{{phase}}/pictures/images/*.png",
+          "kind": "image",
+          "minimum_count": 2
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "output-check",
+      "adapter_id": "output-validator",
+      "required_role": "output-validator",
+      "description": "Verify receipts, output hashes, stage completion, score coverage, and selected-candidate paths.",
+      "depends_on": [
+        "final-rank",
+        "score-screen",
+        "uniform-rescore",
+        "render-structure-pictures"
+      ],
+      "inputs": [
+        "final-rank:ranked-portfolio",
+        "score-screen:screen-score-table",
+        "uniform-rescore:uniform-observations",
+        "render-structure-pictures:structure-picture-manifest",
+        "stage-receipts"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "output-check",
+          "path_template": "{{attempt_dir}}/{{phase}}/output-check.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "ok",
+            "run_fingerprint",
+            "stage_count",
+            "selected_count"
+          ],
+          "publish_path": "validation/output-check.json"
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    },
+    {
+      "stage_id": "render-viewer",
+      "adapter_id": "viewer-renderer",
+      "required_role": "renderer",
+      "description": "Build viewer scripts and render thumbnails for ranked designs.",
+      "depends_on": [
+        "output-check"
+      ],
+      "inputs": [
+        "output-check:output-check"
+      ],
+      "outputs": [
+        {
+          "artifact_id": "viewer-manifest",
+          "artifact_type": "viewer-manifest",
+          "path_template": "{{attempt_dir}}/{{phase}}/viewer/manifest.json",
+          "kind": "json",
+          "minimum_count": 1,
+          "required_fields": [
+            "schema_version",
+            "run_id",
+            "campaign_id",
+            "designs",
+            "how_to_open",
+            "warnings"
+          ],
+          "publish_path": "viewer/manifest.json"
+        },
+        {
+          "artifact_id": "viewer-thumbnails",
+          "artifact_type": "viewer-images",
+          "path_template": "{{attempt_dir}}/{{phase}}/viewer/thumbnails/*.png",
+          "kind": "image",
+          "minimum_count": 1
+        }
+      ],
+      "fanout": {},
+      "mode": "single",
+      "timeout_minutes": 30,
+      "heartbeat_seconds": 60
+    }
+  ],
+  "campaign_overrides": {
+    "selection": {
+      "minimum_generators": 2
+    },
+    "optimization": {
+      "early_stop_margin": 0.029008,
+      "operators": [
+        "inverse-folding-resample",
+        "point-mutation"
+      ],
+      "adapter_policies": [
+        {
+          "adapter_id": "optimization-controller",
+          "operations": [
+            "inverse-folding-resample",
+            "point-mutation"
+          ],
+          "parameter_ranges": {
+            "sampling_temperature": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 1.0
+            },
+            "mutation_count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20
+            }
+          }
+        }
+      ]
+    }
+  }
+}

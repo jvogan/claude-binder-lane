@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "campaign-scale-single-arm",
+        "purpose": "Run RFdiffusion3, ProteinMPNN, and ESMFold2-Fast scoring at a scale that can select 100 candidate-level designs.",
+        "claim_level": "candidate",
+        "production_scoring": true,
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 20,
+        "minimum_scored_candidates_per_generator": 100,
+        "generators": [
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 20,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 5,
+        "designers": [
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion",
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          }
+        ]
+      }
+    },
+    "campaign_overrides": {
+      "filters": {
+        "metric_sources": {
+          "model_likelihood": {
+            "path": "artifacts/candidates/candidate-manifest.jsonl",
+            "produced_by": "normalize-candidates:normalized-candidates",
+            "description": "The designed-residue ProteinMPNN score, the mean negative log-likelihood the designer reports as score= on each FASTA header. The normalize-candidates stage copies it onto every candidate row as value."
+          }
+        }
+      },
+      "selection": {
+        "final_count": 100,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0,
+        "disabled_caps": {
+          "maximum_fraction_per_generator": "The profile configures one enabled generator, rfdiffusion.",
+          "max_structure_method_fraction": "The profile configures one structural method, rfdiffusion.",
+          "max_seq_method_fraction": "The profile configures one sequence-design method, proteinmpnn.",
+          "minimum_structure_methods": "The profile configures one structural method, rfdiffusion."
+        },
+        "diversity": {
+          "min_levenshtein_distance": 6,
+          "max_root_backbone_fraction": 0.05,
+          "max_tm90_cluster_fraction": 0.1,
+          "max_structure_method_fraction": 1.0,
+          "max_seq_method_fraction": 1.0,
+          "minimum_structure_methods": 1
+        }
+      }
+    },
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 20
+        }
+      }
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "control-builder",
+        "timing_basis": {
+          "startup_seconds": 0,
+          "item_seconds": {
+            "minimum": 214.6,
+            "maximum": 337.1
+          },
+          "machine": "GPU-H100",
+          "measurement_unit": "fold",
+          "source": "cost-per-N timing measurement taken 2026-08-23"
+        }
+      }
+    ]
+  }
+}

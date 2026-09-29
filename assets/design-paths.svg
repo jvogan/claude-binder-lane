@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" role="img" aria-labelledby="title description">
+<title id="title">Two ways to design, one way to check</title>
+<desc id="description">Two design paths feed one check. On the two-step path, a backbone generator (RFdiffusion, RFdiffusion3, PXDesign, or Genie3, which gives C-alpha output and needs a compatible sequence designer) comes first and a sequence designer (ProteinMPNN, SolubleMPNN, LigandMPNN, or SolubleCaliby) follows. On the joint path, one tool designs structure and sequence together (BoltzGen, FreeBindCraft, BindCraft2, or Proteina-Complexa). A campaign can use either path or combine them. Both paths feed co-folding with the target (ESMFold2, ESMFold2-Fast, Boltz Cloud, local Boltz-2, Chai-1, OpenFold3, AlphaFold2-Multimer-v3, or Protenix v2), then scoring and ranking with DockQ, ipSAE, the selected ranking metric, controls, and filters.</desc>
+<rect x="0" y="0" width="1000" height="640" fill="#faf9f5"/>
+<text x="48" y="58" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#30302b"><tspan x="48" dy="0">Two ways to design, one way to check</tspan></text>
+<rect x="48" y="82" width="560" height="280" rx="18" fill="#f3ead6"/>
+<rect x="632" y="82" width="320" height="280" rx="18" fill="#e9e7ee"/>
+<text x="70" y="126" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="70" dy="0">Two-step design</tspan></text>
+<text x="654" y="126" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="654" dy="0">Joint design</tspan></text>
+<text x="70" y="158" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="70" dy="0">Backbone generators</tspan></text>
+<text x="326.73" y="158" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="326.73" dy="0">Sequence designers</tspan></text>
+<rect x="70" y="170" width="126.73" height="32" rx="13" fill="#faf9f5"/>
+<text x="133.36" y="192.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="133.36" dy="0">RFdiffusion</tspan></text>
+<rect x="70" y="208" width="126.73" height="32" rx="13" fill="#faf9f5"/>
+<text x="133.36" y="230.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="133.36" dy="0">RFdiffusion3</tspan></text>
+<rect x="70" y="246" width="126.73" height="32" rx="13" fill="#faf9f5"/>
+<text x="133.36" y="268.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="133.36" dy="0">PXDesign</tspan></text>
+<rect x="70" y="284" width="126.73" height="32" rx="13" fill="#faf9f5"/>
+<text x="133.36" y="306.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="133.36" dy="0">Genie3</tspan></text>
+<rect x="326.73" y="170" width="139.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="396.25" y="192.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="396.25" dy="0">ProteinMPNN</tspan></text>
+<rect x="326.73" y="208" width="139.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="396.25" y="230.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="396.25" dy="0">SolubleMPNN</tspan></text>
+<rect x="326.73" y="246" width="139.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="396.25" y="268.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="396.25" dy="0">LigandMPNN</tspan></text>
+<rect x="326.73" y="284" width="139.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="396.25" y="306.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="396.25" dy="0">SolubleCaliby</tspan></text>
+<polygon points="314.73,243 298.73,254 298.73,232" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M206.73 243 L305.13 243" fill="none" stroke="#8b897e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="70" y="346" font-family="Arial, Helvetica, sans-serif" font-size="18"><tspan x="70" dy="0" font-weight="700" fill="#30302b">Genie3:</tspan><tspan dx="5" fill="#56564f">C-alpha output, needs a compatible sequence designer</tspan></text>
+<text x="654" y="158" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#56564f"><tspan x="654" dy="0">Structure and sequence together</tspan></text>
+<rect x="654" y="170" width="180.08" height="32" rx="13" fill="#faf9f5"/>
+<text x="744.04" y="192.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="744.04" dy="0">BoltzGen</tspan></text>
+<rect x="654" y="208" width="180.08" height="32" rx="13" fill="#faf9f5"/>
+<text x="744.04" y="230.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="744.04" dy="0">FreeBindCraft</tspan></text>
+<rect x="654" y="246" width="180.08" height="32" rx="13" fill="#faf9f5"/>
+<text x="744.04" y="268.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="744.04" dy="0">BindCraft2</tspan></text>
+<rect x="654" y="284" width="180.08" height="32" rx="13" fill="#faf9f5"/>
+<text x="744.04" y="306.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="744.04" dy="0">Proteina-Complexa</tspan></text>
+<rect x="48" y="422" width="560" height="188" rx="18" fill="#cfdcf3"/>
+<rect x="652" y="422" width="300" height="188" rx="18" fill="#5c6487"/>
+<text x="70" y="466" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#30302b"><tspan x="70" dy="0">Co-fold with the target</tspan></text>
+<text x="674" y="466" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#faf9f5"><tspan x="674" dy="0">Score and rank</tspan></text>
+<rect x="70" y="482" width="110.04" height="32" rx="13" fill="#faf9f5"/>
+<text x="125.02" y="504.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="125.02" dy="0">ESMFold2</tspan></text>
+<rect x="186.04" y="482" width="151.04" height="32" rx="13" fill="#faf9f5"/>
+<text x="261.56" y="504.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="261.56" dy="0">ESMFold2-Fast</tspan></text>
+<rect x="343.07" y="482" width="118.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="402.1" y="504.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="402.1" dy="0">Boltz Cloud</tspan></text>
+<rect x="70" y="520" width="124.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="132.02" y="542.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="132.02" dy="0">local Boltz-2</tspan></text>
+<rect x="200.05" y="520" width="79.03" height="32" rx="13" fill="#faf9f5"/>
+<text x="239.56" y="542.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="239.56" dy="0">Chai-1</tspan></text>
+<rect x="285.07" y="520" width="115.06" height="32" rx="13" fill="#faf9f5"/>
+<text x="342.6" y="542.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="342.6" dy="0">OpenFold3</tspan></text>
+<rect x="70" y="558" width="217.07" height="32" rx="13" fill="#faf9f5"/>
+<text x="178.54" y="580.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="178.54" dy="0">AlphaFold2-Multimer-v3</tspan></text>
+<rect x="293.07" y="558" width="116.05" height="32" rx="13" fill="#faf9f5"/>
+<text x="351.1" y="580.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="351.1" dy="0">Protenix v2</tspan></text>
+<rect x="674" y="482" width="81.01" height="32" rx="13" fill="#e6edf8"/>
+<text x="714.51" y="504.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="714.51" dy="0">DockQ</tspan></text>
+<rect x="761.01" y="482" width="76.03" height="32" rx="13" fill="#e6edf8"/>
+<text x="799.03" y="504.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="799.03" dy="0">ipSAE</tspan></text>
+<rect x="674" y="520" width="214.09" height="32" rx="13" fill="#e6edf8"/>
+<text x="781.05" y="542.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="781.05" dy="0">Selected ranking metric</tspan></text>
+<rect x="674" y="558" width="93.03" height="32" rx="13" fill="#e6edf8"/>
+<text x="720.51" y="580.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="720.51" dy="0">Controls</tspan></text>
+<rect x="773.03" y="558" width="75" height="32" rx="13" fill="#e6edf8"/>
+<text x="810.53" y="580.48" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#30302b"><tspan x="810.53" dy="0">Filters</tspan></text>
+<polygon points="643,516 623,529 623,503" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M615 516 L631 516" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="200,413 187,393 213,393" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M200 369 L200 401" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="545,413 532,393 558,393" fill="#8b897e" stroke="#8b897e" stroke-width="4" stroke-linejoin="round"/>
+<path d="M722 369 L722 377.5 Q722 386 713.5 386 L552.5 386 Q545 386 545 393.5 L545 401" fill="none" stroke="#8b897e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="398" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle" fill="#56564f"><tspan x="372" dy="0">Use either path or combine them</tspan></text>
+</svg>

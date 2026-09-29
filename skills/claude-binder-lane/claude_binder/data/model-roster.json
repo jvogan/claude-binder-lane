@@ -1,0 +1,481 @@
+{
+  "schema_version": 1,
+  "ledger_type": "claude-binder-model-roster",
+  "evidence_root": {
+    "runtime_key": "model_roster_evidence_root",
+    "path_policy": "row output_paths and sequence_paths are relative to this runtime directory"
+  },
+  "qualification": {
+    "mode": "inherited",
+    "status": "UNVERIFIABLE_TARGET_NOT_SHIPPED",
+    "scope": "historical project deployments named by the roster rows",
+    "source": "end-to-end canary record",
+    "inherited": true,
+    "reason": "The structure bytes used for these qualification records are absent from the package. The roster cannot authorize a materialized run until every enabled arm is requalified against shipped target bytes.",
+    "control_separation": {
+      "schema_version": 1,
+      "statistic": "hedges_g",
+      "metric": "ipsae_min",
+      "direction": "higher_positive",
+      "default_threshold": null,
+      "threshold_policy": "A numeric threshold is optional because one calibration target does not support a confident universal default. Missing separation remains blocking for production scoring.",
+      "qualified_at": "2026-08-24",
+      "status": "measured",
+      "measurements": [
+        {
+          "arm": "ef2fast",
+          "predictor_id": "esmfold2-fast",
+          "target_id": "primary-target",
+          "target_name": "PD-L1",
+          "statistic": "hedges_g",
+          "metric": "ipsae_min",
+          "direction": "higher_positive",
+          "qualified_at": "2026-08-24",
+          "positive_control_ids": [
+            "4zqk-pd1-pdl1-known-same-site"
+          ],
+          "negative_control_ids": [
+            "barnase-pdl1-matched-wrong-pair",
+            "shuffled-pd1-pdl1-sequence-decoy"
+          ],
+          "inputs": {
+            "positive_controls": [
+              {
+                "id": "4zqk-pd1-pdl1-known-same-site",
+                "role": "known-same-site-complex",
+                "values": [
+                  0.597157,
+                  0.589425,
+                  0.585251,
+                  0.566068,
+                  0.591276
+                ],
+                "source": "4ZQK PD-1 against full-length PD-L1",
+                "provenance": {
+                  "observations": [
+                    {
+                      "seed": 0,
+                      "value": 0.597157,
+                      "fold_directory": "runs/pdl1-positive-repaired/repaired_4zqk_pd1-s0",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 1,
+                      "value": 0.589425,
+                      "fold_directory": "runs/pdl1-positive-repaired/repaired_4zqk_pd1-s1",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 2,
+                      "value": 0.585251,
+                      "fold_directory": "runs/pdl1-positive-repaired/repaired_4zqk_pd1-s2",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 3,
+                      "value": 0.566068,
+                      "fold_directory": "runs/pdl1-positive-repaired/repaired_4zqk_pd1-s3",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 4,
+                      "value": 0.591276,
+                      "fold_directory": "runs/pdl1-positive-repaired/repaired_4zqk_pd1-s4",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    }
+                  ]
+                }
+              }
+            ],
+            "negative_controls": [
+              {
+                "id": "barnase-pdl1-matched-wrong-pair",
+                "role": "matched-wrong-pair",
+                "values": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "source": "Barnase against full-length PD-L1",
+                "provenance": {
+                  "observations": [
+                    {
+                      "seed": 0,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_noninteract_barnase_pdl1-s0",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 1,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_noninteract_barnase_pdl1-s1",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 2,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_noninteract_barnase_pdl1-s2",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 3,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_noninteract_barnase_pdl1-s3",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 4,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_noninteract_barnase_pdl1-s4",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "shuffled-pd1-pdl1-sequence-decoy",
+                "role": "sequence-decoy",
+                "values": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "source": "Shuffled PD-1 against PD-L1",
+                "provenance": {
+                  "observations": [
+                    {
+                      "seed": 0,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_shuffled_pd1repaired_seed20260823-s0",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 1,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_shuffled_pd1repaired_seed20260823-s1",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 2,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_shuffled_pd1repaired_seed20260823-s2",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 3,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_shuffled_pd1repaired_seed20260823-s3",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    },
+                    {
+                      "seed": 4,
+                      "value": 0.0,
+                      "fold_directory": "runs/pdl1-negative-ontarget/negative_shuffled_pd1repaired_seed20260823-s4",
+                      "scorer": "historical external scorer; source not bundled",
+                      "metric": "ipsae_min",
+                      "aligned_error_cutoff_angstrom": 10.0,
+                      "measured_on": "2026-08-24"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "threshold": null,
+          "threshold_source": "no default threshold is configured",
+          "threshold_statistic": "hedges_g",
+          "provenance": {
+            "scorer": "historical external scorer; source not bundled",
+            "metric": "ipsae_min",
+            "aligned_error_cutoff_angstrom": 10.0,
+            "measured_on": "2026-08-24",
+            "evidence_root": "work volume"
+          },
+          "status": "measured",
+          "value": 83.87733815314817,
+          "positive_mean": 0.5858354,
+          "negative_mean": 0.0,
+          "positive_sample_sd": 0.011850692059960049,
+          "negative_sample_sd": 0.0,
+          "pooled_sample_sd": 0.0065735812110646035,
+          "cohen_d": 89.11967178771994,
+          "small_sample_correction": 0.9411764705882353,
+          "positive_n": 5,
+          "negative_n": 10,
+          "positive_values": [
+            0.597157,
+            0.589425,
+            0.585251,
+            0.566068,
+            0.591276
+          ],
+          "negative_values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "floor_robust_separation": {
+            "statistic": "floor_robust_separation",
+            "metric": "ipsae_min",
+            "direction": "higher_positive",
+            "positive_minimum": 0.566068,
+            "positive_maximum": 0.597157,
+            "negative_minimum": 0.0,
+            "negative_maximum": 0.0,
+            "groups_overlap": false,
+            "inversion_count": 0,
+            "tie_count": 0,
+            "comparison_count": 50,
+            "strictly_separated": true,
+            "margin": 0.566068,
+            "metric_floor": 0.0,
+            "constant_groups": [
+              "negative"
+            ],
+            "groups_at_metric_floor": [
+              "negative"
+            ],
+            "floor_effect_detected": true,
+            "standardized_difference_inflated": true,
+            "standardized_difference_warning": "The negative control group is constant or entirely at the ipsae_min floor. The standardized difference is inflated and must not be read as an effect size.",
+            "noise_normalizer": {
+              "name": "distinct_seed_sample_sd",
+              "value": 0.029008,
+              "source": "Seed-noise measurement of 2026-08-24, taken once on one target and one arm. One measurement on one arm is a provisional normalizer; measure it on your own target and arm before you rely on it."
+            },
+            "margin_in_noise_units": 19.514202978488694
+          },
+          "floor_effect_detected": true,
+          "standardized_difference_inflated": true,
+          "standardized_difference_warning": "The negative control group is constant or entirely at the ipsae_min floor. The standardized difference is inflated and must not be read as an effect size."
+        }
+      ]
+    }
+  },
+  "models": [
+    {
+      "adapter_id": "rfdiffusion-generator",
+      "model": "RFdiffusion3",
+      "status": "UNVERIFIABLE_TARGET_NOT_SHIPPED",
+      "image_id": "not_applicable: execution route does not produce a Modal image digest",
+      "deployment_id": "fal:unconfigured-rfdiffusion3",
+      "environment_identity": "fal-rf3-binder-v1:GPU-H100:1:python-3.12:rc-foundry-rfd3:09dd49945f0e6142:torch-2.13.0+cu130",
+      "source_revision": "rc-foundry 0.2.0+app-09dd49945f0e6142",
+      "target_id": "primary-target",
+      "unshipped_qualification_target_structure_sha256": "2b19c1671fac6702fdcca771f772fd2695e75f9e24607d644889530d90de62a2",
+      "gpu_type": "GPU-H100 (cuda NVIDIA H100 80GB HBM3)",
+      "output_shape": "mmCIF, chain A designed binder and chain B fixed target",
+      "n_designs": 3,
+      "exit_code": 0,
+      "wall_clock_s": 153.577,
+      "runner_wall_s": 98.32,
+      "s/design": 51.1923,
+      "runner_s/design": 32.7733,
+      "$/design": 0.064,
+      "cost_basis": "s/design and $/design use client wall seconds; runner_s/design uses provider-reported runner wall seconds. The cost uses the reference GPU-H100 rate of $0.00125 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. That rate was read from one provider usage export and is not a Modal rate. fal bills runner uptime, which client wall brackets from above.",
+      "weights_sha256": "9b3f85923e0d51e9453e15cdd2f8c666e7ce096a60577f57d11bbc54ae6d67c1",
+      "checkpoint_bytes": 2690316669,
+      "weights_match_upstream": true,
+      "upstream_weights_sha256": "9b3f85923e0d51e9453e15cdd2f8c666e7ce096a60577f57d11bbc54ae6d67c1",
+      "weights_upstream_source": "https://files.ipd.uw.edu/pub/rfd3/rfd3_foundry_2025_12_01_remapped.ckpt. The deployed application downloads that URL, hashes the file and refuses to start unless the digest matches, at fal_rfdiffusion3_app.py:48-106 and :301-303. The digest below is therefore the digest of the publisher's bytes, verified on the deployment.",
+      "output_paths": [
+        "canary/rf3/structures/design-spec_pdl1_binder_0_model_0.cif",
+        "canary/rf3/structures/design-spec_pdl1_binder_0_model_1.cif",
+        "canary/rf3/structures/design-spec_pdl1_binder_0_model_2.cif"
+      ],
+      "output_sha256": [
+        "7f87db2b085795b3ea87ee4c721a2f3e33ac69948175c4eae255dd61b5822c2f",
+        "6cfeb7c3251e40e8e83c02ee0d55a82da1f76c530118ba66aca30e36392a15d2",
+        "57f654b3ddc86e52e274199b11917f292f854d6fcfeab189cd5f8f8d2a39f42b"
+      ],
+      "output_residue_count": 187,
+      "flags_match_production": true,
+      "production_flags_evidence": "A provider canary measured the production configuration on GPU-H100 with max_concurrency 1 and keep_alive 0. Configure and qualify an application that your account controls before dispatch.",
+      "container_build": true,
+      "container_build_evidence": "The toolcheck probe reached the built environment and reported its device, torch build and CUDA runtime: torch 2.13.0+cu130, CUDA 13.0, cuDNN 92000, on NVIDIA H100 80GB HBM3.",
+      "package_imports": true,
+      "package_imports_evidence": "The same probe imported torch, resolved the CUDA device and loaded the checkpoint before reporting its digest and byte count.",
+      "sequence_adapter_consumed": true,
+      "sequence_output_count": 3,
+      "sequence_paths": [
+        "canary/sequences/canary-bb0.binder.fasta",
+        "canary/sequences/canary-bb1.binder.fasta",
+        "canary/sequences/canary-bb2.binder.fasta"
+      ],
+      "measured_at": "2026-08-24T00:38:46Z",
+      "validated_at": "2026-08-24T00:38:46Z",
+      "measurement_source": "End-to-end canary run on 2026-08-23 against the campaign's primary target. Three backbones ran in one batch at seed 3 and exited successfully. The receipt is canary/rf3/receipt.json.",
+      "todo": [
+        "Set runtime.model_roster_evidence_root to the directory that contains the preserved canary evidence before runtime-check."
+      ]
+    },
+    {
+      "adapter_id": "proteinmpnn-designer",
+      "model": "ProteinMPNN v_48_020",
+      "status": "UNVERIFIABLE_TARGET_NOT_SHIPPED",
+      "image_id": "not_applicable: execution route does not produce a Modal image digest",
+      "deployment_id": "fal:unconfigured-proteinmpnn",
+      "environment_identity": "fal-mpnn-binder-v1:M:0:python-3.11:torch-2.6.0:proteinmpnn-8907e6671bfbfc92303b5f79c4b5e6ce47cdef57:torch-2.6.0+cu124",
+      "source_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57+app-17c8c66751229d8e",
+      "target_id": "primary-target",
+      "unshipped_qualification_target_structure_sha256": "2b19c1671fac6702fdcca771f772fd2695e75f9e24607d644889530d90de62a2",
+      "gpu_type": "none, the deployment runs on a fal M machine and every receipt reports device 'cpu'",
+      "output_shape": "FASTA, one designed binder sequence per backbone",
+      "n_designs": 3,
+      "exit_code": 0,
+      "wall_clock_s": 184.658,
+      "runner_wall_s": 12.459,
+      "s/design": 61.5527,
+      "runner_s/design": 4.153,
+      "$/design": 0.004309,
+      "cost_basis": "s/design and $/design use client wall seconds; runner_s/design uses provider-reported runner wall seconds. The cost uses the reference M rate of $0.00007 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. That rate was read from one provider usage export and is not a Modal rate.",
+      "weights_sha256": "c9cb4a671d79604111231f8dbfc7c590e06f1197453b7a6854ac6661a642f5bd",
+      "checkpoint_bytes": 6681301,
+      "weights_match_upstream": true,
+      "upstream_weights_sha256": "c9cb4a671d79604111231f8dbfc7c590e06f1197453b7a6854ac6661a642f5bd",
+      "weights_upstream_source": "https://raw.githubusercontent.com/dauparas/ProteinMPNN/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/vanilla_model_weights/v_48_020.pt. The deployed application downloads that URL, hashes the file and refuses it unless the digest matches, at fal_mpnn_app.py:39-103 and :224. The digest is therefore the digest of the publisher's bytes at the pinned commit, verified on the deployment. The publisher attests no digest of its own. That check was recorded once in a note that does not ship with this package.",
+      "sequence_paths": [
+        "canary/sequences/canary-bb0.binder.fasta",
+        "canary/sequences/canary-bb1.binder.fasta",
+        "canary/sequences/canary-bb2.binder.fasta"
+      ],
+      "output_sha256": [
+        "1a718137940b43ad56998c60cbe29970818325c30a38f6a312ef49bee0f09c6e",
+        "72de1f93237c8ee6acdfc95c19d523be39496b9a0d4573cec0d586cafa9b85f9",
+        "5956b9e1c5c17f4abf0f931598240fdee49346b3e77000f06362b355daba01d3"
+      ],
+      "flags_match_production": true,
+      "production_flags_evidence": "A provider canary measured the configuration on an M machine with max_concurrency 1 and keep_alive 0. Every call used --design-chain A, --model-name v_48_020, and --sampling-temp 0.1. Configure and qualify an application that your account controls before dispatch.",
+      "container_build": true,
+      "container_build_evidence": "The toolcheck probe reached the built environment and reported device cpu and torch 2.6.0+cu124.",
+      "package_imports": true,
+      "package_imports_evidence": "The same probe imported torch and loaded the checkpoint before reporting its digest and byte count.",
+      "sequence_adapter_consumed": true,
+      "sequence_output_count": 3,
+      "downstream_consumer": "ESMFold2-Fast folded these exact three sequences against the campaign target in the same canary.",
+      "measured_at": "2026-08-24T00:42:18Z",
+      "validated_at": "2026-08-24T00:42:18Z",
+      "measurement_source": "End-to-end canary run on 2026-08-23. One sequence designed on each of the three canary backbones at seed 3 and sampling temperature 0.1, three calls, each exit 0. The receipts are canary/mpnn/bb0..bb2/receipt.json.",
+      "todo": [
+        "Set runtime.model_roster_evidence_root to the directory that contains the preserved canary evidence before runtime-check."
+      ]
+    },
+    {
+      "adapter_id": "esmfold2-fast-predictor",
+      "model": "ESMFold2-Fast",
+      "status": "UNVERIFIABLE_TARGET_NOT_SHIPPED",
+      "image_id": "not_applicable: execution route does not produce a Modal image digest",
+      "deployment_id": "fal:unconfigured-esmfold2-fast",
+      "environment_identity": "ef2fast-v1:GPU-H100:1:py3.12:71d7fdd1ca21ebb2",
+      "target_id": "primary-target",
+      "unshipped_qualification_target_structure_sha256": "2b19c1671fac6702fdcca771f772fd2695e75f9e24607d644889530d90de62a2",
+      "gpu_type": "GPU-H100 (NVIDIA H100 80GB HBM3)",
+      "output_shape": "mmCIF, chain A binder and chain B target, with PAE and pLDDT arrays",
+      "n_designs": 3,
+      "exit_code": 0,
+      "wall_clock_s": 1477.761,
+      "runner_wall_s": 1355.234,
+      "s/design": 492.587,
+      "runner_s/design": 451.7447,
+      "$/design": 0.6157,
+      "cost_basis": "s/design and $/design use client wall seconds; runner_s/design uses provider-reported runner wall seconds. The cost uses the reference GPU-H100 rate of $0.00125 per second from skills/claude-binder-lane/reference-gpu-rates-2026-08-23.json. That rate was read from one provider usage export and is not a Modal rate. This excludes the failed first attempt recorded below.",
+      "weights_sha256": "not_applicable: the deployed application resolves its weights as HuggingFace repository snapshots at pinned revisions and reports no digest for any weight file. RepoManifest carries repo, revision, bytes_on_disk and file_count and no digest field, and the only sha256 the application reports is for ccd.pkl, a chemical component dictionary rather than model weights.",
+      "weights_revision": "biohub/ESMC-6B@45b0fa5d7fb06faefbd5e3b89bdcef35d564e79a; biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12",
+      "weights_revision_source": "resolved_snapshots in each fold response, which the application writes from the snapshot it actually loaded. The same two pins appear in the profile's model_revision for this adapter.",
+      "output_paths": [
+        "canary/ef2fold/canary-bb0/predicted.cif",
+        "canary/ef2fold/canary-bb1/predicted.cif",
+        "canary/ef2fold/canary-bb2/predicted.cif"
+      ],
+      "output_sha256": [
+        "a7b61097b1801db555f176774d160fe9a480187617187bd3321c74f44a044462",
+        "2a3c275885061dc085b7f4af45702f3103d6a24a2cd8b7c3c76634682d6e007c",
+        "a666de9c83d6d4e751d2248fc5be0c20be12398dea7aac8434ea476b33d87586"
+      ],
+      "output_residue_count": 187,
+      "flags_match_production": true,
+      "production_flags_evidence": "A provider canary measured the configuration on GPU-H100 with max_concurrency 1 and keep_alive 300. The adapter owns num_loops, num_sampling_steps, and num_diffusion_samples at module scope. Configure and qualify an application that your account controls before dispatch.",
+      "container_build": true,
+      "container_build_evidence": "The preflight probe reached the built environment and reported cuda_visible true, the data mount writable, the venv marker present and uv 0.9.22. Each fold response then reports the worker environment it ran in: {\"gpu_count\": 1, \"python_version\": \"3.12.12\", \"torch_cuda_version\": \"12.6\", \"torch_version\": \"2.7.1+cu126\"}",
+      "package_imports": true,
+      "package_imports_evidence": "Each fold response reports the transformers build it imported, {\"commit_id\": \"3a8956fb4d4ea16b0ec8e71deef2c2909b6a5cbf\", \"url\": \"https://github.com/Biohub/transformers.git\", \"version\": \"4.57.6\"}, and the adapter manifest it loaded, sha256 7aa63a9a2f05a84361c0f554fc9a3cb87db5220f88ab240839f997bad00be236.",
+      "sequence_adapter_consumed": true,
+      "sequence_output_count": 3,
+      "sequence_paths": [
+        "canary/sequences/canary-bb0.binder.fasta",
+        "canary/sequences/canary-bb1.binder.fasta",
+        "canary/sequences/canary-bb2.binder.fasta"
+      ],
+      "measured_at": "2026-08-24T01:37:19Z",
+      "validated_at": "2026-08-24T01:37:19Z",
+      "measurement_source": "End-to-end canary run on 2026-08-23. Each of the three ProteinMPNN sequences was folded against the campaign's primary target at seed 0, exit 0. The responses are canary/ef2fold/canary-bb*/response.json.",
+      "todo": [
+        "Set runtime.model_roster_evidence_root to the directory that contains the preserved canary evidence before runtime-check.",
+        "Record a digest of the ESMFold2-Fast weight files as the deployment holds them. The application cannot report one today: it resolves biohub/ESMFold2-Fast and biohub/ESMC-6B as HuggingFace snapshots and its RepoManifest carries no digest field. Obtaining one needs a new endpoint that hashes the resolved snapshot, and deploying it forces a full environment rebuild.",
+        "Read the settled billed seconds for this canary from the fal billing page. The $/design here is derived from client wall seconds at the measured rate, not from a billing receipt."
+      ],
+      "failed_attempts": [
+        {
+          "candidate": "canary-bb0",
+          "error": "WorkerFailedError",
+          "message": "/data/claude-binder/ef2fast/envs/py3.12-71d7fdd1ca21ebb2/bin/python exceeded 1700 seconds",
+          "elapsed_seconds": 1709.4
+        }
+      ],
+      "exit_code_note": "exit_code 0 is the code of the attempt that produced each recorded output. 1 earlier attempt(s) failed first and are recorded in failed_attempts. Every one was retried and the retry produced the output above."
+    }
+  ]
+}

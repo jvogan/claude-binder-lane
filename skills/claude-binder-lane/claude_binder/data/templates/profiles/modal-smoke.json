@@ -1,0 +1,746 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "gap_notes": {
+    "read_me": "load_profile() reads only base_profile and overlay, so this block is inert configuration data. It exists because adapter.schema.json sets additionalProperties:false, which forbids a comment field inside an adapter record. Every claim below cites a file and line that was read on disk. A value written __REQUIRED__ is unresolved: compose accepts it, materialize refuses it and names the JSON path.",
+    "environment_identity_format": "modal-env:<env-name>@spec_sha=<hash>. Read the exact env:<name>@<spec_sha> and its im-... image_ref from compute_details({provider:'modal', mode:'read'}) on the workspace that will run the campaign. Do not substitute a local build_env() source hash: authorization compares the workspace ledger identity. resources.container_image_digest is the schema-sanctioned home for the im-... id (adapter.schema.json).",
+    "single_image_rule": "No shipped image runs the whole lane. esmfold2_gpu pins python 3.12 and every other proteomics env is python 3.11 (esmfold2_gpu.py). proteomics_boltz_gpu is standalone because boltz[cuda] forces a conflicting CUDA set (proteomics_boltz_gpu.py). A Modal run is therefore one container per adapter group, not one container per campaign.",
+    "executor_note": "run_argv launches every adapter with shell=False and cwd=the stage attempt directory (claude_binder_lane.py, 4258). argv[0] may not be a shell (FORBIDDEN_ARGV0_BASENAMES, line 236) and an interpreter may not take an inline-code flag (INLINE_CODE_FLAGS, line 258). Compound in-image logic therefore belongs in an adapter script, as adapters.md states.",
+    "adapters": {
+      "target-preparer": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script that writes the target manifest and residue map"
+      },
+      "runtime-validator": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "nothing in the image. Base resources asked for gpu 1; this override sets gpu 0 because one Modal container cannot probe another container's image. The real per-stage gate is toolcheck_argv, which the executor runs before every stage with a 300 s ceiling (claude_binder_lane.py)."
+      },
+      "msa-builder": {
+        "status": "GAP",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "an operator decision on public egress, not a fact lookup. The adapter script exists and runs, and the colabfold-server route written above still refuses on purpose, but the reason has changed and this note was stale until 2026-09-11. The host is no longer missing: target_msa_builder.COLABFOLD_MSA_SERVER_HOST is https://api.colabfold.com, cited to ColabFold's own cf_utils.py, no CLI flag exposes host_url, and run_stage never passes one. What refuses now is consent. resolve_alignment_route maps the legacy colabfold-server source to route public-server, and build_alignment then raises SourceUnavailable with \"route public-server requires explicit --allow-public-msa consent before sending the target sequence to https://api.colabfold.com\". The flag is absent from this profile and its argparse default is False. Two routes close this, and they are not equivalent. Adding --allow-public-msa records consent to send the scientist's own target sequence to a third-party server, which four shipped profiles do deliberately: full-ensemble, current-proven-stack, provider-canary and rfdiffusion3-two-arm all carry --route public-server --allow-public-msa. Switching to --source query-only sends nothing and is what every other Modal profile does, including modal-first-run-floor, modal-platform, small-run-modal and supplied-candidates-modal, at the cost that the alignment holds the query alone and supplies no homologous sequences or evolutionary information. Both of these profiles set production_scoring false and claim no scientific evidence, so neither route is forced by what they claim. A shipped template must not record a disclosure decision on a user's behalf, so this row stays unfilled until the operator picks. The refusal lands before any GPU is allocated, which is the reason this stage sits in the graph rather than inside each arm. The local-mmseqs2 route refuses for a second missing fact, which is the database release and its location. Whichever route a campaign picks, the host it reaches also has to be declared in META[egress_domains] in envs/binder_scoring_gpu.py, because under an allowlist policy a job reaches only the merged list."
+      },
+      "control-builder": {
+        "status": "covered",
+        "environment": "esmfold2_gpu",
+        "missing": "the adapter script. It carries the predictor half of the control matrix, so it must run in the predictor's image; its scorer half is CPU work and belongs with interface-scorer."
+      },
+      "rfdiffusion-generator": {
+        "status": "covered",
+        "environment": "proteomics_rfd_diffdock_gpu",
+        "missing": "a pinned model_revision. HYDRATE fetches seven checkpoints by filename from https://files.ipd.uw.edu/pub/RFdiffusion/ and verifies only that each file is a zip (proteomics_rfd_diffdock_gpu.py). No digest is recorded, so there is nothing to pin. Resolving it means hashing the hydrated volume claude-science-rfdiffusion-weights once and recording that hash, or adding a checksum to the env file."
+      },
+      "genie3-generator": {
+        "status": "GAP",
+        "environment": "none",
+        "missing": "a built environment and an argv. The recipe ships as envs/genie3_generator_gpu.py, pinning the Genie 3 source revision and the HuggingFace weight revision, and this row's environment identity names it. Two things remain. build_env() has never run on the workspace, so the spec_sha this row carries stays __REQUIRED__. The command and parser argv stay __REQUIRED__ too, so the profile names no module. The adapter already runs `genie3 generate` with the weights directory as its working directory, which is where it writes <rootdir>/<selection>/pdbs/."
+      },
+      "proteinmpnn-designer": {
+        "status": "covered",
+        "environment": "proteomics_gpu",
+        "missing": "the adapter script. protein_mpnn_run.py uses repo-relative imports, so its adapter must change to the tool directory before it invokes that script."
+      },
+      "solublempnn-designer": {
+        "status": "covered",
+        "environment": "proteomics_gpu",
+        "missing": "the same adapter script problem as proteinmpnn-designer. Leave --model_name at its default: the repo ships soluble weights at v_48_010 and v_48_020 only, and asking for v_48_002 with --use_soluble_model errors on a missing checkpoint (solublempnn/SKILL.md)."
+      },
+      "candidate-normalizer": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script that joins lineage and verifies hashes"
+      },
+      "integrity-filter": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script. Composition and duplicate detection need no third-party tool."
+      },
+      "novelty-filter": {
+        "status": "GAP",
+        "environment": "partial",
+        "missing": "The retired structural gates require TM-align, Foldseek, and DSSP. No shipped environment has those tools or a stage that writes their per-candidate results. This profile keeps sequence novelty and model likelihood only."
+      },
+      "esmfold2-predictor": {
+        "status": "covered",
+        "environment": "esmfold2_gpu",
+        "missing": "the adapter script. ESMFold2 has no command-line entry point; the documented interface is the Python API in esmfold2/SKILL.md. The script must call model.set_kernel_backend('fused') after from_pretrained(), because the default backend is the reference path (esmfold2/SKILL.md). HF_HUB_OFFLINE=1 is baked into the image (esmfold2_gpu.py), so the weight volume claude-science-esm-cache must be hydrated before the first run."
+      },
+      "esmfold2-fast-predictor": {
+        "status": "covered",
+        "environment": "esmfold2_gpu",
+        "missing": "the same adapter script. ESMFold2-Fast is 24 pair layers, single-sequence only, and does not support MSA input (esmfold2/SKILL.md, 200)."
+      },
+      "protenix-v2-predictor": {
+        "status": "GAP",
+        "environment": "none",
+        "missing": "a completed, qualified image and immutable artifact receipt. envs/binder_scoring_gpu.py now records the pinned v2.0.0 source and official TOS checkpoint route, but remains deliberately fail-closed until the official bytes can be retrieved, hashed, and tested offline on a qualified GPU.",
+        "image_requirements": {
+          "cuda_base": "The pinned upstream v2.0.0 Dockerfile fixes PyTorch 2.7.1, CUDA 12.6.3, Python 3.11, and a compiler-capable image. The bring-up record pins its exact base-image digest.",
+          "python": "3.11, from the pinned v2.0.0 Dockerfile",
+          "package": "Build bytedance/Protenix commit 2475421477ab414b571149ad4a875c390ff8a35d with a committed hash lock; use protenix==2.0.0 only as a cross-check.",
+          "prebuilt_image": "ineligible. Build fresh from the pinned source, base digest, CUTLASS commit, and dependency lock recorded in references/protenix-v2-bringup.md.",
+          "gpu": "H100, per the bring-up procedure in the released Anthropic multi-target prompt",
+          "weight_staging": "Hydrate the official https://protenix.tos-cn-beijing.volces.com/checkpoint/protenix-v2.pt object and the four pinned common-cache objects into PROTENIX_ROOT_DIR, verify every committed SHA-256, then run prediction with no egress. The checkpoint returned HTTP 403 from this workspace and has no upstream digest, so staging remains blocked on an official immutable receipt.",
+          "jit_cache": "the released Anthropic multi-target prompt says to set TORCH_EXTENSIONS_DIR to a shared persistent path. protenix/model/layer_norm/layer_norm.py reads that variable only when the installed package directory is NOT writable, which in a root container it is. Either make the package directory read-only or compile once at image build time."
+        },
+        "unresolved_fields": "source_revision is pinned. environment_identity still needs the completed image digest and lock hash; model_revision still needs the SHA-256 of the retrieved official protenix-v2.pt object. Neither should be guessed; see references/protenix-v2-bringup.md."
+      },
+      "interface-scorer": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "an ipSAE and a DockQ implementation. No shipped env installs either. scoring.md and scoring.md require an ipSAE implementation revision and a DockQ implementation revision on every observation, so whichever code is used has to be pinned and hashed."
+      },
+      "promotion-selector": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script"
+      },
+      "optimization-controller": {
+        "status": "GAP",
+        "environment": "none as configured",
+        "missing": "one image that holds every registered operation. campaign.template.json registers partial-diffusion, inverse-folding-resample, predict-redesign and point-mutation for this adapter. partial-diffusion needs RFdiffusion, which lives only in proteomics_rfd_diffdock_gpu; inverse-folding-resample needs ProteinMPNN, which lives only in proteomics_gpu; predict-redesign needs a predictor, which lives in esmfold2_gpu. Two narrowings make it covered today: restrict operations to inverse-folding-resample and point-mutation, and the adapter runs in proteomics_gpu; or restrict to partial-diffusion, and it runs in proteomics_rfd_diffdock_gpu."
+      },
+      "uniform-rescore-reducer": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script"
+      },
+      "portfolio-ranker": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "nothing on the command side. Its command_argv_template in full-ensemble.template.json already calls the installed claude_binder module rank, which exists on disk. Only parser_argv_template is unresolved."
+      },
+      "output-validator": {
+        "status": "cpu-only",
+        "environment": "proteomics_gpu, GPU not requested",
+        "missing": "the adapter script"
+      }
+    },
+    "in_image_commands": {
+      "note": "Verified invocations for whoever writes the adapter scripts. These are not adapter commands: none of them writes a lane manifest, and the MPNN entries need a working directory the executor does not give them.",
+      "chain_order_warning_all_three_arms": "Derive the binder mask from the binder sequence or from the PAE file token_chain_ids, NEVER from chain position. ref/docs/INSILICO.md section 4: chain order follows each predictor input order and is not uniform; most predictors write target chain(s) then binder, ESMFold2 writes the BINDER FIRST, and Protenix v2 places the binder between the protomers for part of the TNF-alpha 1to3 and VEGF-A 1to2 designs. An adapter that assumes chain A is target and chain B is binder inverts ipSAE_min on every ESMFold2 row and raises nothing.",
+      "rfdiffusion-generator": {
+        "source": "proteomics_rfd_diffdock_gpu.py",
+        "argv": [
+          "/opt/rfd/scripts/run_inference.py",
+          "contigmap.contigs=[...]",
+          "inference.output_prefix=/work/out/",
+          "inference.model_directory_path=/weights"
+        ]
+      },
+      "proteinmpnn-designer": {
+        "source": "proteinmpnn/SKILL.md, image path from proteomics_gpu.py",
+        "cwd": "/app/proteinmpnn",
+        "argv": [
+          "python",
+          "protein_mpnn_run.py",
+          "--pdb_path",
+          "backbone.pdb",
+          "--pdb_path_chains",
+          "A",
+          "--out_folder",
+          "out",
+          "--num_seq_per_target",
+          "16",
+          "--sampling_temp",
+          "0.1"
+        ]
+      },
+      "solublempnn-designer": {
+        "source": "solublempnn/SKILL.md, image path from proteomics_gpu.py",
+        "cwd": "/app/proteinmpnn",
+        "argv": [
+          "python",
+          "protein_mpnn_run.py",
+          "--pdb_path",
+          "backbone.pdb",
+          "--pdb_path_chains",
+          "A",
+          "--out_folder",
+          "out",
+          "--num_seq_per_target",
+          "16",
+          "--sampling_temp",
+          "0.1",
+          "--use_soluble_model"
+        ]
+      },
+      "esmfold2-predictor": {
+        "source": "esmfold2/SKILL.md for the API; the released Anthropic multi-target prompt for the parameter values",
+        "argv": "none. Python API only.",
+        "python": "ESMFold2Model.from_pretrained('biohub/ESMFold2').cuda().eval(); model.set_kernel_backend('fused'); model.set_chunk_size(None); ESMFold2InputBuilder().fold(model, spi, num_loops=10, num_sampling_steps=68, num_diffusion_samples=1, seed=seed)",
+        "inference_params": {
+          "num_loops": 10,
+          "num_sampling_steps": 68,
+          "num_diffusion_samples": 1,
+          "mode": "blind, no template and no initial guess",
+          "msa": "target chain only, MSA.from_a3m(path, max_sequences=2048); binder always single-sequence"
+        },
+        "published_campaign_row": "ref/docs/LOOKUP_TABLES.md first table, row ef2full: esm 3.3.0, transformers 4.57.6; weights biohub/ESMFold2 PLUS biohub/ESMC-6B (snapshot revision not recorded); target-chain unpaired a3m from ColabFold (UniRef30 + environmental DB), insertions removed, max 2048, same a3m per homo-oligomer copy; template-free; 5 seeds labeled 0-4; key flags msa_max_depth=2048, lm_dropout=0.3, msa_column_mask_rate=0.1. msa_max_depth is the same number as the protocol msa_max_seq. The call site of lm_dropout and msa_column_mask_rate is NOT documented on fold(); see report_arms.md section 4.1 item 2.",
+        "confidence_outputs": "fold() returns list[Prediction]. ipSAE reads .pae [L,L]; the pose check reads .complex.to_mmcif(). Shadow metrics .iptm and .plddt. Nothing reaches disk unless the adapter script writes it.",
+        "traps": "set_kernel_backend('fused') is required or the run takes the reference path at ~12x the time with the same numbers. 'cuequivariance' silently falls back. Above L~1400 fused hits an illegal memory access. A NaN diffusion sample poisons cusolver for the rest of the process; esmfold2/SKILL.md gives the SVD monkeypatch."
+      },
+      "esmfold2-fast-predictor": {
+        "source": "esmfold2/SKILL.md for the API; the released Anthropic multi-target prompt for the parameter values",
+        "argv": "none. Python API only.",
+        "python": "same as esmfold2-predictor with 'biohub/ESMFold2-Fast' and no msa= on any ProteinInput",
+        "inference_params": {
+          "num_loops": 10,
+          "num_sampling_steps": 68,
+          "num_diffusion_samples": 1,
+          "mode": "blind, no template and no initial guess",
+          "msa": "none. Single-sequence only; the released checkpoint has no MSA encoder and passing an a3m is a silent no-op (the released Anthropic multi-target prompt)"
+        },
+        "confidence_outputs": "identical to esmfold2-predictor",
+        "traps": "the silent-no-op MSA. An arm that reads the shared MSA cache and hands Fast an a3m returns single-sequence numbers and raises nothing. The adapter script should refuse an msa= argument on this arm.",
+        "published_campaign_row": "ref/docs/LOOKUP_TABLES.md first table, row ef2fast: esm 3.3.0, transformers 4.57.6; weights huggingface.co/biohub/ESMFold2-Fast (snapshot revision not recorded); single sequence only for ALL chains including the target, not just the binder; template-free; 5 seeds labeled 0-4; num_loops=10, num_sampling_steps=68, num_diffusion_samples=1. That row also repeats msa_max_depth=2048, lm_dropout=0.3 and msa_column_mask_rate=0.1 on a model the same row says has no MSA encoder, which reads like a cell carried across from ef2full; confirm they are inert before writing them into the adapter."
+      },
+      "protenix-v2-predictor": {
+        "source": "the released Anthropic multi-target prompt for the command line; github.com/bytedance/Protenix main branch for every flag, default and output path",
+        "argv": [
+          "protenix",
+          "pred",
+          "--input",
+          "in.json",
+          "--model_name",
+          "protenix-v2",
+          "--seeds",
+          "0,1,2,3,4",
+          "--cycle",
+          "10",
+          "--sample",
+          "1",
+          "--need_atom_confidence",
+          "true",
+          "--use_msa",
+          "true"
+        ],
+        "argv_source": "the released Anthropic multi-target prompt, verbatim. Every flag verified against runner/batch_inference.py on the main branch.",
+        "prohibited_flags": "--step and --dtype, by the released Anthropic multi-target prompt. The CLI defaults are 200 diffusion steps and bf16, confirmed in runner/batch_inference.py.",
+        "sample_flag": "SETTLED at --sample 1. the released Anthropic multi-target prompt omits the flag and runner/batch_inference.py defaults it to 5, but ref/docs/LOOKUP_TABLES.md first table row ptxv2 records what the published campaign ran: \"--sample 1 diffusion sample per seed; --step not passed, default 200 diffusion steps; --dtype not passed, default bf16\". ref/docs/INSILICO.md section 2 says one sample per seed across all ten predictors. Leaving it unset is five times the diffusion work and a different metric.",
+        "seeds": "5 seeds labeled 0 to 4 at INTERMEDIATE and FINAL, per ref/docs/LOOKUP_TABLES.md row ptxv2. SCREEN is 1 seed per the released Anthropic multi-target prompt.",
+        "entity_order": "target chain(s) first, binder chain second, ligands after, per ref/docs/LOOKUP_TABLES.md row ptxv2. Same row records the exception: for part of the TNF-alpha 1to3 and VEGF-A 1to2 designs the binder entity sits between the protomers.",
+        "input_format": "Protenix-dialect JSON: a top-level list, each entry {name, sequences, covalent_bonds}, protein entities as {proteinChain: {sequence, count}}. docs/infer_json_format.md.",
+        "msa_route": "precomputed_msa_dir is a JSON field rather than a CLI flag, and docs/infer_json_format.md marks it deprecated in favour of pairedMsaPath and unpairedMsaPath. runner/msa_search.py converts the old spelling, so the released Anthropic multi-target prompt's wording still works on 2.0.0. With --use_msa true and no paths in the JSON, update_infer_json runs a network MSA search, which fails in a no-egress container after the GPU is allocated. UNPAIRED TARGET MSA ONLY. ref/docs/LOOKUP_TABLES.md row ptxv2 reads \"precomputed MSA (pairing.a3m, non_pairing.a3m, pairing_db uniref100)\", which names the deprecated precomputed_msa_dir slot convention rather than the content; those three names appear in protenix/data/msa/msa_featurizer.py only in the old-format branch and both files are read under opexists, so neither is required. ref/docs/INSILICO.md states the content for all ten predictors: an unpaired target MSA, one a3m per construct, the same a3m for every copy of a homo-oligomer, NO PAIRED MSAs. Build an unpaired target MSA and do not construct a paired one; the binder is de novo and has no homologs to pair against.",
+        "confidence_outputs": "{out_dir}/{name}/seed_{seed}/. The CIF is {name}_sample_{rank}.cif with per-atom pLDDT in the B-factor column. The PAE is full_data['token_pair_pae'] inside {name}_full_data_sample_{rank}.json, written only when --need_atom_confidence true. runner/dumper.py and protenix/model/sample_confidence.py.",
+        "traps": "{rank} is a rank position rather than a sample index, because sorted_by_ranking_score defaults to True and Protenix ranks by 0.8*iptm + 0.2*ptm + 0.5*disorder - 100*has_clash. The campaign ranks by ipSAE_min, so the adapter must read every sample rather than take _sample_0. The trap is dormant at one sample per seed.",
+        "environment": "none exists. See gap_notes.adapters and report_arms.md section 3.7 for what an image would need, including why the base has to be CUDA devel rather than base and why TORCH_EXTENSIONS_DIR may not take effect."
+      }
+    }
+  },
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "modal-smoke",
+        "production_scoring": false,
+        "production_scoring_reason": "This provider smoke profile does not carry qualified runtime identities for the published co-folding arms or completed scoring evidence.",
+        "purpose": "Describe a Claude Science managed-Modal configuration. It cannot calibrate co-folding seconds because the kernel cannot execute a co-folding skill.",
+        "claim_level": "provider-canary",
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "ESMFold2-Full was not run. This provider smoke profile does not configure a qualified ESMFold2-Full runtime."
+          },
+          {
+            "published_arm": "esmfold2-fast",
+            "status": "not_run",
+            "reason": "ESMFold2-Fast was not run. This provider smoke profile does not configure a qualified ESMFold2-Fast runtime."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+          }
+        ]
+      },
+      "runtime": {
+        "run_root": "{{data_root}}/runs/{{run_id}}",
+        "model_roster_path": "data/model-roster.json",
+        "model_roster_evidence_root": "data/roster-evidence",
+        "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+        "maximum_generated_candidates": 20,
+        "maximum_screen_predictions": 100,
+        "maximum_rescore_predictions": 200,
+        "maximum_optimization_predictions": 100
+      },
+      "provider": {
+        "provider_id": "modal",
+        "surface": "claude-science-host-compute",
+        "workspace": "__REQUIRED__",
+        "credential_lane": "__REQUIRED__",
+        "access": "private",
+        "persistent_root": "{{data_root}}",
+        "artifact_return_mode": "authenticated-platform-files",
+        "budget": {
+          "maximum_spend_usd": "__REQUIRED__",
+          "ceiling_stated_by": "__REQUIRED__",
+          "currency": "USD",
+          "pricing_source": "__REQUIRED__",
+          "pricing_checked_at": "__REQUIRED__"
+        },
+        "lifecycle": {
+          "no_retry": true,
+          "verify_bundle_hash_before_run": true,
+          "verify_artifact_hashes_after_run": true,
+          "request_timeout_seconds": 1800,
+          "keep_alive_seconds": 0
+        }
+      }
+    },
+    "adapter_defaults": {
+      "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder",
+        "version"
+      ]
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "msa-builder",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "__REQUIRED__",
+        "model_revision": "none",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "toolcheck"
+        ],
+        "resources": {
+          "cpu": 8,
+          "gpu": 0,
+          "memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--source",
+          "colabfold-server"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "runtime-validator",
+        "resources": {
+          "cpu": 2,
+          "gpu": 0,
+          "memory_gb": 8
+        }
+      },
+      {
+        "adapter_id": "control-builder",
+        "environment_identity": "modal-env:esmfold2_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2@1ebf0e3481a5184eb6171d40615c79e384b48796",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        }
+      },
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "environment_identity": "modal-env:rfdiffusion_generator_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "RosettaCommons/RFdiffusion@2d0c003df46b9db41d119321f15403dec3716cd9",
+        "model_revision": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "toolcheck",
+          "--runner-protocol",
+          "modal",
+          "--rfdiffusion-root",
+          "/opt/rfd",
+          "--weights-dir",
+          "/weights",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "run",
+          "--runner-protocol",
+          "modal",
+          "--rfdiffusion-root",
+          "/opt/rfd",
+          "--weights-dir",
+          "/weights",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--contigs",
+          "__REQUIRED__",
+          "--hotspot-csv",
+          "{{target_residues_csv}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--target-chain",
+          "{{target_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        }
+      },
+      {
+        "adapter_id": "genie3-generator",
+        "environment_identity": "modal-env:genie3_generator_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "aqlaboratory/genie3@5214459c42e69b01fadfc7d7ebda09d8e5082115",
+        "model_revision": "yeqinglin/genie3@9ae31ebb8c56eebdc05ab282a8fd3f6a6d2a03a2",
+        "toolcheck_argv": [
+          "__REQUIRED__"
+        ]
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "model_revision": "v_48_020@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "py_compile",
+          "/app/proteinmpnn/protein_mpnn_run.py"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8,
+          "container_image_digest": "__REQUIRED__"
+        }
+      },
+      {
+        "adapter_id": "solublempnn-designer",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "dauparas/ProteinMPNN@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "model_revision": "soluble-v_48_020@8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "py_compile",
+          "/app/proteinmpnn/protein_mpnn_run.py"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8,
+          "container_image_digest": "__REQUIRED__"
+        }
+      },
+      {
+        "adapter_id": "novelty-filter",
+        "environment_identity": "__REQUIRED__",
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "toolcheck_argv": [
+          "__REQUIRED__"
+        ]
+      },
+      {
+        "adapter_id": "esmfold2-predictor",
+        "environment_identity": "modal-env:esmfold2_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2@1ebf0e3481a5184eb6171d40615c79e384b48796",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--target-msa-a3m",
+          "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "esmfold2-fast-predictor",
+        "environment_identity": "modal-env:esmfold2_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2-Fast@b28d8ace5e05e61e5bec1e6820cfd3e221819d12",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_fast_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "protenix-v2-predictor",
+        "environment_identity": "__REQUIRED__",
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "protenix"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.protenix_v2_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--target-unpaired-msa-a3m",
+          "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.protenix_v2_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "optimization-controller",
+        "environment_identity": "__REQUIRED__",
+        "source_revision": "__REQUIRED__",
+        "model_revision": "__REQUIRED__",
+        "toolcheck_argv": [
+          "__REQUIRED__"
+        ]
+      }
+    ]
+  }
+}

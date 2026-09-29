@@ -1,0 +1,406 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "campaign_id": "pd-l1-replay",
+  "run_id": "pd-l1-replay-v1",
+  "purpose": "Generate, score, optimize, and select protein binder candidates against a defined target surface.",
+  "declared_use": "non-commercial",
+  "provider_endpoints": {
+    "rfdiffusion3_fal_url": "__REQUIRED__ URL for your RFdiffusion3 fal deployment",
+    "proteinmpnn_fal_url": "__REQUIRED__ URL for your ProteinMPNN fal deployment",
+    "esmfold2_fast_fal_url": "__REQUIRED__ URL for your ESMFold2-Fast fal deployment",
+    "alphafold_multimer_v3_fal_url": "__REQUIRED__ URL for an AlphaFold2-Multimer-v3 fal deployment that you deploy and qualify"
+  },
+  "viewer_renderer": "auto",
+  "targets": [
+    {
+      "target_id": "primary-target",
+      "role": "primary",
+      "source_id": "Q9NZQ7",
+      "entities": [
+        {
+          "entity_id": "target-protein",
+          "type": "protein",
+          "chain_ids": [
+            "B"
+          ],
+          "required": true
+        }
+      ],
+      "structure_path": "__REQUIRED__",
+      "chains": [
+        {
+          "chain_id": "B",
+          "role": "design-target"
+        }
+      ],
+      "site": {
+        "mode": "reference-partner-contacts",
+        "design_residues": [
+          "B:37",
+          "B:39",
+          "B:41",
+          "B:44",
+          "B:45",
+          "B:46",
+          "B:49",
+          "B:51",
+          "B:52",
+          "B:61",
+          "B:96",
+          "B:98",
+          "B:100",
+          "B:104",
+          "B:105",
+          "B:106"
+        ],
+        "reference_contact_residues": [
+          "B:37",
+          "B:39",
+          "B:41",
+          "B:44",
+          "B:45",
+          "B:46",
+          "B:49",
+          "B:51",
+          "B:52",
+          "B:61",
+          "B:96",
+          "B:98",
+          "B:100",
+          "B:104",
+          "B:105",
+          "B:106"
+        ],
+        "contact_cutoff_angstrom": 5.0,
+        "atom_selection": "heavy-atoms",
+        "residue_map_path": "__REQUIRED__"
+      }
+    }
+  ],
+  "_rfd3_specification_note": "The three options RFdiffusion3 needs and the campaign cannot derive. Values are the ones the run of 2026-08-23 used. That run record does not ship with this package, so the values are stated here rather than cited as a path no reader holds. The contig and the hotspots are derived from binder and targets[0].site and do not belong here.",
+  "rfd3_specification": {
+    "dialect": 2,
+    "infer_ori_strategy": "hotspots",
+    "is_non_loopy": true
+  },
+  "binder": {
+    "minimum_length": 50,
+    "maximum_length": 120,
+    "target_chain_id": "B",
+    "binder_chain_id": "A"
+  },
+  "selection": {
+    "structural_diversity_surrogate": {
+      "enabled": false,
+      "reason": "Calibrate a contact-map-overlap cutoff and an all-alpha definition on the local anchor set before enabling the structural diversity rule."
+    }
+  },
+  "controls": {
+    "minimum_positive_controls": 1,
+    "minimum_negative_controls": 1,
+    "positive": [
+      {
+        "id": "positive-reference",
+        "role": "known-same-site-complex",
+        "enabled": true,
+        "structure_path": "__REQUIRED__",
+        "target_chain": "B",
+        "binder_chain": "A",
+        "gates": [
+          {
+            "metric": "ipsae_min",
+            "operator": "minimum",
+            "threshold": "__REQUIRED__"
+          },
+          {
+            "metric": "sc_dockq",
+            "operator": "minimum",
+            "threshold": "__REQUIRED__"
+          },
+          {
+            "metric": "site_contact_iou",
+            "operator": "minimum",
+            "threshold": "__REQUIRED__"
+          },
+          {
+            "metric": "target_contact_recall",
+            "operator": "minimum",
+            "threshold": "__REQUIRED__"
+          }
+        ]
+      }
+    ],
+    "negative": [
+      {
+        "id": "matched-negative",
+        "role": "matched-wrong-pair",
+        "enabled": true,
+        "structure_path": "__REQUIRED__",
+        "target_chain": "B",
+        "binder_chain": "A",
+        "gates": [
+          {
+            "metric": "ipsae_min",
+            "operator": "maximum",
+            "threshold": "__REQUIRED__"
+          },
+          {
+            "metric": "site_contact_iou",
+            "operator": "maximum",
+            "threshold": "__REQUIRED__"
+          }
+        ]
+      }
+    ],
+    "supported_roles": [
+      "known-same-site-complex",
+      "matched-wrong-pair",
+      "sequence-decoy",
+      "pose-decoy",
+      "alternate-site-complex"
+    ]
+  },
+  "filters": {
+    "disabled_checks": [],
+    "liability_rules": {
+      "reject_odd_cysteine_count": true,
+      "maximum_homopolymer_run": 4,
+      "hydrophobic_window_length": 12,
+      "maximum_hydrophobic_residues": 7
+    },
+    "required_checks": [
+      "composition",
+      "exact_duplicates",
+      "liability_chemistry",
+      "sequence_novelty",
+      "model_likelihood"
+    ],
+    "contracts": [
+      {
+        "filter_id": "composition",
+        "stage_id": "filter-integrity",
+        "metric": "composition-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "ea6aeb7f68e4c23128c7bc10e4b80751516ff1f0",
+        "reference_revision": "none",
+        "reference_sha256": "__REQUIRED__"
+      },
+      {
+        "filter_id": "exact_duplicates",
+        "stage_id": "filter-integrity",
+        "metric": "unique-sequence-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "ea6aeb7f68e4c23128c7bc10e4b80751516ff1f0",
+        "reference_revision": "self",
+        "reference_sha256": "__REQUIRED__"
+      },
+      {
+        "filter_id": "liability_chemistry",
+        "stage_id": "filter-integrity",
+        "metric": "liability-chemistry-pass",
+        "operator": "minimum",
+        "threshold": 1.0,
+        "tool_revision": "claude-binder-liability-v1",
+        "reference_revision": "none",
+        "reference_sha256": "__REQUIRED__"
+      },
+      {
+        "filter_id": "sequence_novelty",
+        "stage_id": "filter-novelty",
+        "metric": "maximum-target-chain-window-identity",
+        "operator": "maximum",
+        "threshold": 0.6,
+        "tool_revision": "claude-binder-target-chain-window-v1",
+        "reference_revision": "local",
+        "reference_sha256": "__REQUIRED__"
+      },
+      {
+        "filter_id": "model_likelihood",
+        "stage_id": "filter-novelty",
+        "metric": "model-likelihood-pass",
+        "operator": "maximum",
+        "threshold": 0.7,
+        "tool_revision": "ea6aeb7f68e4c23128c7bc10e4b80751516ff1f0",
+        "reference_revision": "predictor-output",
+        "reference_sha256": "__REQUIRED__"
+      }
+    ],
+    "metric_sources": {
+      "sequence_novelty": {
+        "kind": "target-chain-sliding-window",
+        "window_length": 40,
+        "include_positive_controls": true,
+        "description": "Compare every design with every protein chain in each target structure and enabled positive-control structure. The 40-residue window is the protocol's minimum local-alignment span. Applying it as an ungapped window is a configurable product judgement."
+      }
+    }
+  },
+  "cheap_screen": {
+    "enabled": false,
+    "reason": "Add the calibrated cheap-screen contract, target mapping, and fold quota before enabling this local pre-fold stage.",
+    "link_terminal": true
+  },
+  "scoring": {
+    "primary_metric": "ipsae_min",
+    "pose_metric": "sc_dockq",
+    "rank_weights": {
+      "ipsae_min_z": 0.8,
+      "sc_dockq_z": 0.2
+    },
+    "metric_registry": [],
+    "custom_metric_gates": [],
+    "custom_control_metric_gates": {
+      "positive": [],
+      "negative": []
+    },
+    "counter_screen": {
+      "off_target_paralog_id": "TODO: set off_target_paralog_id to a configured antitarget target_id"
+    },
+    "seed_aggregation": "max",
+    "minimum_seed_observations": 5,
+    "seed_reduction": "maximum-ipsae_min-per-predictor",
+    "normalization": "population-z-score-within-target-predictor-and-metric",
+    "implementations": {
+      "ipsae_revision": "binder-metrics-ipsae-2",
+      "ipsae_interface_cutoff_angstrom": 10.0,
+      "dockq_revision": "binder-metrics-dockq-2",
+      "site_scorer_revision": "binder-metrics-site-1",
+      "site_metric_basis": "selected-cofold-pose",
+      "minimum_aligned_target_residues": 50,
+      "maximum_target_alignment_rmsd": 2.0
+    },
+    "required_observation_fields": [
+      "target_id",
+      "candidate_id",
+      "generator",
+      "predictor",
+      "score_instrument",
+      "seed",
+      "phase",
+      "attempt_id",
+      "model_revision",
+      "control_type",
+      "control_role",
+      "control_structure_sha256",
+      "status",
+      "filter_pass",
+      "target_sha256",
+      "sequence_sha256",
+      "target_chain_id",
+      "binder_chain_id",
+      "design_pose_path",
+      "design_pose_sha256",
+      "predicted_complex_path",
+      "predicted_complex_sha256",
+      "pae_path",
+      "pae_sha256",
+      "metric_source_path",
+      "metric_source_sha256",
+      "raw_prediction_record_sha256",
+      "chain_mapping",
+      "aligned_target_residue_count",
+      "target_alignment_rmsd",
+      "ipsae_implementation_revision",
+      "ipsae_interface_cutoff_angstrom",
+      "dockq_implementation_revision",
+      "site_scorer_revision",
+      "site_residue_map_sha256",
+      "site_contact_cutoff_angstrom",
+      "site_atom_selection",
+      "site_metric_basis",
+      "ipsae_target_to_binder",
+      "ipsae_binder_to_target",
+      "ipsae_min",
+      "sc_dockq",
+      "dockq",
+      "fnat",
+      "interface_rmsd",
+      "ligand_rmsd",
+      "mapping_status",
+      "site_contact_iou",
+      "target_contact_recall",
+      "target_contact_precision",
+      "hotspot_recovery",
+      "offsite_contact_fraction",
+      "iptm",
+      "interface_pae",
+      "interface_plddt",
+      "clash_count",
+      "contact_count"
+    ],
+    "thresholds": {
+      "minimum_ipsae_min_ensemble": "__REQUIRED__",
+      "minimum_sc_dockq_ensemble": 0.23,
+      "minimum_site_contact_iou": "__REQUIRED__",
+      "minimum_target_contact_recall": "__REQUIRED__",
+      "maximum_clash_count": "__REQUIRED__",
+      "positive_control_minimum_ipsae_min": "__REQUIRED__",
+      "positive_control_minimum_sc_dockq": "__REQUIRED__",
+      "positive_control_minimum_site_contact_iou": "__REQUIRED__",
+      "positive_control_minimum_target_contact_recall": "__REQUIRED__",
+      "negative_control_maximum_ipsae_min": "__REQUIRED__"
+    }
+  },
+  "optimization": {
+    "enabled": true,
+    "rounds": 2,
+    "early_stop_margin": null,
+    "parent_count_per_round": 20,
+    "variants_per_parent": 8,
+    "operators": [
+      "partial-diffusion",
+      "inverse-folding-resample",
+      "predict-redesign",
+      "point-mutation"
+    ],
+    "adapter_policies": [
+      {
+        "adapter_id": "optimization-controller",
+        "operations": [
+          "partial-diffusion",
+          "inverse-folding-resample",
+          "predict-redesign",
+          "point-mutation"
+        ],
+        "parameter_ranges": {
+          "diffusion_fraction": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 0.5
+          },
+          "sampling_temperature": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 1.0
+          },
+          "mutation_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      }
+    ]
+  },
+  "selection": {
+    "final_count": 30,
+    "minimum_generators": 3,
+    "maximum_fraction_per_generator": 0.5,
+    "shortfall_policy": {
+      "minimum_delivery_fraction": 0.5
+    },
+    "tie_breakers": [
+      "site-contact-iou",
+      "target-contact-recall",
+      "lower-clash-count",
+      "candidate-id"
+    ]
+  },
+  "report_stage": {
+    "enabled": true,
+    "reason": "The declared-input done-report renderer consumes the final published computational artifacts.",
+    "link_terminal": true
+  }
+}

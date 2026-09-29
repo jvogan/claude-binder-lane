@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "campaign_id": "claude-binder-local-contract",
+  "run_id": "local-contract-v1",
+  "purpose": "Exercise the complete binder-lane execution and ranking contracts with deterministic local artifacts.",
+  "declared_use": "non-commercial",
+  "targets": [
+    {
+      "target_id": "primary-target",
+      "role": "primary",
+      "source_id": "local-contract-target",
+      "entities": [
+        {
+          "entity_id": "target-protein",
+          "type": "protein",
+          "chain_ids": ["A"],
+          "required": true
+        }
+      ],
+      "structure_path": "target.pdb",
+      "chains": [
+        {
+          "chain_id": "A",
+          "role": "design-target"
+        }
+      ],
+      "site": {
+        "mode": "reference-partner-contacts",
+        "design_residues": ["A:1-3"],
+        "reference_contact_residues": ["A:1", "A:2"],
+        "contact_cutoff_angstrom": 5.0,
+        "atom_selection": "heavy-atoms",
+        "residue_map_path": "residue-map.json"
+      }
+    }
+  ],
+  "binder": {
+    "minimum_length": 50,
+    "maximum_length": 120,
+    "target_chain_id": "A",
+    "binder_chain_id": "B"
+  },
+  "controls": {
+    "minimum_positive_controls": 1,
+    "minimum_negative_controls": 1,
+    "positive": [
+      {
+        "id": "positive-reference",
+        "role": "known-same-site-complex",
+        "enabled": true,
+      "structure_path": "target.pdb",
+      "target_chain": "A",
+      "binder_chain": "B",
+      "gates": [
+        {"metric": "ipsae_min", "operator": "minimum", "threshold": 0.8},
+        {"metric": "sc_dockq", "operator": "minimum", "threshold": 0.1},
+        {"metric": "site_contact_iou", "operator": "minimum", "threshold": 0.1},
+        {"metric": "target_contact_recall", "operator": "minimum", "threshold": 0.1}
+      ]
+      }
+    ],
+    "negative": [
+      {
+        "id": "matched-negative",
+        "role": "matched-wrong-pair",
+        "enabled": true,
+      "structure_path": "target.pdb",
+      "target_chain": "A",
+      "binder_chain": "B",
+      "gates": [
+        {"metric": "ipsae_min", "operator": "maximum", "threshold": 0.2},
+        {"metric": "site_contact_iou", "operator": "maximum", "threshold": 0.1}
+      ]
+      }
+    ],
+    "supported_roles": [
+      "known-same-site-complex",
+      "matched-wrong-pair",
+      "sequence-decoy",
+      "pose-decoy",
+      "alternate-site-complex"
+    ]
+  },
+  "filters": {
+    "liability_rules": {"reject_odd_cysteine_count": true, "maximum_homopolymer_run": 4, "hydrophobic_window_length": 12, "maximum_hydrophobic_residues": 7},
+    "required_checks": [
+      "composition",
+      "exact_duplicates",
+      "liability_chemistry",
+      "sequence_novelty",
+      "model_likelihood"
+    ],
+    "contracts": [
+      {"filter_id": "composition", "stage_id": "filter-integrity", "metric": "composition-pass", "operator": "minimum", "threshold": 1.0, "tool_revision": "local-fixture-v1", "reference_revision": "local-fixture-reference-v1", "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+      {"filter_id": "exact_duplicates", "stage_id": "filter-integrity", "metric": "unique-sequence-pass", "operator": "minimum", "threshold": 1.0, "tool_revision": "local-fixture-v1", "reference_revision": "local-fixture-reference-v1", "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+      {"filter_id": "liability_chemistry", "stage_id": "filter-integrity", "metric": "liability-chemistry-pass", "operator": "minimum", "threshold": 1.0, "tool_revision": "local-fixture-v1", "reference_revision": "local-fixture-reference-v1", "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+      {"filter_id": "sequence_novelty", "stage_id": "filter-novelty", "metric": "sequence-novelty-pass", "operator": "minimum", "threshold": 1.0, "tool_revision": "local-fixture-v1", "reference_revision": "local-fixture-reference-v1", "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+      {"filter_id": "model_likelihood", "stage_id": "filter-novelty", "metric": "model-likelihood-pass", "operator": "minimum", "threshold": 1.0, "tool_revision": "local-fixture-v1", "reference_revision": "local-fixture-reference-v1", "reference_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}
+    ]
+  },
+  "scoring": {
+    "primary_metric": "ipsae_min",
+    "pose_metric": "sc_dockq",
+    "rank_weights": {
+      "ipsae_min_z": 0.8,
+      "sc_dockq_z": 0.2
+    },
+    "counter_screen": {
+      "off_target_paralog_id": "TODO: set off_target_paralog_id to a configured antitarget target_id"
+    },
+    "seed_aggregation": "max",
+    "minimum_seed_observations": 5,
+    "seed_reduction": "maximum-ipsae_min-per-predictor",
+    "normalization": "population-z-score-within-target-predictor-and-metric",
+    "implementations": {
+      "ipsae_revision": "fixture-ipsae-v1",
+      "ipsae_interface_cutoff_angstrom": 10.0,
+      "dockq_revision": "fixture-dockq-v1",
+      "site_scorer_revision": "fixture-site-scorer-v1",
+      "site_metric_basis": "selected-cofold-pose",
+      "minimum_aligned_target_residues": 20,
+      "maximum_target_alignment_rmsd": 2.0
+    },
+    "required_observation_fields": [
+      "target_id",
+      "candidate_id",
+      "generator",
+      "predictor",
+      "score_instrument",
+      "seed",
+      "phase",
+      "attempt_id",
+      "model_revision",
+      "control_type",
+      "control_role",
+      "control_structure_sha256",
+      "status",
+      "filter_pass",
+      "target_sha256",
+      "sequence_sha256",
+      "target_chain_id",
+      "binder_chain_id",
+      "design_pose_path",
+      "design_pose_sha256",
+      "predicted_complex_path",
+      "predicted_complex_sha256",
+      "pae_path",
+      "pae_sha256",
+      "metric_source_path",
+      "metric_source_sha256",
+      "raw_prediction_record_sha256",
+      "chain_mapping",
+      "aligned_target_residue_count",
+      "target_alignment_rmsd",
+      "ipsae_implementation_revision",
+      "ipsae_interface_cutoff_angstrom",
+      "dockq_implementation_revision",
+      "site_scorer_revision",
+      "site_residue_map_sha256",
+      "site_contact_cutoff_angstrom",
+      "site_atom_selection",
+      "site_metric_basis",
+      "ipsae_target_to_binder",
+      "ipsae_binder_to_target",
+      "ipsae_min",
+      "sc_dockq",
+      "dockq",
+      "fnat",
+      "interface_rmsd",
+      "ligand_rmsd",
+      "mapping_status",
+      "site_contact_iou",
+      "target_contact_recall",
+      "target_contact_precision",
+      "hotspot_recovery",
+      "offsite_contact_fraction",
+      "iptm",
+      "interface_pae",
+      "interface_plddt",
+      "clash_count",
+      "contact_count"
+    ],
+    "thresholds": {
+      "minimum_ipsae_min_ensemble": 0.1,
+      "minimum_sc_dockq_ensemble": 0.1,
+      "minimum_site_contact_iou": 0.1,
+      "minimum_target_contact_recall": 0.1,
+      "maximum_clash_count": 10,
+    "positive_control_minimum_ipsae_min": 0.8,
+    "positive_control_minimum_sc_dockq": 0.1,
+    "positive_control_minimum_site_contact_iou": 0.1,
+    "positive_control_minimum_target_contact_recall": 0.1,
+    "negative_control_maximum_ipsae_min": 0.2
+    }
+  },
+  "optimization": {
+    "enabled": true,
+    "rounds": 2,
+    "early_stop_margin": null,
+    "parent_count_per_round": 3,
+    "variants_per_parent": 1,
+    "operators": [
+      "partial-diffusion",
+      "inverse-folding-resample",
+      "predict-redesign",
+      "point-mutation"
+    ],
+    "adapter_policies": [
+      {
+        "adapter_id": "optimization-controller",
+        "operations": [
+          "partial-diffusion",
+          "inverse-folding-resample",
+          "predict-redesign",
+          "point-mutation"
+        ],
+        "parameter_ranges": {
+          "diffusion_fraction": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 0.5
+          },
+          "sampling_temperature": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 1.0
+          },
+          "mutation_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        }
+      }
+    ]
+  },
+  "selection": {
+    "final_count": 3,
+    "minimum_generators": 3,
+    "maximum_fraction_per_generator": 0.5,
+    "tie_breakers": [
+      "site-contact-iou",
+      "target-contact-recall",
+      "lower-clash-count",
+      "candidate-id"
+    ]
+  }
+}

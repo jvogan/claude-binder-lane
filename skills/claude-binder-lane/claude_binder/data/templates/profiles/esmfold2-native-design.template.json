@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "esmfold2-native-design",
+        "purpose": "Configure ESMFold2 native whole-surface binder design with ESMFold2-Fast folding and scoring. The native route generates backbone and sequence together. This profile runs the route unaimed, and the adapter's epitope aiming is available but unmeasured.",
+        "claim_level": "candidate",
+        "production_scoring": false,
+        "production_scoring_reason": "The ESMFold2 native-design runtime requires operator-confirmed source, checkpoint, environment, hardware, network, and step values before dispatch.",
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "native_design_aiming": {
+          "status": "whole-surface-only",
+          "note": "This profile runs the route unaimed. It passes --acknowledge-unaimed and supplies no epitope residues, so the interface contact loss averages over the whole target surface. The adapter does support aiming, so a campaign that wants a chosen site changes this profile rather than the tool. ESMFold2-Fast scoring remains configured after generation."
+        },
+        "native_design_operator_values": {
+          "source_revision": "__REQUIRED__ ESMFold2-Experimental source revision",
+          "checkpoint_pin": "__REQUIRED__ immutable ESMFold2-Experimental checkpoint pin",
+          "runtime_environment": "__REQUIRED__ native design runtime environment identity",
+          "runtime_image_digest": "__REQUIRED__ native runtime image digest",
+          "runtime_resources": "__REQUIRED__ operator-selected CPU, memory, and GPU request",
+          "runtime_network": "__REQUIRED__ native runtime network requirements",
+          "steps": "__REQUIRED__ native design step count",
+          "critic_num_sampling_steps": "__REQUIRED__ native design critic sampling step count"
+        },
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "esmfold2-native-design",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "adapter_id": "esmfold2-native-design",
+            "backbone_count": 1,
+            "command_stage": "design-native"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": [
+          {
+            "id": "esmfold2-native-design",
+            "enabled": true,
+            "compatible_generators": [
+              "esmfold2-native-design"
+            ],
+            "adapter_id": "esmfold2-native-design",
+            "command_stage": "design-native"
+          }
+        ]
+      }
+    },
+    "remove_adapters": [
+      "rfdiffusion-generator",
+      "proteinmpnn-designer"
+    ],
+    "remove_stages": [
+      "generate-rfdiffusion",
+      "sequence-proteinmpnn"
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "esmfold2-native-design",
+        "role": "codesign-generator",
+        "binding_status": "operator-configured",
+        "capabilities": [
+          "whole-surface-binder-design",
+          "joint-backbone-sequence-design"
+        ],
+        "supported_entity_types": [
+          "protein"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "pdb",
+          "native-design-trajectory",
+          "native-design-logits"
+        ],
+        "source_revision": "__REQUIRED__ ESMFold2-Experimental source revision",
+        "model_revision": "__REQUIRED__ immutable ESMFold2-Experimental checkpoint pin",
+        "environment_identity": "__REQUIRED__ native design runtime environment identity",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_native_design",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_native_design",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_sequence}}",
+          "--acknowledge-unaimed",
+          "--binder-mode",
+          "minibinder",
+          "--min-length",
+          "{{binder_length_min}}",
+          "--max-length",
+          "{{binder_length_max}}",
+          "--n-designs",
+          "{{count}}",
+          "--seeds",
+          "{{count}}",
+          "--batch-size",
+          "1",
+          "--steps",
+          "__REQUIRED__ native design step count",
+          "--seed-base",
+          "0"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_native_design",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 1,
+          "gpu": 1,
+          "memory_gb": 1,
+          "container_image_digest": "__REQUIRED__ native runtime image digest"
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "design-native",
+        "adapter_id": "esmfold2-native-design",
+        "required_role": "codesign-generator",
+        "description": "Generate whole-surface ESMFold2 native binder candidates without validated binding-site aiming.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "mode": "smoke_scale",
+        "fanout": {
+          "scale_count": 1
+        },
+        "heartbeat_seconds": 120,
+        "timeout_minutes": 360,
+        "outputs": [
+          {
+            "artifact_id": "native-design-candidates",
+            "artifact_type": "candidate-manifest",
+            "kind": "jsonl",
+            "schema_path": "schemas/candidate-manifest.schema.json",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/candidates.jsonl",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "root_backbone_id",
+              "tm90_cluster_id",
+              "structure_method",
+              "seq_method",
+              "fold_class",
+              "generator_mode",
+              "sequence_designer",
+              "generator_seed",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "residue_map_sha256",
+              "optimization_round",
+              "last_optimizer",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "native-design-complexes",
+            "artifact_type": "pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/complexes/*.pdb",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1
+          },
+          {
+            "artifact_id": "native-design-trajectory",
+            "artifact_type": "native-design-trajectory",
+            "kind": "json",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/trajectory.json",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1
+          },
+          {
+            "artifact_id": "native-design-logits",
+            "artifact_type": "native-design-logits",
+            "kind": "file",
+            "minimum_count": 1,
+            "path_template": "{{attempt_dir}}/{{phase}}/logits.npz",
+            "records_per_count": 1,
+            "smoke_minimum_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "design-native"
+        ],
+        "inputs": [
+          "design-native:native-design-candidates"
+        ]
+      }
+    ],
+    "campaign_overrides": {
+      "selection": {
+        "final_count": 1,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0
+      }
+    }
+  }
+}

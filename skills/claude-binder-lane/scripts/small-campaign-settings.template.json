@@ -1,0 +1,58 @@
+{
+  "campaign_id": "replace-with-unique-run-id",
+  "provider": "modal",
+  "maximum_spend_usd": "__REQUIRED_OPERATOR_CEILING__",
+  "maximum_job_estimate_usd": "__REQUIRED_PER_JOB_CEILING__",
+  "hardware": "H100",
+  "egress_domains": ["huggingface.co", "*.hf.co"],
+  "data_destination": "/work/out",
+  "target": {
+    "name": "replace-target",
+    "sequence": "__REQUIRED__",
+    "structure_path": "__REQUIRED__",
+    "chain": "A",
+    "msa_path": "__REQUIRED__"
+  },
+  "design": {
+    "enabled": true,
+    "bindcraft_settings_path": "__REQUIRED__",
+    "accepted_glob": "__REQUIRED_ACCEPTED_STRUCTURE_GLOB__",
+    "seeds": [0],
+    "maximum_candidates": 60
+  },
+  "controls": {
+    "positive_id": "__REQUIRED__",
+    "negative_ids": ["__REQUIRED__"]
+  },
+  "rescore": {
+    "predictors": ["esmfold2-kit", "boltz2-kit"],
+    "seeds": [0, 1, 2, 3, 4],
+    "boltz2_mode": "fast",
+    "esmfold2_variant": "fast",
+    "esmfold2_mode": "fast",
+    "esmfold2_revision": "__REQUIRED_FOR_PLATFORM_ROUTE__",
+    "gates": {
+      "esmfold2-kit": {
+        "negative_reference": "largest_negative_best_seed",
+        "candidate_multiplier": 3.0,
+        "minimum_positive_margin": 0.0,
+        "maximum_pose_rmsd": 3.5,
+        "rule_context": "PD-L1 observed-rule starting point; qualify on this kit mode and target"
+      },
+      "boltz2-kit": {
+        "negative_reference": "largest_negative_mean",
+        "candidate_multiplier": 1.0,
+        "minimum_positive_margin": 0.0,
+        "maximum_pose_rmsd": 3.5,
+        "rule_context": "PD-L1 observed-rule starting point; qualify on this kit mode and target"
+      },
+      "esmfold2-platform": {
+        "negative_reference": "largest_negative_best_seed",
+        "candidate_multiplier": 3.0,
+        "minimum_positive_margin": 0.0,
+        "maximum_pose_rmsd": 3.5,
+        "rule_context": "PD-L1 observed-rule starting point for ESMFold2-Fast platform runtime"
+      }
+    }
+  }
+}

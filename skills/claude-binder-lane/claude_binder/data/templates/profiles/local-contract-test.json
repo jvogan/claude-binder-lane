@@ -1,0 +1,634 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "overlay": {
+    "remove_adapters": [
+      "viewer-renderer"
+    ],
+    "top_level": {
+      "profile": {
+        "profile_id": "local-contract-test",
+        "purpose": "Exercise the complete binder-lane graph, parser boundary, ranking protocol, receipts, and terminal checks with local fixture adapters.",
+        "claim_level": "contract-test",
+        "production_scoring": false,
+        "production_scoring_reason": "This profile exercises the local contract graph with deterministic fixture artifacts and produces no production scoring result."
+      },
+      "generation": {
+        "minimum_generators": 3,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-rfdiffusion"
+          },
+          {
+            "id": "genie3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "emits": "c-alpha-trace",
+            "adapter_id": "genie3-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-genie3"
+          },
+          {
+            "id": "fixture-codesign",
+            "enabled": true,
+            "mode": "sequence-structure-codesign",
+            "adapter_id": "fixture-codesign-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-fixture-codesign"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 1,
+        "designers": [
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublempnn-designer",
+            "command_stage": "sequence-solublempnn"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          },
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "genie3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer-genie3",
+            "command_stage": "sequence-proteinmpnn-genie3"
+          }
+        ]
+      },
+      "runtime": {
+        "run_root": "{{data_root}}/runs/{{run_id}}",
+        "model_roster_path": "data/model-roster.json",
+        "model_roster_evidence_root": "data/roster-evidence",
+        "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+        "maximum_generated_candidates": 20,
+        "maximum_screen_predictions": 100,
+        "maximum_rescore_predictions": 360,
+        "maximum_optimization_predictions": 100
+      }
+    },
+    "adapter_defaults": {
+      "provider_facing": false,
+      "source_revision": "local-fixture-v1",
+      "model_revision": "local-fixture-v1",
+      "environment_identity": "standard-library-python",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+      "environment": {},
+      "resources": {
+        "cpu": 1,
+        "gpu": 0,
+        "memory_gb": 1
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "fixture-codesign-generator",
+        "role": "codesign-generator",
+        "capabilities": [
+          "synthetic-contract-fixture"
+        ],
+        "accepted_artifacts": [
+          "target-manifest"
+        ],
+        "produced_artifacts": [
+          "candidate-manifest",
+          "sequence-files",
+          "design-pose-files"
+        ],
+        "provider_facing": false,
+        "source_revision": "local-fixture-v1",
+        "model_revision": "synthetic-no-model",
+        "environment_identity": "standard-library-python",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.fixture_adapter",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.fixture_adapter",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.fixture_adapter",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 1,
+          "gpu": 0,
+          "memory_gb": 1
+        }
+      },
+      {
+        "adapter_id": "browser-viewer",
+        "role": "renderer",
+        "capabilities": [
+          "viewer-page",
+          "offline-structure-viewer",
+          "viewer-images"
+        ],
+        "accepted_artifacts": [
+          "output-check"
+        ],
+        "produced_artifacts": [
+          "viewer-manifest",
+          "viewer-page",
+          "viewer-images"
+        ],
+        "source_revision": "repository-source",
+        "model_revision": "none",
+        "environment_identity": "standard-library-python",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-dir",
+          "{{run_root}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/viewer"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.browser_renderer",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 1,
+          "gpu": 0,
+          "memory_gb": 1
+        }
+      },
+      {
+        "adapter_id": "portfolio-ranker",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder",
+          "version"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder",
+          "rank",
+          "--config",
+          "{{config_path}}",
+          "--observations",
+          "{{artifact_root}}/scores/uniform-observations.jsonl",
+          "--candidate-lineage",
+          "{{artifact_root}}/optimization/rescore-candidates.jsonl",
+          "--sequence-out-dir",
+          "{{attempt_dir}}/{{phase}}/sequences",
+          "--out",
+          "{{attempt_dir}}/{{phase}}/ranked-candidates.json",
+          "--json"
+        ]
+      }
+    ],
+    "stage_overrides": [
+      {
+        "_note": "Drops the base profile's rfd3-specification output. adapter_defaults binds every adapter to fixture_adapter, whose target-prepare branch writes stage.outputs[0] and nothing else, so a second declared output would fail the stage on a file the fixture never writes. This profile exercises the contract rather than the RFdiffusion3 route, and no generator in it reads a specification.",
+        "stage_id": "target-prepare",
+        "outputs": [
+          {
+            "artifact_id": "target-manifest",
+            "path_template": "{{attempt_dir}}/{{phase}}/target-manifest.json",
+            "kind": "json",
+            "minimum_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "residue_map_sha256"
+            ],
+            "publish_path": "inputs/target-manifest.json"
+          }
+        ]
+      },
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 1
+        }
+      },
+      {
+        "stage_id": "generate-genie3",
+        "fanout": {
+          "scale_count": 1
+        }
+      },
+      {
+        "stage_id": "generate-fixture-codesign",
+        "adapter_id": "fixture-codesign-generator",
+        "required_role": "codesign-generator",
+        "description": "Generate an explicitly synthetic third origin for contract coverage.",
+        "depends_on": [
+          "runtime-check",
+          "target-prepare"
+        ],
+        "inputs": [
+          "target-prepare:target-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "fixture-codesign-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "origin_generator",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ],
+        "fanout": {
+          "scale_count": 1
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 5,
+        "heartbeat_seconds": 30
+      },
+      {
+        "stage_id": "sequence-solublempnn",
+        "outputs": [
+          {
+            "artifact_id": "solublempnn-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "sequence-proteinmpnn",
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "sequence-proteinmpnn-genie3",
+        "outputs": [
+          {
+            "artifact_id": "proteinmpnn-genie3-candidates",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "candidate_id",
+              "parent_candidate_id",
+              "origin_generator",
+              "sequence_designer",
+              "sequence_path",
+              "sequence_sha256",
+              "sequence_length",
+              "structure_path",
+              "structure_sha256",
+              "design_pose_path",
+              "design_pose_sha256",
+              "status"
+            ]
+          },
+          {
+            "artifact_id": "sequence-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+            "kind": "fasta",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          },
+          {
+            "artifact_id": "design-pose-files",
+            "path_template": "{{attempt_dir}}/{{phase}}/poses/*.pdb",
+            "kind": "pdb",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1
+          }
+        ]
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "generate-fixture-codesign",
+          "sequence-solublempnn",
+          "sequence-proteinmpnn",
+          "sequence-proteinmpnn-genie3"
+        ],
+        "inputs": [
+          "generate-fixture-codesign:fixture-codesign-candidates",
+          "sequence-solublempnn:solublempnn-candidates",
+          "sequence-proteinmpnn:proteinmpnn-candidates",
+          "sequence-proteinmpnn-genie3:proteinmpnn-genie3-candidates"
+        ]
+      },
+      {
+        "stage_id": "render-viewer",
+        "adapter_id": "browser-viewer",
+        "required_role": "renderer",
+        "description": "Build a self-contained HTML viewer page and Python-rendered PNG for ranked designs.",
+        "outputs": [
+          {
+            "artifact_id": "viewer-manifest",
+            "artifact_type": "viewer-manifest",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/manifest.json",
+            "kind": "json",
+            "minimum_count": 1,
+            "required_fields": [
+              "schema_version",
+              "run_id",
+              "campaign_id",
+              "designs",
+              "how_to_open",
+              "warnings"
+            ],
+            "publish_path": "viewer/manifest.json"
+          },
+          {
+            "artifact_id": "viewer-page",
+            "artifact_type": "viewer-page",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/index.html",
+            "kind": "file",
+            "minimum_count": 1,
+            "publish_path": "viewer/index.html"
+          },
+          {
+            "artifact_id": "viewer-thumbnails",
+            "artifact_type": "viewer-images",
+            "path_template": "{{attempt_dir}}/{{phase}}/viewer/thumbnails/*.png",
+            "kind": "image",
+            "minimum_count": 1,
+            "publish_path": "viewer/thumbnails"
+          }
+        ]
+      }
+    ],
+    "campaign_overrides": {
+      "selection": {
+        "final_count": 3
+      }
+    }
+  }
+}

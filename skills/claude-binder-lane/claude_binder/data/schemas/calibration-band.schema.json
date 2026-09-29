@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/calibration-band.v1",
+  "title": "Calibration Band",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_type",
+    "source_observations",
+    "scope_contract",
+    "metrics",
+    "predictors",
+    "seed_sets",
+    "reducers",
+    "calibration_panel",
+    "target_controls",
+    "bands",
+    "panel_separation",
+    "resolved_thresholds",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_type": {"const": "calibration-band"},
+    "source_observations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "row_count"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "row_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "scope_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_field", "source_field_status", "argument", "allowed_values"],
+      "properties": {
+        "source_field": {"type": ["string", "null"]},
+        "source_field_status": {"const": "absent"},
+        "argument": {"const": "scope_by_key"},
+        "allowed_values": {
+          "type": "array",
+          "const": ["calibration-panel", "target-control"]
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "const": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+    },
+    "predictors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "seed_sets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "integer"},
+        "minItems": 1
+      }
+    },
+    "reducers": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/reducer"
+      },
+      "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+    },
+    "calibration_panel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["members"],
+      "properties": {
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/member"}
+        }
+      }
+    },
+    "target_controls": {"$ref": "#/$defs/member_collection"},
+    "bands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["per_predictor", "ensemble"],
+      "properties": {
+        "per_predictor": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/band_metric"},
+            "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+          }
+        },
+        "ensemble": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/band_metric"},
+          "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+        }
+      }
+    },
+    "panel_separation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["per_predictor", "ensemble"],
+      "properties": {
+        "per_predictor": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/separation_metric"},
+            "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+          }
+        },
+        "ensemble": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/separation_metric"},
+          "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"]
+        }
+      }
+    },
+    "resolved_thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scoring", "controls"],
+      "properties": {
+        "scoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "positive_control_minimum_ipsae_min",
+            "positive_control_minimum_sc_dockq",
+            "positive_control_minimum_site_contact_iou",
+            "positive_control_minimum_target_contact_recall",
+            "negative_control_maximum_ipsae_min"
+          ],
+          "properties": {
+            "positive_control_minimum_ipsae_min": {"type": "number"},
+            "positive_control_minimum_sc_dockq": {"type": "number"},
+            "positive_control_minimum_site_contact_iou": {"type": "number"},
+            "positive_control_minimum_target_contact_recall": {"type": "number"},
+            "negative_control_maximum_ipsae_min": {"type": "number"}
+          }
+        },
+        "controls": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["positive", "negative"],
+          "properties": {
+            "positive": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ipsae_min", "sc_dockq", "site_contact_iou", "target_contact_recall"],
+              "properties": {
+                "ipsae_min": {"type": "number"},
+                "sc_dockq": {"type": "number"},
+                "site_contact_iou": {"type": "number"},
+                "target_contact_recall": {"type": "number"}
+              }
+            },
+            "negative": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ipsae_min", "site_contact_iou"],
+              "properties": {
+                "ipsae_min": {"type": "number"},
+                "site_contact_iou": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "provenance": {"$ref": "#/$defs/provenance"}
+  },
+  "$defs": {
+    "reducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "status"],
+      "properties": {
+        "kind": {"enum": ["published", "explicit"]},
+        "name": {"type": "string", "minLength": 1},
+        "status": {"enum": ["resolved", "proposed-product-rule-awaiting-decision"]}
+      }
+    },
+    "band_metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "positive_edge",
+        "negative_edge",
+        "positive_member_values",
+        "negative_member_values",
+        "reducer"
+      ],
+      "properties": {
+        "positive_edge": {"type": "number"},
+        "negative_edge": {"type": "number"},
+        "positive_member_values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "number"}
+        },
+        "negative_member_values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "number"}
+        },
+        "reducer": {"$ref": "#/$defs/reducer"}
+      }
+    },
+    "separation_metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive_edge", "negative_edge", "gap", "separated"],
+      "properties": {
+        "positive_edge": {"type": "number"},
+        "negative_edge": {"type": "number"},
+        "gap": {"type": "number"},
+        "separated": {"const": true}
+      }
+    },
+    "member_collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["members"],
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/member"}
+        }
+      }
+    },
+    "member": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "polarity",
+        "target_id",
+        "candidate_id",
+        "identities",
+        "structure_hashes",
+        "seed_sets",
+        "raw_values",
+        "selected_values"
+      ],
+      "properties": {
+        "scope": {"enum": ["calibration-panel", "target-control"]},
+        "polarity": {"enum": ["positive", "negative"]},
+        "target_id": {"type": "string", "minLength": 1},
+        "candidate_id": {"type": "string", "minLength": 1},
+        "identities": {"type": "object"},
+        "structure_hashes": {"type": "object"},
+        "seed_sets": {"type": "object"},
+        "raw_values": {"type": "object"},
+        "selected_values": {"type": "object"}
+      }
+    },
+    "provenance_field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "values"],
+      "properties": {
+        "status": {"enum": ["present", "absent"]},
+        "values": {"type": "array"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fields", "absent_fields", "scope_source"],
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/provenance_field"}
+        },
+        "absent_fields": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "scope_source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["field", "status", "value_source"],
+          "properties": {
+            "field": {"type": ["string", "null"]},
+            "status": {"const": "absent"},
+            "value_source": {"const": "scope_by_key argument"}
+          }
+        }
+      }
+    }
+  }
+}

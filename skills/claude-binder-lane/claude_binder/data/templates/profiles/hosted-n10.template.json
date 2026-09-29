@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run-optimized.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "hosted-n10",
+        "purpose": "Run ten RFdiffusion3 backbones through ProteinMPNN, ESMFold2-Fast scoring, filtering, optimization, ranking, validation, and browser reporting.",
+        "claim_level": "candidate",
+        "production_scoring": true,
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "optimization_enabled": true,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited esmfold2-predictor adapter and its screen and rescore stages. The full-mode deployment revision, model revision, and environment identity are unmeasured. This profile runs ESMFold2-Fast only."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "This profile removes the inherited protenix-v2-predictor adapter and its screen and rescore stages. Protenix v2 has no measured runnable deployment for this package. This profile runs ESMFold2-Fast only."
+          }
+        ]
+      },
+      "rfd3_specification": {
+        "dialect": 2,
+        "infer_ori_strategy": "hotspots",
+        "is_non_loopy": true
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 10,
+        "minimum_scored_candidates_per_generator": 10,
+        "generators": [
+          {
+            "id": "rfdiffusion3",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 10,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      },
+      "cofold": {
+        "minimum_predictors": 1,
+        "screen_seeds": [
+          0
+        ],
+        "rescore_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "predictors": [
+          {
+            "id": "esmfold2-fast",
+            "enabled": true,
+            "adapter_id": "esmfold2-fast-predictor",
+            "screen_stage": "cofold-screen-esmfold2-fast",
+            "rescore_stage": "cofold-rescore-esmfold2-fast"
+          }
+        ]
+      }
+    },
+    "remove_adapters": [
+      "esmfold2-predictor"
+    ],
+    "remove_stages": [
+      "cofold-screen-esmfold2",
+      "cofold-rescore-esmfold2"
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 10
+        }
+      },
+      {
+        "stage_id": "score-screen",
+        "depends_on": [
+          "control-calibration",
+          "cofold-screen-esmfold2-fast"
+        ],
+        "inputs": [
+          "control-calibration:control-observations",
+          "cofold-screen-esmfold2-fast:esmfold2-fast-screen"
+        ]
+      },
+      {
+        "stage_id": "uniform-rescore",
+        "depends_on": [
+          "control-calibration",
+          "cofold-rescore-esmfold2-fast"
+        ],
+        "inputs": [
+          "cofold-rescore-esmfold2-fast:esmfold2-fast-rescore",
+          "control-calibration:control-observations"
+        ]
+      }
+    ],
+    "adapter_overrides": [
+      {
+        "adapter_id": "control-builder",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_esmfold2_fast_predictor",
+          "toolcheck",
+          "--fal-url",
+          "{{esmfold2_fast_fal_url}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/ef2fast-control-toolcheck"
+        ]
+      },
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "not_applicable: the fal production deployment identifies its environment without a Modal image digest"
+        }
+      }
+    ],
+    "campaign_overrides": {
+      "rfd3_specification": {
+        "dialect": 2,
+        "infer_ori_strategy": "hotspots",
+        "is_non_loopy": true
+      },
+      "optimization": {
+        "operators": [
+          "point-mutation"
+        ],
+        "adapter_policies": [
+          {
+            "adapter_id": "optimization-controller",
+            "operations": [
+              "point-mutation"
+            ],
+            "parameter_ranges": {
+              "mutation_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20
+              }
+            }
+          }
+        ]
+      },
+      "selection": {
+        "final_count": 10
+      }
+    }
+  }
+}

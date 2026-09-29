@@ -1,0 +1,864 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "full-ensemble.template.json",
+  "gap_notes": {
+    "read_me": "This profile keeps the validator floor and the smallest provider-facing payload. A value written __REQUIRED__ needs a session fact or a build result. Materialize refuses unresolved values.",
+    "adapters": {
+      "target-preparer": "Structural. Real. The validator requires target-prepare through REQUIRED_COMMON_STAGES. The command uses the factory target-preparer implementation copied into the package, and the parser validates its target-manifest JSON. The implementation uses only the Python standard library. The factory source revision is b8f5bf7be8e4f5521cd17a127b550e039a892cc1. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "runtime-validator": "Structural. Fixture-backed. The validator requires runtime-check through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.runtime_validator ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "msa-builder": "Structural. The validator requires stage-msa through REQUIRED_COMMON_STAGES. The repository adapter script runs the query-only route. The route writes the query sequence alone. This deviation supplies no homologous sequences or evolutionary information, so MSA-dependent scientific evidence is absent. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "control-builder": "Structural. Fixture-backed. The validator requires control-calibration through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.control_builder ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('esmfold2_gpu').",
+      "rfdiffusion-generator": "Structural. Fixture-backed. The validator requires one enabled generator and its command stage. The command binds claude_binder.adapters.rfdiffusion_generator, the real adapter, in this profile's own overlay row. An earlier revision of this note said the checkout had no RFdiffusion script and that the stage ran a fixture. Both were wrong. The Modal environment identity and image digest come from build_env('proteomics_rfd_diffdock_gpu').",
+      "proteinmpnn-designer": "Structural. Real. The validator requires one enabled designer and its command stage. The command uses the factory ProteinMPNN wrapper copied into the package at source revision b8f5bf7be8e4f5521cd17a127b550e039a892cc1. The wrapper requires an externally supplied ProteinMPNN checkout and weights. Its toolcheck verifies the runner, the checkpoint digest when a model pin exists, and the runner help command. This profile leaves model_revision __REQUIRED__, so the digest remains unverified until the run supplies that fact. Fal mode also requires the factory fal client sibling, which this package does not ship. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "solublempnn-designer": "Structural. Real. The validator requires the enabled SolubleMPNN designer and its command stage. The command uses the shared factory ProteinMPNN wrapper copied into the package at source revision b8f5bf7be8e4f5521cd17a127b550e039a892cc1. The wrapper requires an externally supplied ProteinMPNN checkout and soluble weights. Its toolcheck verifies the runner, the checkpoint digest when a model pin exists, and the runner help command. This profile leaves model_revision __REQUIRED__, so the digest remains unverified until the run supplies that fact. Fal mode also requires the factory fal client sibling, which this package does not ship. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "candidate-normalizer": "Structural. Fixture-backed. The validator requires normalize-candidates through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.candidate_normalizer ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "integrity-filter": "Structural. Fixture-backed. The validator requires filter-integrity through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.integrity_filter ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "novelty-filter": "Structural. Fixture-backed. The validator requires filter-novelty through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.novelty_filter ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The fixture preserves the graph and does not claim evidence for retired structural gates. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "esmfold2-predictor": "Structural. The validator requires one enabled predictor with screen and rescore stages. The repository ESMFold2 adapter supplies both command paths. The Modal environment identity and image digest come from build_env('esmfold2_gpu').",
+      "interface-scorer": "Structural. The validator requires score-screen through REQUIRED_COMMON_STAGES. The repository interface-scorer module supplies the command paths. Campaign scoring implementation and threshold values remain campaign facts.",
+      "promotion-selector": "Structural. Fixture-backed. The validator requires promote through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.promotion_selector ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "optimization-controller": "Structural. Fixture-backed. The validator requires optimization to stay enabled and requires optimization-plan and optimize stages. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.optimization_controller ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The campaign narrows operations to inverse-folding-resample and point-mutation. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "uniform-rescore-reducer": "Structural. Fixture-backed. The validator requires uniform-rescore through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.ensemble_reducer ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "portfolio-ranker": "Structural. Partially fixture-backed. The validator requires final-rank through REQUIRED_COMMON_STAGES. The repository claude_binder rank command supplies the ranker. The parser uses the repository fixture harness because the rank command writes its result directly. The Modal environment identity and image digest come from build_env('proteomics_gpu').",
+      "output-validator": "Structural. Fixture-backed. The validator requires output-check through REQUIRED_COMMON_STAGES. The command falls through to overlay.adapter_defaults, which binds claude_binder.fixture_adapter, so this role produces no scientific result here. That is this profile's choice and not a missing capability: claude_binder.adapters.output_validator ships, and full-ensemble.template.json binds it. Give this role its own row to run the real adapter. The Modal environment identity and image digest come from build_env('proteomics_gpu')."
+    },
+    "deviations": {
+      "msa-builder": "The command selects query-only. The adapter returns the query sequence alone. This costs evolutionary information and cannot stand in for a real homologous alignment.",
+      "fixture_backing": "Nine structural adapters use claude_binder.fixture_adapter because this profile gives them no row of their own and overlay.adapter_defaults binds the fixture. A real adapter module ships for every one of the nine and full-ensemble.template.json binds it. The fixture keeps validation and graph tests explicit. It provides no scientific result for those roles.",
+      "trim": "The profile drops genie3-generator, esmfold2-fast-predictor, and protenix-v2-predictor. The anonymous co-design slot was retired from the base profile. The remaining enabled items satisfy the validator floor.",
+      "adapter_defaults_resources": "Every adapter that does not override resources gets cpu 1, gpu 0, memory_gb 1. That is far below the shipped profile and it is deliberate, because this profile exists to reach one dispatched stage rather than to run a campaign. Four adapters lose their GPU request outright: control-builder, novelty-filter, runtime-validator and optimization-controller, each of which asks for gpu 1 in full-ensemble.template.json. They still name GPU environments, so the environment and the request disagree. Restore the shipped resources for any adapter before a real tool replaces its fixture behind it, or the stage will start on a container that cannot run it.",
+      "adapter_defaults_runtime_caps": "Runtime maximums are cut hard against the shipped profile: generated 2000 to 20, screen 20000 to 100, rescore 10000 to 200, optimization 10000 to 100. Generation counts drop to 1. These bound a first run and they are not campaign settings.",
+      "adapter_defaults_provenance": "adapter_defaults sets source_revision and model_revision to local-fixture-v1, which is true for the fixture-backed adapters and false for the five that are real repository code. target-preparer, proteinmpnn-designer, solublempnn-designer, interface-scorer and portfolio-ranker override both fields back to their recorded values or required campaign facts.",
+      "selection_narrowing": "final_count 3 to 1, minimum_generators 3 to 1, maximum_fraction_per_generator 0.5 to 1.0. A single-generator, single-result shape for a first run rather than a campaign setting."
+    }
+  },
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "modal-first-run-floor",
+        "purpose": "Describe the smallest provider-facing configuration that satisfies the campaign validator. It is a structural canary and does not carry qualified co-folding runtime identities.",
+        "claim_level": "provider-canary",
+        "production_scoring": false,
+        "production_scoring_reason": "This provider canary does not carry qualified co-folding runtime identities or completed scoring evidence.",
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "ESMFold2-Full was not run. This structural provider canary does not configure a qualified ESMFold2-Full runtime."
+          },
+          {
+            "published_arm": "esmfold2-fast",
+            "status": "not_run",
+            "reason": "ESMFold2-Fast was not run. This structural provider canary does not configure a qualified ESMFold2-Fast runtime."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+          }
+        ]
+      },
+      "provider": {
+        "provider_id": "modal",
+        "surface": "claude-science-host-compute",
+        "workspace": "__REQUIRED__",
+        "credential_lane": "modal-primary",
+        "access": "private",
+        "persistent_root": "{{data_root}}",
+        "artifact_return_mode": "authenticated-platform-files",
+        "budget": {
+          "maximum_spend_usd": "__REQUIRED__",
+          "ceiling_stated_by": "__REQUIRED__",
+          "currency": "USD",
+          "pricing_source": "__REQUIRED__",
+          "pricing_checked_at": "__REQUIRED__"
+        },
+        "lifecycle": {
+          "no_retry": true,
+          "verify_bundle_hash_before_run": true,
+          "verify_artifact_hashes_after_run": true,
+          "request_timeout_seconds": 1800,
+          "keep_alive_seconds": 0
+        }
+      },
+      "generation": {
+        "minimum_generators": 1,
+        "minimum_backbones_per_generator": 1,
+        "minimum_scored_candidates_per_generator": 1,
+        "generators": [
+          {
+            "id": "rfdiffusion",
+            "enabled": true,
+            "mode": "backbone-only",
+            "adapter_id": "rfdiffusion-generator",
+            "backbone_count": 1,
+            "command_stage": "generate-rfdiffusion"
+          }
+        ]
+      },
+      "sequence_design": {
+        "sequences_per_backbone": 2,
+        "designers": [
+          {
+            "id": "proteinmpnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion",
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": [],
+              "c-alpha-trace": [
+                "--ca-only"
+              ]
+            },
+            "adapter_id": "proteinmpnn-designer",
+            "command_stage": "sequence-proteinmpnn"
+          },
+          {
+            "id": "solublempnn",
+            "enabled": true,
+            "compatible_generators": [
+              "rfdiffusion",
+              "rfdiffusion3"
+            ],
+            "accepts_backbone_shapes": {
+              "full-backbone": []
+            },
+            "adapter_id": "solublempnn-designer",
+            "command_stage": "sequence-solublempnn"
+          }
+        ]
+      },
+      "cofold": {
+        "minimum_predictors": 1,
+        "screen_seeds": [
+          0
+        ],
+        "rescore_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "predictors": [
+          {
+            "id": "esmfold2",
+            "enabled": true,
+            "adapter_id": "esmfold2-predictor",
+            "screen_stage": "cofold-screen-esmfold2",
+            "rescore_stage": "cofold-rescore-esmfold2"
+          }
+        ]
+      },
+      "runtime": {
+        "run_root": "{{data_root}}/runs/{{run_id}}",
+        "model_roster_path": "data/model-roster.json",
+        "model_roster_evidence_root": "data/roster-evidence",
+        "bundle_path": "{{data_root}}/runs/{{run_id}}/run-bundle",
+        "maximum_generated_candidates": 20,
+        "maximum_screen_predictions": 100,
+        "maximum_rescore_predictions": 200,
+        "maximum_optimization_predictions": 100
+      }
+    },
+    "campaign_overrides": {
+      "optimization": {
+        "rounds": 1,
+        "early_stop_margin": 0.029008,
+        "parent_count_per_round": 1,
+        "variants_per_parent": 1,
+        "operators": [
+          "inverse-folding-resample",
+          "point-mutation"
+        ],
+        "adapter_policies": [
+          {
+            "adapter_id": "optimization-controller",
+            "operations": [
+              "inverse-folding-resample",
+              "point-mutation"
+            ],
+            "parameter_ranges": {
+              "diffusion_fraction": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 0.5
+              },
+              "sampling_temperature": {
+                "type": "number",
+                "minimum": 0.05,
+                "maximum": 1.0
+              },
+              "mutation_count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 20
+              }
+            }
+          }
+        ]
+      },
+      "selection": {
+        "final_count": 1,
+        "minimum_generators": 1,
+        "maximum_fraction_per_generator": 1.0
+      }
+    },
+    "remove_adapters": [
+      "genie3-generator",
+      "proteinmpnn-designer-genie3",
+      "esmfold2-fast-predictor",
+      "protenix-v2-predictor"
+    ],
+    "adapter_defaults": {
+      "source_revision": "local-fixture-v1",
+      "model_revision": "local-fixture-v1",
+      "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+      "toolcheck_argv": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "toolcheck"
+      ],
+      "command_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "run",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "parser_argv_template": [
+        "{{python_executable}}",
+        "-m",
+        "claude_binder.fixture_adapter",
+        "parse",
+        "--stage",
+        "{{stage_id}}",
+        "--phase",
+        "{{phase}}",
+        "--count",
+        "{{count}}",
+        "--attempt-dir",
+        "{{attempt_dir}}",
+        "--receipts-dir",
+        "{{receipts_dir}}",
+        "--artifact-root",
+        "{{artifact_root}}",
+        "--config",
+        "{{config_path}}",
+        "--plan",
+        "{{plan_path}}"
+      ],
+      "environment": {},
+      "resources": {
+        "cpu": 1,
+        "gpu": 0,
+        "memory_gb": 1,
+        "container_image_digest": "__REQUIRED__"
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "target-preparer",
+        "produced_artifacts": [
+          "target-manifest",
+          "rfd3-specification"
+        ],
+        "source_revision": "b8f5bf7be8e4f5521cd17a127b550e039a892cc1",
+        "model_revision": "none",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_prep_adapter",
+          "toolcheck",
+          "--source-structure",
+          "{{target_structure}}",
+          "--residue-map",
+          "{{residue_map}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_prep_adapter",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--target-id",
+          "{{target_id}}",
+          "--source-id",
+          "{{target_source_id}}",
+          "--source-structure",
+          "{{target_structure}}",
+          "--chains",
+          "{{target_chains_csv}}",
+          "--design-target-chain",
+          "{{target_chain}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--site-residues",
+          "{{target_residues_csv}}",
+          "--reference-contact-residues",
+          "{{reference_contact_residues_csv}}",
+          "--site-mode",
+          "{{site_mode}}",
+          "--contact-cutoff-angstrom",
+          "{{site_contact_cutoff_angstrom}}",
+          "--atom-selection",
+          "{{site_atom_selection}}",
+          "--residue-map",
+          "{{residue_map}}",
+          "--config",
+          "{{config_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_prep_parser",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--config",
+          "{{config_path}}"
+        ]
+      },
+      {
+        "adapter_id": "proteinmpnn-designer",
+        "source_revision": "b8f5bf7be8e4f5521cd17a127b550e039a892cc1",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--designer-id",
+          "proteinmpnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ]
+      },
+      {
+        "adapter_id": "solublempnn-designer",
+        "source_revision": "b8f5bf7be8e4f5521cd17a127b550e039a892cc1",
+        "model_revision": "__REQUIRED__",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 12,
+          "gpu_memory_gb": 8,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "toolcheck",
+          "--config",
+          "{{config_path}}",
+          "--designer-id",
+          "solublempnn",
+          "--soluble-model"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_designer",
+          "run",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--backbone-stage-id",
+          "generate-rfdiffusion",
+          "--backbone-artifact-id",
+          "rfdiffusion-candidates",
+          "--designer-id",
+          "solublempnn",
+          "--sequences-per-backbone",
+          "{{sequences_per_backbone}}",
+          "--seed",
+          "37",
+          "--sampling-temp",
+          "0.1",
+          "--design-chain",
+          "{{binder_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--soluble-model"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.proteinmpnn_parser",
+          "--phase",
+          "{{phase}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--result-path",
+          "{{attempt_dir}}/{{phase}}/parser-result.json",
+          "--jsonl",
+          "{{attempt_dir}}/{{phase}}/sequence-candidate-manifest.jsonl",
+          "--fasta",
+          "{{attempt_dir}}/{{phase}}/sequences/*.fasta",
+          "--pdb",
+          "{{attempt_dir}}/{{phase}}/poses/*.pdb"
+        ]
+      },
+      {
+        "adapter_id": "msa-builder",
+        "environment_identity": "modal-env:proteomics_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "ea6aeb7f68e4c23128c7bc10e4b80751516ff1f0",
+        "model_revision": "none",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "toolcheck"
+        ],
+        "resources": {
+          "cpu": 8,
+          "gpu": 0,
+          "memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--source",
+          "query-only"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.target_msa_builder",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "control-builder",
+        "environment_identity": "modal-env:esmfold2_gpu@spec_sha=__REQUIRED__"
+      },
+      {
+        "adapter_id": "rfdiffusion-generator",
+        "environment_identity": "modal-env:rfdiffusion_generator_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "RosettaCommons/RFdiffusion@2d0c003df46b9db41d119321f15403dec3716cd9",
+        "model_revision": "__REQUIRED__",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "toolcheck",
+          "--runner-protocol",
+          "modal",
+          "--rfdiffusion-root",
+          "/opt/rfd",
+          "--weights-dir",
+          "/weights",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--config",
+          "{{config_path}}"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "run",
+          "--runner-protocol",
+          "modal",
+          "--rfdiffusion-root",
+          "/opt/rfd",
+          "--weights-dir",
+          "/weights",
+          "--checkpoint-name",
+          "Complex_base_ckpt.pt",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--contigs",
+          "__REQUIRED__",
+          "--hotspot-csv",
+          "{{target_residues_csv}}",
+          "--binder-chain",
+          "{{binder_chain}}",
+          "--target-chain",
+          "{{target_chain}}",
+          "--minimum-length",
+          "{{binder_length_min}}",
+          "--maximum-length",
+          "{{binder_length_max}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.rfdiffusion_generator",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 16,
+          "gpu_memory_gb": 16,
+          "container_image_digest": "__REQUIRED__"
+        }
+      },
+      {
+        "adapter_id": "esmfold2-predictor",
+        "environment_identity": "modal-env:esmfold2_gpu@spec_sha=__REQUIRED__",
+        "source_revision": "Biohub/esm@f652b471d29da828b31e9b7a9cf7d0a7803240f5",
+        "model_revision": "biohub/ESMFold2@1ebf0e3481a5184eb6171d40615c79e384b48796",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "pip",
+          "show",
+          "esm"
+        ],
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 32,
+          "gpu_memory_gb": 24,
+          "container_image_digest": "__REQUIRED__"
+        },
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_predictor",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--target-msa-a3m",
+          "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.esmfold2_predictor",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ]
+      },
+      {
+        "adapter_id": "interface-scorer",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.interface_scorer",
+          "toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.interface_scorer",
+          "run",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.interface_scorer",
+          "parse",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}"
+        ],
+        "source_revision": "repository",
+        "model_revision": "none"
+      },
+      {
+        "adapter_id": "portfolio-ranker",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder",
+          "version"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder",
+          "rank",
+          "--config",
+          "{{config_path}}",
+          "--observations",
+          "{{artifact_root}}/scores/uniform-observations.jsonl",
+          "--candidate-lineage",
+          "{{artifact_root}}/optimization/rescore-candidates.jsonl",
+          "--sequence-out-dir",
+          "{{attempt_dir}}/{{phase}}/sequences",
+          "--out",
+          "{{attempt_dir}}/{{phase}}/ranked-candidates.json",
+          "--json"
+        ],
+        "source_revision": "repository",
+        "model_revision": "none"
+      }
+    ],
+    "remove_stages": [
+      "generate-genie3",
+      "sequence-proteinmpnn-genie3",
+      "cofold-screen-esmfold2-fast",
+      "cofold-screen-protenix-v2",
+      "cofold-rescore-esmfold2-fast",
+      "cofold-rescore-protenix-v2"
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "generate-rfdiffusion",
+        "fanout": {
+          "scale_count": 1
+        }
+      },
+      {
+        "stage_id": "normalize-candidates",
+        "depends_on": [
+          "generate-rfdiffusion",
+          "sequence-proteinmpnn",
+          "sequence-solublempnn"
+        ],
+        "inputs": [
+          "generate-rfdiffusion:rfdiffusion-candidates",
+          "sequence-proteinmpnn:proteinmpnn-candidates",
+          "sequence-solublempnn:solublempnn-candidates"
+        ]
+      },
+      {
+        "stage_id": "score-screen",
+        "depends_on": [
+          "control-calibration",
+          "cofold-screen-esmfold2"
+        ],
+        "inputs": [
+          "control-calibration:control-observations",
+          "cofold-screen-esmfold2:esmfold2-screen"
+        ]
+      },
+      {
+        "stage_id": "uniform-rescore",
+        "depends_on": [
+          "control-calibration",
+          "cofold-rescore-esmfold2"
+        ],
+        "inputs": [
+          "cofold-rescore-esmfold2:esmfold2-rescore",
+          "control-calibration:control-observations"
+        ]
+      }
+    ]
+  }
+}

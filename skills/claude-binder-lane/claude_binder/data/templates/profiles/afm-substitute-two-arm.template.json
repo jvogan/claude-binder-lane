@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "template_id": "claude-binder-lane.v1",
+  "base_profile": "small-run.template.json",
+  "overlay": {
+    "top_level": {
+      "profile": {
+        "profile_id": "afm-substitute-two-arm",
+        "purpose": "Describe an operator-configured AlphaFold2-Multimer-v3 adapter beside ESMFold2-Fast. The adapter and route ship, but the required endpoint and immutable runtime pins are not bundled, so this profile does not name a running substitute arm.",
+        "claim_level": "candidate",
+        "production_scoring": false,
+        "production_scoring_reason": "AlphaFold2-Multimer-v3 still needs an operator-supplied endpoint and qualified immutable runtime pins. This profile produces no deployed substitute-arm result.",
+        "baseline_fidelity": false,
+        "scores_ungated": false,
+        "published_predictor_deviations": [
+          {
+            "published_arm": "esmfold2",
+            "status": "not_run",
+            "reason": "ESMFold2-Full was not run. This profile documents the operator-configured AlphaFold2-Multimer-v3 route beside ESMFold2-Fast."
+          },
+          {
+            "published_arm": "esmfold2-fast",
+            "status": "not_run",
+            "reason": "ESMFold2-Fast was not run. This profile documents the operator-configured AlphaFold2-Multimer-v3 route and produces no deployed co-folding result."
+          },
+          {
+            "published_arm": "protenix-v2",
+            "status": "not_run",
+            "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route."
+          }
+        ],
+        "substitute_arm_record": {
+          "predictor_id": "alphafold-multimer-v3",
+          "substitutes_for": "protenix-v2",
+          "reason": "Protenix v2 was not run. No qualified Protenix v2 CUDA image, immutable weights record, and completed runtime validation are bundled for this route.",
+          "source": "https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md"
+        }
+      },
+      "cofold": {
+        "minimum_predictors": 2,
+        "screen_seeds": [0],
+        "rescore_seeds": [0, 1, 2, 3, 4],
+        "predictors": [
+          {
+            "id": "esmfold2-fast",
+            "enabled": true,
+            "adapter_id": "esmfold2-fast-predictor",
+            "screen_stage": "cofold-screen-esmfold2-fast",
+            "rescore_stage": "cofold-rescore-esmfold2-fast"
+          },
+          {
+            "id": "alphafold-multimer-v3",
+            "enabled": true,
+            "adapter_id": "alphafold-multimer-v3-predictor",
+            "screen_stage": "cofold-screen-alphafold-multimer-v3",
+            "rescore_stage": "cofold-rescore-alphafold-multimer-v3"
+          }
+        ]
+      }
+    },
+    "adapter_overrides": [
+      {
+        "adapter_id": "alphafold-multimer-v3-predictor",
+        "binding_status": "operator-configured",
+        "role": "cofold-predictor",
+        "capabilities": [
+          "complex-structure-prediction",
+          "five-seed-rescore",
+          "full-pae"
+        ],
+        "supported_entity_types": ["protein"],
+        "accepted_artifacts": [
+          "passing-candidate-manifest",
+          "optimized-candidate-manifest",
+          "rescore-candidate-manifest",
+          "target-msa-manifest"
+        ],
+        "produced_artifacts": ["raw-prediction-manifest"],
+        "source_revision": "__REQUIRED__ immutable ColabFold or AlphaFold2 source revision",
+        "model_revision": "alphafold2_multimer_v3; __REQUIRED__ immutable weight artifact revision or SHA-256",
+        "environment_identity": "__REQUIRED__ provider image identity",
+        "toolcheck_argv": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_alphafold2_multimer_predictor",
+          "toolcheck",
+          "--fal-url",
+          "{{alphafold_multimer_v3_fal_url}}",
+          "--out-dir",
+          "{{attempt_dir}}/{{phase}}/afm-toolcheck"
+        ],
+        "command_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_alphafold2_multimer_predictor",
+          "run",
+          "--fal-url",
+          "{{alphafold_multimer_v3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/afm-run-index.jsonl",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--target-msa-a3m",
+          "{{target_id}}={{artifact_root}}/inputs/msa/{{target_id}}.a3m",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}",
+          "--max-seconds",
+          "1800",
+          "--timeout-seconds",
+          "1950"
+        ],
+        "parser_argv_template": [
+          "{{python_executable}}",
+          "-m",
+          "claude_binder.adapters.fal_alphafold2_multimer_predictor",
+          "parse",
+          "--fal-url",
+          "{{alphafold_multimer_v3_fal_url}}",
+          "--stage",
+          "{{stage_id}}",
+          "--phase",
+          "{{phase}}",
+          "--count",
+          "{{count}}",
+          "--attempt-dir",
+          "{{attempt_dir}}",
+          "--receipts-dir",
+          "{{receipts_dir}}",
+          "--artifact-root",
+          "{{artifact_root}}",
+          "--config",
+          "{{config_path}}",
+          "--plan",
+          "{{plan_path}}",
+          "--run-index",
+          "{{attempt_dir}}/{{phase}}/afm-run-index.jsonl",
+          "--target-sequence",
+          "{{target_id}}={{target_sequence}}",
+          "--hotspot-residues",
+          "{{target_id}}={{metric_hotspot_residues_csv}}"
+        ],
+        "parser_result_path_template": "{{attempt_dir}}/{{phase}}/parser-result.json",
+        "environment": {},
+        "resources": {
+          "cpu": 4,
+          "gpu": 1,
+          "memory_gb": 64,
+          "gpu_memory_gb": 80
+        }
+      }
+    ],
+    "stage_overrides": [
+      {
+        "stage_id": "cofold-screen-alphafold-multimer-v3",
+        "adapter_id": "alphafold-multimer-v3-predictor",
+        "required_role": "cofold-predictor",
+        "description": "Run the one-seed AlphaFold2-Multimer-v3 substitute screen.",
+        "depends_on": ["filter-novelty", "stage-msa"],
+        "inputs": [
+          "filter-novelty:passing-candidates",
+          "stage-msa:target-msa-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "alphafold-multimer-v3-screen",
+            "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 1,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "origin_generator",
+              "predictor",
+              "model_revision",
+              "seed",
+              "phase",
+              "sequence_sha256",
+              "design_pose_sha256",
+              "msa_path",
+              "msa_sha256",
+              "status"
+            ]
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "filter-novelty",
+            "artifact_id": "passing-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 720,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "score-screen",
+        "depends_on": [
+          "control-calibration",
+          "cofold-screen-esmfold2-fast",
+          "cofold-screen-alphafold-multimer-v3"
+        ],
+        "inputs": [
+          "control-calibration:control-observations",
+          "cofold-screen-esmfold2-fast:esmfold2-fast-screen",
+          "cofold-screen-alphafold-multimer-v3:alphafold-multimer-v3-screen"
+        ]
+      },
+      {
+        "stage_id": "cofold-rescore-alphafold-multimer-v3",
+        "adapter_id": "alphafold-multimer-v3-predictor",
+        "required_role": "cofold-predictor",
+        "description": "Run the five-seed AlphaFold2-Multimer-v3 substitute rescore.",
+        "depends_on": ["optimize", "stage-msa"],
+        "inputs": [
+          "optimize:rescore-candidates",
+          "stage-msa:target-msa-manifest"
+        ],
+        "outputs": [
+          {
+            "artifact_id": "alphafold-multimer-v3-rescore",
+            "path_template": "{{attempt_dir}}/{{phase}}/cofold-observations.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "smoke_minimum_count": 1,
+            "records_per_count": 5,
+            "required_fields": [
+              "target_id",
+              "target_sha256",
+              "candidate_id",
+              "predictor",
+              "model_revision",
+              "seed",
+              "phase",
+              "sequence_sha256",
+              "design_pose_sha256",
+              "msa_path",
+              "msa_sha256",
+              "status"
+            ]
+          }
+        ],
+        "fanout": {
+          "count_from": {
+            "stage_id": "optimize",
+            "artifact_id": "rescore-candidates",
+            "value": "records"
+          }
+        },
+        "mode": "smoke_scale",
+        "timeout_minutes": 720,
+        "heartbeat_seconds": 120
+      },
+      {
+        "stage_id": "uniform-rescore",
+        "depends_on": [
+          "control-calibration",
+          "cofold-rescore-esmfold2-fast",
+          "cofold-rescore-alphafold-multimer-v3"
+        ],
+        "inputs": [
+          "control-calibration:control-observations",
+          "cofold-rescore-esmfold2-fast:esmfold2-fast-rescore",
+          "cofold-rescore-alphafold-multimer-v3:alphafold-multimer-v3-rescore"
+        ]
+      }
+    ]
+  }
+}

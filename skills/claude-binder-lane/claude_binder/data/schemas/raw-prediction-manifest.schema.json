@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claude-binder-lane/raw-prediction-manifest.v1",
+  "title": "Raw Predictor Artifact Record",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "target_id",
+    "target_sha256",
+    "candidate_id",
+    "predictor",
+    "model_revision",
+    "seed",
+    "phase",
+    "sequence_sha256",
+    "design_pose_path",
+    "design_pose_sha256",
+    "chain_mapping",
+    "status"
+  ],
+  "properties": {
+    "target_id": {"type": "string", "minLength": 1},
+    "target_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "predictor": {"type": "string", "minLength": 1},
+    "model_revision": {"type": "string", "minLength": 1},
+    "seed": {"type": "integer"},
+    "phase": {"enum": ["screen", "optimization", "uniform-rescore"]},
+    "sequence_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "design_pose_path": {"type": "string", "minLength": 1},
+    "design_pose_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "predicted_complex_path": {"type": "string", "minLength": 1},
+    "predicted_complex_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pae_path": {"type": "string", "minLength": 1},
+    "pae_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "metric_source_path": {"type": "string", "minLength": 1},
+    "metric_source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "chain_mapping": {
+      "type": "object",
+      "required": ["target", "binder"],
+      "properties": {
+        "target": {"type": "string", "minLength": 1},
+        "binder": {"type": "string", "minLength": 1}
+      }
+    },
+    "failure_code": {"type": "string", "minLength": 1},
+    "failure_reason": {"type": "string", "minLength": 1},
+    "status": {"enum": ["scored", "failed"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "scored"}}},
+      "then": {
+        "required": [
+          "predicted_complex_path",
+          "predicted_complex_sha256",
+          "pae_path",
+          "pae_sha256",
+          "metric_source_path",
+          "metric_source_sha256"
+        ]
+      },
+      "else": {"required": ["failure_code", "failure_reason"]}
+    }
+  ]
+}
