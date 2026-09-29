@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "public-release",
-  "skill_manifest_sha256": "0e83dc4f62ff4e4cbe70396ed6768c348dba9af757be0c86401a84fa96868299",
+  "skill_manifest_sha256": "e5ea4370d1c8034e5b721b64ccd90ea8921360eb5438bba7e19332fa841ad64a",
   "files": [
     {
       "path": ".gitignore",
@@ -51,7 +51,7 @@
     {
       "path": "skills/claude-binder-lane/.claude-binder-skill-build",
       "bytes": 110,
-      "sha256": "26805dbdc7157c399ae6d2f1d007b9c59d30ba1a2a92fe3581219d07771236ea"
+      "sha256": "6373ec3aa4cb1bbbe622222a43e8a8564f0266664e5c7942d00ea0e1f3c3052f"
     },
     {
       "path": "skills/claude-binder-lane/LICENSE.txt",
@@ -1410,8 +1410,8 @@
     },
     {
       "path": "skills/claude-binder-lane/references/running-a-campaign.md",
-      "bytes": 25652,
-      "sha256": "4408b71e5972e2b252a475ad4d5950583e91398d4ec8419532c442c879cf04ed"
+      "bytes": 25865,
+      "sha256": "2c5849c0f9cecc3b9b3ddd53a241fabc18dfd05d33141e0c6f5d399e8e173b1e"
     },
     {
       "path": "skills/claude-binder-lane/references/runpod-route.md",

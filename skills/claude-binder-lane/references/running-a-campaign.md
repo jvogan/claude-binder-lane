@@ -359,7 +359,7 @@ The package includes five specialized subcommands for static contract verificati
        "contract-dry-run",
        "--plan", str(bundle / "run-plan.json"),
        "--artifact-root", str(completed_run_root / "artifacts"),
-       "--from", "score-screen",
+       "--from", "output-check",
    ]) == 0
    ```
 
@@ -369,7 +369,10 @@ The package includes five specialized subcommands for static contract verificati
    to the completed run's `artifacts/` directory. `--fixture-root` names an isolated output tree and
    must not overlap it. The supplied-candidate downstream route is covered through its viewer path.
    Alternate predictor, generator, and optimization routes do not receive a generic runner. A
-   selected stage without an explicit runner is a reported failure.
+   selected stage without an explicit runner is a reported failure. For a complete offline
+   exercise of the full campaign graph, run the `local-contract-test.json` profile with
+   `lane execute`; this profile runs every stage with fixture adapters and starts no
+   provider job.
 
 3. Cluster unconstrained screening contacts by surface interaction patches:
 
