@@ -101,7 +101,7 @@
         "maximum_generated_candidates": 20,
         "maximum_screen_predictions": 100,
         "maximum_rescore_predictions": 360,
-        "maximum_optimization_predictions": 100
+        "maximum_optimization_predictions": 120
       }
     },
     "adapter_defaults": {

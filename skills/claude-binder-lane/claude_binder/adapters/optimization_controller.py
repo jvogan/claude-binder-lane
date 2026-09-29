@@ -221,8 +221,10 @@ def parent_manifest_path(artifact_root: Path, round_number: int) -> Path:
     return artifact_root / "optimization" / "rounds" / f"round-{round_number - 1}" / "eligible-parents.jsonl"
 
 
-def score_table_path(artifact_root: Path, round_number: int) -> Path:
+def score_table_path(artifact_root: Path, round_number: int, config: dict[str, Any] | None = None) -> Path:
     if round_number == 1:
+        if config is not None and lane.intermediate_enabled(config):
+            return artifact_root / "scores/intermediate-score-table.jsonl"
         return artifact_root / SCREEN_SCORE_PATH
     return artifact_root / "optimization" / "rounds" / f"round-{round_number - 1}" / "score-table.jsonl"
 
@@ -266,6 +268,16 @@ def screen_seeds(config: dict[str, Any]) -> list[int]:
     if len(set(seeds)) != len(seeds):
         raise AdapterError("config cofold.screen_seeds must contain unique seeds")
     return sorted(set(seeds))
+
+
+def parent_seeds(config: dict[str, Any]) -> list[int]:
+    """Use the seed tier that actually selected this round's parent pool."""
+    if lane.intermediate_enabled(config):
+        values = config["cofold"].get("rescore_seeds")
+        if not isinstance(values, list) or not values or len(set(values)) != len(values):
+            raise AdapterError("INTERMEDIATE parent selection requires distinct configured rescore seeds")
+        return sorted(set(require_int(value, "config cofold.rescore_seeds entry") for value in values))
+    return screen_seeds(config)
 
 
 def enabled_predictor_ids(config: dict[str, Any]) -> list[str]:
@@ -576,7 +588,7 @@ def validate_round_score_matrix(
     targets = config.get("targets", [])
     target_ids = [str(item["target_id"]) for item in targets if isinstance(item, dict) and isinstance(item.get("target_id"), str)]
     predictors = enabled_predictor_ids(config)
-    seeds = screen_seeds(config)
+    seeds = parent_seeds(config)
     if not candidate_ids or not target_ids or not predictors:
         return
     seen: set[tuple[str, str, str, int]] = set()
@@ -681,7 +693,7 @@ def best_configured_metric(config: dict[str, Any], scores: list[dict[str, Any]])
     """Return the best eligible value of the configured primary metric."""
     primary_metric, _ = lane._ranking_metrics(config)
     direction = lane.metric_direction(config, primary_metric)
-    ranked = lane.rank_candidate_cohort(config, scores, screen_seeds(config))
+    ranked = lane.rank_candidate_cohort(config, scores, parent_seeds(config))
     values = [
         lane._aggregate_metric_value(row, primary_metric)
         for row in ranked
@@ -731,7 +743,8 @@ def best_score_history(
     """Return each completed round's best score and its cumulative best score."""
     if completed_round < 0:
         raise AdapterError("completed optimization round cannot be negative")
-    paths = [(0, artifact_root / SCREEN_SCORE_PATH)]
+    initial = Path("scores/intermediate-score-table.jsonl") if lane.intermediate_enabled(config) else SCREEN_SCORE_PATH
+    paths = [(0, artifact_root / initial)]
     paths.extend(
         (
             round_number,
@@ -866,9 +879,9 @@ def validate_decision_shape(
             raise AdapterError("a stopped decision must have empty parameter_overrides")
     else:
         validate_overrides(operation, decision["parameter_overrides"], policy)
-    expected_seeds = screen_seeds(config)
+    expected_seeds = parent_seeds(config)
     if decision["seeds"] != expected_seeds:
-        raise AdapterError("next-round decision seeds must equal sorted cofold.screen_seeds")
+        raise AdapterError("next-round decision seeds must equal the configured parent-selection seed tier")
     candidate_count = require_int(decision["candidate_count"], "next-round decision candidate_count", minimum=0)
     expected_fanout = require_int(decision["expected_fanout"], "next-round decision expected_fanout", minimum=0)
     if candidate_count != expected_fanout or candidate_count != len(parents) * variants:
@@ -896,7 +909,7 @@ def plan_stage(args: argparse.Namespace) -> int:
     round_number = parse_round(args.stage)
     optimization = config_optimization(config)
     configured_early_stop_margin(config)
-    score_path = score_table_path(args.artifact_root.resolve(), round_number)
+    score_path = score_table_path(args.artifact_root.resolve(), round_number, config)
     scores = read_jsonl(score_path, "optimization score table")
     controls_are_ungated = (
         lane.is_ungated_candidate_claim(config)
@@ -910,16 +923,20 @@ def plan_stage(args: argparse.Namespace) -> int:
         if not control_check.get("ok"):
             raise AdapterError("control calibration failed for gated controls: " + "; ".join(control_check.get("errors", [])[:8]))
     if round_number == 1:
-        screen_check = lane.validate_screen_scored_pool(config, score_path, args.artifact_root.resolve())
-        if not screen_check.get("ok"):
-            raise AdapterError("screen score validation failed: " + "; ".join(screen_check.get("errors", [])[:8]))
+        pool_check = (
+            lane.validate_intermediate_scored_pool(config, score_path, args.artifact_root.resolve())
+            if lane.intermediate_enabled(config)
+            else lane.validate_screen_scored_pool(config, score_path, args.artifact_root.resolve())
+        )
+        if not pool_check.get("ok"):
+            raise AdapterError("parent score validation failed: " + "; ".join(pool_check.get("errors", [])[:8]))
     else:
         validate_round_score_matrix(config, round_number, scores, args.artifact_root.resolve())
     manifest_path, manifest_rows, parent_rows = load_parent_rows(args.artifact_root.resolve(), round_number)
     vectors = raw_score_vectors(scores)
     for index, row in enumerate(scores):
         enforce_raw_score_guard(row, f"score row {index}")
-    ranked = lane.rank_candidate_cohort(config, scores, screen_seeds(config))
+    ranked = lane.rank_candidate_cohort(config, scores, parent_seeds(config))
     if not isinstance(ranked, list):
         raise AdapterError("rank_candidate_cohort did not return a list")
     # Parent selection is a decision, not merely a diagnostic ordering.  Use
@@ -1025,7 +1042,7 @@ def plan_stage(args: argparse.Namespace) -> int:
         "adapter_id": ADAPTER_ID,
         "operation": operation,
         "parameter_overrides": overrides,
-        "seeds": screen_seeds(config),
+        "seeds": parent_seeds(config),
         "candidate_count": candidate_count,
         "expected_fanout": candidate_count,
         "stop": should_stop,
@@ -1042,7 +1059,7 @@ def plan_stage(args: argparse.Namespace) -> int:
             "decision_sha256": sha256_file(decision_path),
             "adapter_id": ADAPTER_ID,
             "operation": operation,
-            "seeds": screen_seeds(config),
+            "seeds": parent_seeds(config),
             "candidate_count": candidate_count,
             "stop": should_stop,
             "stop_reason": stop_reason,

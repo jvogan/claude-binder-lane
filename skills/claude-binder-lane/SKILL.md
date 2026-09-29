@@ -30,11 +30,11 @@ when that handoff needs a reusable Binder bridge.
 
 | Request | Open first | Then read |
 | --- | --- | --- |
-| One target, one generator, about 24 to 60 designs, and a bounded budget | [Small campaign quickstart](references/small-campaign-fast-path.md) | Only the selected tool and provider references named there. |
-| A multi-method campaign or a close reproduction of the published study | [Full campaign workflow](references/running-a-campaign.md) | The selected profile, stage contracts, and reproduction references. |
+| One target, BindCraft2, about 24 to 60 designs, and a bounded budget | [Small campaign quickstart](references/small-campaign-fast-path.md) | Only the selected tool and provider references named there. |
+| A different generator, supplied candidates, multiple methods, or a close reproduction of the published study | [Full campaign workflow](references/running-a-campaign.md) | The selected profile, stage contracts, and reproduction references. |
 | A tool or route comparison | [Tool catalogue](references/tool-catalogue.md) | Only the entries for candidate tools and routes. |
 
-For the small campaign, begin with the quickstart alone. Collect the target
+For a BindCraft2 small campaign, begin with the quickstart alone. Collect the target
 construct, site or partner-complex rationale, and budget before opening other
 references. Its approval and receipt steps apply even when a native Claude
 Science tool performs a stage.
@@ -120,6 +120,22 @@ C-alpha checkpoint; SolubleMPNN has no compatible C-alpha checkpoint. The
 profile records this designer substitution explicitly. Keep the compatible
 route and name the deviation in the report.
 
+Use the full campaign graph for the published selection pattern: generate
+across methods, filter candidates, screen each predictor with one seed, advance
+survivors to five-seed intermediate scoring, select optimization parents, then
+rescore the resulting candidates for final selection. The [published workflow
+mapping](references/published-workflow.md) names each stage. The one-generator
+[small campaign fast path](references/small-campaign-fast-path.md) runs its own
+two-predictor evaluation, with five seeds by default; it does not use this
+staged selection graph.
+The published-style score takes each predictor's best ipSAE across its seeds
+and pairs it with DockQ from that prediction. The small campaign gates on
+per-arm mean ipSAE and the maximum pose RMSD across its seeds. Its default
+rank averages the two arms' control-normalized mean ipSAE; set
+`rescore.ranking_rule: mean_of_arm_best_ipsae` to use the PD-L1 example's
+headline score. Keep each formula attached to its route when changing seed
+counts, and plan the resulting predictor calls within the approved budget.
+
 [Reproduction readiness](references/reproduction-readiness.md) separates
 binding, configuration, and dispatch states. A bound roster can still need an
 endpoint, account value, checkpoint, or validation run; report those as gaps and
@@ -139,10 +155,12 @@ the artifacts. [Getting started](references/getting-started.md) describes that
 session contract. [Running a campaign](references/running-a-campaign.md) has
 recovery and execution details when a Binder plan is selected.
 
-For a bounded first study or supplied candidates, follow the [small campaign
-fast path](references/small-campaign-fast-path.md). Select the needed tools and
-carry one candidate through each planned handoff before scaling. Use a native
-Claude Science route when it satisfies the selected stage contract.
+For a bounded BindCraft2 study, follow the [small campaign fast
+path](references/small-campaign-fast-path.md). For supplied candidates, start
+with the [supplied-candidate workflow](references/running-a-campaign.md#start-with-supplied-candidates).
+Select the needed tools and carry one candidate through each planned handoff
+before scaling. Use a native Claude Science route when it satisfies the
+selected stage contract.
 
 Handle transport verification, submission, completion, and artifact retrieval
 inside the session. Report progress and results to the scientist. Prepare the
@@ -180,7 +198,7 @@ parameters, inputs, score records, and output hashes needed to inspect it. Read
 
 ## Reference routing
 
-For a no-spend plan with one target and one generator, start with the
+For a no-spend BindCraft2 plan with one target, start with the
 [small campaign fast path](references/small-campaign-fast-path.md). Open at most
 three more references: the target input guide if the construct or site needs
 resolution, the selected tool's catalogue entry, and the selected provider or

@@ -158,6 +158,8 @@
   },
   "cofold": {
     "minimum_predictors": 3,
+    "intermediate_enabled": true,
+    "intermediate_fraction": 0.2,
     "screen_seeds": [
       0
     ],

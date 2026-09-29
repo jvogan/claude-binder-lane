@@ -25,7 +25,7 @@
     "predictor": {"type": "string", "minLength": 1},
     "model_revision": {"type": "string", "minLength": 1},
     "seed": {"type": "integer"},
-    "phase": {"enum": ["screen", "optimization", "uniform-rescore"]},
+    "phase": {"enum": ["screen", "intermediate", "optimization", "uniform-rescore"]},
     "sequence_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "design_pose_path": {"type": "string", "minLength": 1},
     "design_pose_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},

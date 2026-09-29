@@ -350,26 +350,17 @@
     "parent_count_per_round": 20,
     "variants_per_parent": 8,
     "operators": [
-      "partial-diffusion",
       "inverse-folding-resample",
-      "predict-redesign",
       "point-mutation"
     ],
     "adapter_policies": [
       {
         "adapter_id": "optimization-controller",
         "operations": [
-          "partial-diffusion",
           "inverse-folding-resample",
-          "predict-redesign",
           "point-mutation"
         ],
         "parameter_ranges": {
-          "diffusion_fraction": {
-            "type": "number",
-            "minimum": 0.05,
-            "maximum": 0.5
-          },
           "sampling_temperature": {
             "type": "number",
             "minimum": 0.05,

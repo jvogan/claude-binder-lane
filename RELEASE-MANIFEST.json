@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "local-release",
-  "skill_manifest_sha256": "82eed59280ccc1663d2a14e09c6971211f1db74349ae021c36eb4401289ed0bc",
+  "status": "public-release",
+  "skill_manifest_sha256": "0e83dc4f62ff4e4cbe70396ed6768c348dba9af757be0c86401a84fa96868299",
   "files": [
     {
       "path": ".gitignore",
@@ -15,8 +15,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12602,
-      "sha256": "d0571dccd50d69d3503e4159ebf2bfe3437f915a19904e9d8dfe0659a4d11f29"
+      "bytes": 13378,
+      "sha256": "f5d89c3b2685495a581107013fe31637c6348128bf5ee60c0f5c4785dba1af8d"
     },
     {
       "path": "assets/campaign-workflow.svg",
@@ -50,8 +50,8 @@
     },
     {
       "path": "skills/claude-binder-lane/.claude-binder-skill-build",
-      "bytes": 133,
-      "sha256": "ecccd85c4eebc12c44990e3dfc2f1aa5b4ace928f84c3910cedcf94cd5893f6f"
+      "bytes": 110,
+      "sha256": "26805dbdc7157c399ae6d2f1d007b9c59d30ba1a2a92fe3581219d07771236ea"
     },
     {
       "path": "skills/claude-binder-lane/LICENSE.txt",
@@ -60,8 +60,8 @@
     },
     {
       "path": "skills/claude-binder-lane/SKILL.md",
-      "bytes": 12171,
-      "sha256": "c1f800a63af4093eeb88ae055373beaff5550a00926566e5c00ef1701b54c9e4"
+      "bytes": 13409,
+      "sha256": "b188483dfd7b8bd8e5cafb11c9703c185a67a263ecd5811ea980d0c33b0ae59e"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/__init__.py",
@@ -90,8 +90,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/binder_contract.py",
-      "bytes": 39971,
-      "sha256": "aeae71fcaeb8b71fb57bdd0805647252f9c7ffde522e03a59f9131eb65e300f4"
+      "bytes": 39987,
+      "sha256": "a4cf500d09a6098283fc982da596062f50a92b92bde4a225c5b443dce05eddf7"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/binder_metrics.py",
@@ -165,8 +165,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/esmfold2_predictor.py",
-      "bytes": 56108,
-      "sha256": "e36a36df2370586451b4ed7f8f9abf8e86785bf27d3f19a6325963016531236a"
+      "bytes": 57024,
+      "sha256": "2591000a151bcae183f6252871e7eb840cea846cfefc5cdd3f13bd119838266d"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/fal_alphafold2_multimer_predictor.py",
@@ -205,8 +205,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/interface_scorer.py",
-      "bytes": 16604,
-      "sha256": "02ca3dffaf2ac4c0129fcc2baaa44db796547cdda744373deb27b5d4476d7abc"
+      "bytes": 16868,
+      "sha256": "5373e9887414377d64c0882e12db84db96a0e1781cd36313e54c9b570445a62a"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/lambda_platform.py",
@@ -230,8 +230,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/optimization_controller.py",
-      "bytes": 83132,
-      "sha256": "6939927bec0030f4d0f9f2d113a0d2f507229274eba64c18c9d052ba4c1b823a"
+      "bytes": 84184,
+      "sha256": "b4fff3841c0b3cadf6fb15aa5f10a88a36e320965624dccea8f08790e0957d24"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/output_validator.py",
@@ -245,8 +245,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/promotion_selector.py",
-      "bytes": 56150,
-      "sha256": "2f4bda265ae33c26a550ae68b92e294c00b33da686aea81a8fc1a210d1505b82"
+      "bytes": 56347,
+      "sha256": "8ffe02e65a61293747a805a1088f5062e71742b56ce68d31d84bca67c7aba823"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/proteina_complexa_generator.py",
@@ -317,6 +317,11 @@
       "path": "skills/claude-binder-lane/claude_binder/adapters/screen_geometry.py",
       "bytes": 15613,
       "sha256": "3643dd18e28b85d3c44118972ec2605acb683724297449cd1a3c04b82f95d188"
+    },
+    {
+      "path": "skills/claude-binder-lane/claude_binder/adapters/screen_survivor_selector.py",
+      "bytes": 5313,
+      "sha256": "ed3fc025724587c9ec50c1ceff1248d9ce9e88f836f562f0589388de804d572b"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/solublecaliby_designer.py",
@@ -600,8 +605,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/schemas/cofold-observation.schema.json",
-      "bytes": 5987,
-      "sha256": "2d0154e207a9c6cca39b7e0ffe54e6c638512f75312a700ee8fc75caa8221db3"
+      "bytes": 6003,
+      "sha256": "aff27fc2238a532f3c56595eacc0e1c6d02ead14623779cb39be051506f66f28"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/schemas/filter-observation.schema.json",
@@ -615,8 +620,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/schemas/raw-prediction-manifest.schema.json",
-      "bytes": 2282,
-      "sha256": "c356f20ac355bef257a8956752886311d4050ac08c4063cc1cebe199c57aa321"
+      "bytes": 2298,
+      "sha256": "646a20d9587875c18a975356da52d2443bd0851009e4d4247c6c83720507ea58"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/schemas/round-summary.schema.json",
@@ -655,8 +660,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/campaign.template.json",
-      "bytes": 11989,
-      "sha256": "ee92ed8be6feb8f32072efe0fdbb7ebe0ad8a78433071772eaf887e2c41e1c06"
+      "bytes": 11742,
+      "sha256": "1c33807df7b1bf97013fac6c83bea44e2b10c0ac1e99e954f9effe9925b828c4"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/diagrams/adapter-contracts.mmd",
@@ -735,8 +740,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/profiles/full-ensemble.template.json",
-      "bytes": 106127,
-      "sha256": "23b4dc85263eba2452f0759d430ebae79e6b744272f65d8de08f1fe6fb9ef773"
+      "bytes": 106195,
+      "sha256": "08a5962be761f5b2f166753096e49143a0e9ecc21410364a1f477089ded500f4"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/profiles/hosted-n10.template.json",
@@ -751,7 +756,7 @@
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/profiles/local-contract-test.json",
       "bytes": 19339,
-      "sha256": "a64467b2b4346a712aaa34b5d23c2085a5045effbe2bd96c42a29df01f111e9e"
+      "sha256": "5907b440d895dbe42f1c070a6fb4cb553a00c8b61151a64a2867b12ca94d07dd"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/templates/profiles/modal-draft.json",
@@ -860,8 +865,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/fixture_adapter.py",
-      "bytes": 79930,
-      "sha256": "b6e4015215e990c04afe4c91f899db4beb8fb1c4f99590cea97774ec80795868"
+      "bytes": 85145,
+      "sha256": "93b56e4b056b267abbc5f514f2b68d12d1de77e6af4c3fadcb7528f28e878907"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/gate.py",
@@ -880,8 +885,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/lane.py",
-      "bytes": 1003687,
-      "sha256": "939d35a9ec300c8046bb7cb755fcb86914978426e49bd3e3f8b08bf6cc73403a"
+      "bytes": 1019431,
+      "sha256": "5a10bc582329ca2911b7d50785d5d1ade35f2ee42c97dd8c94b431ad332c3943"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/link.py",
@@ -1224,6 +1229,11 @@
       "sha256": "e456a8223a672b103c04a3ddc2c207f9765fb70799058917e835a379b1d7c102"
     },
     {
+      "path": "skills/claude-binder-lane/references/evidence/tests/test_intermediate_tier.py",
+      "bytes": 11978,
+      "sha256": "6ef8a86d62be9f133f4f49735f08670edcb459ed35c5788cdb6a8f40403b0bc9"
+    },
+    {
       "path": "skills/claude-binder-lane/references/evidence/tests/test_loopturn.py",
       "bytes": 11099,
       "sha256": "f5ae8efdfe8117bdce76f7213896f8efe43128e8e0642dc6788c77e3d1e0e3cc"
@@ -1239,9 +1249,19 @@
       "sha256": "ca5fa9ad5a6a8e904eaeea9714b55fd53269b009b5514788b55e02dd85dd9eb7"
     },
     {
+      "path": "skills/claude-binder-lane/references/evidence/tests/test_partial_final_seeds.py",
+      "bytes": 11901,
+      "sha256": "38cc1f538044d3a1f7a76163b91ca7f6daebc2022111fe325feca6c9d456141e"
+    },
+    {
       "path": "skills/claude-binder-lane/references/evidence/tests/test_partner_site_resolution.py",
       "bytes": 13449,
       "sha256": "d634b2340332bbe2beeb29a61eb0af59bc37439295f5353b8ec1bb827acd520d"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/tests/test_small_campaign_seeds.py",
+      "bytes": 13677,
+      "sha256": "f3316e7f4d6f068720640f46f408eb1e857b57515b6caa777dfcfce7a47fcd35"
     },
     {
       "path": "skills/claude-binder-lane/references/fal-route.md",
@@ -1355,18 +1375,18 @@
     },
     {
       "path": "skills/claude-binder-lane/references/published-results.md",
-      "bytes": 16450,
-      "sha256": "aa22cd0a1a003e374973f8847057ac467e81dbafc781466d8d9cc296b95266e5"
+      "bytes": 16426,
+      "sha256": "5b248e3427eff32ec15757060a76a8cbc7f4721c472339fcfbda6eba81ddd100"
     },
     {
       "path": "skills/claude-binder-lane/references/published-targets.md",
-      "bytes": 12910,
-      "sha256": "67f02fa8c6e0d6aab9cb156225b6432874b409e82fa5c2e2673fed9727090100"
+      "bytes": 13205,
+      "sha256": "8d21859a0cdfded76b7a348e3c878c0ce5b4615300454257bbf5fb58bb4e83dc"
     },
     {
       "path": "skills/claude-binder-lane/references/published-workflow.md",
-      "bytes": 7599,
-      "sha256": "0a9c0aa454d72eb80e44339d2d7b5ef900fbe979e22b70a129bee62328cf3dec"
+      "bytes": 7688,
+      "sha256": "b553575efe0bcc7f74936498cb8f25458bc4bdf2dda1969ed2663325d1506901"
     },
     {
       "path": "skills/claude-binder-lane/references/reading-results-in-claude-science.md",
@@ -1375,8 +1395,8 @@
     },
     {
       "path": "skills/claude-binder-lane/references/released-record.md",
-      "bytes": 5937,
-      "sha256": "dd1be6bd843721eca641128aabbb98af7acb4ae32d4be70dafee5c329dcc392c"
+      "bytes": 6005,
+      "sha256": "db237c2d95d4d4578d26acb904ed1ded837ce5b592f0a884f6f7d21add578c7f"
     },
     {
       "path": "skills/claude-binder-lane/references/reproduction-readiness.md",
@@ -1410,8 +1430,8 @@
     },
     {
       "path": "skills/claude-binder-lane/references/small-campaign-fast-path.md",
-      "bytes": 9124,
-      "sha256": "a11557006f8a10e13b813aa4a06b6c455af1039f0762b9752c901f6a268f5f44"
+      "bytes": 10397,
+      "sha256": "d8876ee3c6eca10ac9934f018f43b239f065cc402d86a997290b390d8bec8b89"
     },
     {
       "path": "skills/claude-binder-lane/references/source-citations.md",
@@ -1490,13 +1510,13 @@
     },
     {
       "path": "skills/claude-binder-lane/scripts/small-campaign-settings.template.json",
-      "bytes": 1925,
-      "sha256": "63314ff989bc673398b3cffdab0f57191b162b2a7a58da03cee96d4e4168a95a"
+      "bytes": 1990,
+      "sha256": "8057753892e54ab3002832f286dea4ff4fe395215f2aa1c76d2a9f1e1c35141b"
     },
     {
       "path": "skills/claude-binder-lane/scripts/small_campaign.py",
-      "bytes": 58320,
-      "sha256": "7f9c4fb1b840da6bb8153de8189eff4c1af15bc46f52fb2502cec30934d029ae"
+      "bytes": 60149,
+      "sha256": "7fe0ac265a6f17d45595d763d3eca2d204d58a87c693da4e6edaa3bcb257c4d3"
     },
     {
       "path": "skills/claude-binder-lane/scripts/small_campaign_esmfold.py",

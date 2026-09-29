@@ -1,14 +1,22 @@
 # Published targets
 
-The released campaign names fourteen targets and states how to choose the construct and the epitope. This page transcribes the twelve that are in scope for this skill. Read this before decision 1 when the campaign intends to reproduce any part of the published work. Choosing a target the release did not name is a substitution, and it is decision 2 rather than decision 1.
+The released multi-target prompt names fourteen targets and states how to choose
+their constructs and epitopes. This page transcribes twelve of those targets.
+Read it when a campaign intends to follow that prompt's target setup. Anthropic's
+[public study post](https://www.anthropic.com/research/Claude-accelerates-protein-design)
+reports 15 targets attempted and binders found for 14; those are outcome counts
+from the reported study, not the prompt's target-list length.
 
 Source: the [released multi-target binder design prompt](https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md) at commit `d442eeb`, read on 2026-09-16. The dataset is licensed CC BY 4.0, and the table and rules below are transcribed from it and attributed to Anthropic. Its target table and its construct and epitope rules are transcribed below. The [published campaign comparison](published-campaign-comparison.md) compares the shipped profile against the rest of that prompt.
 
 ## Scope
 
-**This skill covers twelve of the release's fourteen targets.** Two rows are out of scope and are not transcribed, here or in any other reference. This is a scope decision, not a transcription gap. Do not restore the missing rows, and do not re-derive them from the upstream dataset. The same exclusion applies to [published results](published-results.md) and [the released record](released-record.md), whose tables carry fourteen of the release's sixteen design codes for the same reason.
-
-Counts that describe the release itself are left at the release's own values and are labelled as such. Counts that describe what these pages transcribe are stated as the in-scope figure.
+This page transcribes twelve of the prompt's fourteen targets. For a target
+outside this table, read its construct and epitope requirements in the
+[released prompt](https://huggingface.co/datasets/Anthropic/claude-protein-binder-design/blob/d442eeb/prompts/prompts/multi_target_binder_design_prompt.md).
+The [published results](published-results.md) and [released record](released-record.md)
+pages present fourteen of the release's sixteen design codes. Each page names
+the denominator used for its figures.
 
 ## The targets in scope
 
@@ -115,7 +123,17 @@ Cas9 was folded at full length with its guide. There is no truncation and no dom
 
 ## What the release ran, and on what
 
-Ten predictors were run, all template-free, five seeds per design and stoichiometry, one sample per seed, an unpaired target MSA of one a3m per construct, and the binder as a single sequence: Protenix v2, ESMFold2 full, ESMFold2 fast, AlphaFold-Multimer v3, Boltz-2, Chai-1, OpenFold3, OpenDDE v1, RoseTTAFold3, and AlphaFold3 code run with OpenFold3 weights. Only RoseTTAFold3, the AlphaFold3-code arm, and Boltz-2 are deterministic at fixed input and seed.
+The broader released in-silico evaluation ran ten predictors, all template-free,
+with five seeds per design and stoichiometry: Protenix v2, ESMFold2 full,
+ESMFold2 fast, AlphaFold-Multimer v3, Boltz-2, Chai-1, OpenFold3, OpenDDE v1,
+RoseTTAFold3, and AlphaFold3 code run with OpenFold3 weights. An unpaired target
+MSA was staged per construct for MSA-capable arms; ESMFold2-Fast runs
+single-sequence. The binder runs as a single sequence. The prompt's default
+**ranking instrument uses three arms**: ESMFold2-Fast, ESMFold2-Full, and
+Protenix v2. The other predictors belong to the broader evaluation and are
+not all part of the ranking instrument; the prompt names eligible substitutes
+for an unavailable or unvalidated arm. Only RoseTTAFold3,
+the AlphaFold3-code arm, and Boltz-2 are deterministic at fixed input and seed.
 
 Cofactors were supplied to every predictor that accepts them. The release names one exclusion, and it is instructive: AlphaFold-Multimer v3 folds without cofactors and was not run on the Cas9 RNP. Every other predictor was, ESMFold2 in both modes included. An arm that cannot carry the cofactor is dropped from that target rather than run blind, and no arm here was treated as protein-only by assumption.
 

@@ -47,9 +47,11 @@ Point your Claude or Claude Science agent at this repository and say:
 > budget ceiling of **[amount]**. Check the target construct and design site,
 > discover the tools and compute available in my session, and propose a route.
 > Use a connected tool or add a new tool and connector when it fits the target.
-> Include target-matched controls, fixed seeds, two independent prediction
-> checks, and a ranking rule. Show me the provider, data destination, hardware,
-> and estimated cost before paid work. Carry one design through a new handoff
+> Include target-matched controls, seed counts and aggregation rules for
+> screening and deeper prediction, two independent prediction checks, and a
+> ranking rule. Show me the provider, data destination, hardware, and estimated
+> cost before paid work.
+> Carry one design through a new handoff
 > before scaling. Return a ranked computational shortlist, structures, control
 > results, provenance, and the time and cost report. If I supply candidates,
 > start with those.
@@ -65,8 +67,17 @@ scaling.
 
 For a broader campaign or a close comparison with Anthropic's published study,
 tell Claude the desired methods and claim. Claude Science can select the full
-campaign workflow, inspect the relevant catalogue entries, and qualify each
-selected handoff before scaling.
+campaign workflow, screen a pool across methods, advance survivors to deeper
+prediction, and use those results to choose designs for another round. The
+[published workflow mapping](skills/claude-binder-lane/references/published-workflow.md)
+shows the stages and their corresponding package commands.
+
+The small campaign gates candidates on each predictor's mean ipSAE and its
+worst pose check across seeds. It ranks by a control-normalized score by
+default; the PD-L1 example instead used the mean of each predictor's best
+ipSAE. The published-style workflow pairs each predictor's best ipSAE with
+DockQ from that same prediction. Claude Science plans the prediction count
+and cost for the chosen seed lists.
 
 ## Cost and control
 
@@ -133,13 +144,15 @@ or `full-ensemble.template.json` profile for your target, tools, and scale. It
 checks each tool's terms and input contract and continues within the approved
 plan and budget. Report a customized campaign as an adaptation.
 
-To compare closely with the published study, ask Claude Science to match the
-published setup. `rfdiffusion3-two-arm.template.json` declares bindings for all
-12 tools in the published roster. It composes once you set the five fal
-deployment endpoints its commands reference. Claude Science compares your
+To compare closely with the published study, ask Claude Science to start with
+`published-baseline-fidelity.template.json`. It selects all 12 tools in the
+published roster and the full campaign's staged screening, promotion,
+optimization, and rescoring path. Claude Science resolves the selected tools'
+deployment endpoints and model settings for your account. It then compares your
 target, site, revisions, seeds, settings, scale, controls, filters, rounds,
-routes, and ranking with the protocol and records each difference. The
-[comparison guide](skills/claude-binder-lane/references/published-campaign-comparison.md)
+routes, and ranking with the protocol. The profile records its Genie3
+sequence-designer substitution.
+The [comparison guide](skills/claude-binder-lane/references/published-campaign-comparison.md)
 explains what a configured binding, a qualified run, and a reproduced result
 each show.
 

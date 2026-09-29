@@ -29,6 +29,8 @@ import zipfile
 AA = re.compile(r"^[ACDEFGHIKLMNPQRSTVWY]+$")
 IDENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,99}$")
 ARMS = ("esmfold2-kit", "esmfold2-platform", "boltz2-kit")
+DEFAULT_RANKING_RULE = "mean_of_arm_control_normalized_mean_ipsae"
+RANKING_RULES = (DEFAULT_RANKING_RULE, "mean_of_arm_best_ipsae")
 KITS = {"esmfold2-kit": "esmfold2", "boltz2-kit": "boltz2"}
 WORKER_MANIFEST = "small-campaign-worker-manifest.json"
 
@@ -161,7 +163,11 @@ def _validate_settings(settings: dict):
     arms = rescore.get("predictors")
     _require(isinstance(arms, list) and len(arms) == 2 and len(set(arms)) == 2 and all(a in ARMS for a in arms), "rescore.predictors must name two distinct supported arms")
     _require(not set(arms) == {"esmfold2-kit", "esmfold2-platform"}, "two ESMFold2 runtimes are one model lineage; add another predictor")
-    _require(rescore.get("seeds") == [0, 1, 2, 3, 4], "rescore.seeds must be [0,1,2,3,4] for the automatic gate")
+    seeds = rescore.get("seeds")
+    _require(isinstance(seeds, list) and seeds and all(type(seed) is int and seed >= 0 for seed in seeds)
+             and len(set(seeds)) == len(seeds), "rescore.seeds must be distinct nonnegative integers")
+    _require(rescore.get("ranking_rule", DEFAULT_RANKING_RULE) in RANKING_RULES,
+             f"rescore.ranking_rule must be one of {', '.join(RANKING_RULES)}")
     for arm in arms:
         gate = rescore.get("gates", {}).get(arm, {})
         for key in ("candidate_multiplier", "minimum_positive_margin", "maximum_pose_rmsd"):
@@ -203,6 +209,13 @@ def plan(args):
     if settings["design"]["enabled"]:
         sources["bindcraft_settings"] = _file_digest(Path(settings["design"]["bindcraft_settings_path"]))
     body = {"schema": "small-campaign-plan-v1", "created_at_utc": _utc(), "settings": settings, "jobs": jobs, "source_sha256": sources}
+    if jobs is not None:
+        arms = settings["rescore"]["predictors"]
+        seeds = settings["rescore"]["seeds"]
+        body["rescore_seed_count"] = len(seeds)
+        body["rescore_seed_ids"] = seeds
+        body["planned_rescore_jobs"] = len(arms) * len(seeds)
+        body["planned_prediction_calls"] = len(jobs) * len(arms) * len(seeds)
     body["plan_sha256"] = _digest(body)
     _write(args.out, body)
     print(body["plan_sha256"])
@@ -679,6 +692,7 @@ def report(args):
     _require(isinstance(rows, list) and isinstance(receipts, list), "scores and receipts must be arrays")
     arms = settings["rescore"]["predictors"]
     seeds = settings["rescore"]["seeds"]
+    ranking_rule = settings["rescore"].get("ranking_rule", DEFAULT_RANKING_RULE)
     by_key = {}
     for row in rows:
         key = (row.get("candidate_id"), row.get("arm"), row.get("seed"))
@@ -693,7 +707,7 @@ def report(args):
             _require(row.get("design_pose_sha256") == _file_digest(Path(row["design_pose_path"])), f"design pose digest mismatch: {key}")
         by_key[key] = row
     expected = {(j["name"], arm, seed) for j in jobs for arm in arms for seed in seeds}
-    _require(set(by_key) == expected, f"five-seed two-arm score matrix incomplete: {len(expected - set(by_key))} missing")
+    _require(set(by_key) == expected, f"{len(seeds)}-seed two-arm score matrix incomplete: {len(expected - set(by_key))} missing")
     provider_receipts = {}
     total_cost = 0.0
     total_wall = 0.0
@@ -775,6 +789,7 @@ def report(args):
             continue
         per_arm = {}
         normalized = []
+        bests = []
         for arm in arms:
             values = [by_key[(cid, arm, seed)]["ipsae_min"] for seed in seeds]
             poses = [by_key[(cid, arm, seed)].get("pose_rmsd") for seed in seeds]
@@ -784,27 +799,33 @@ def report(args):
             passed = mean > gate["candidate_multiplier"] * calibrated[arm][0] and max(poses) <= gate["maximum_pose_rmsd"]
             low, high = calibrated[arm]
             normalized.append((mean-low)/(high-low))
-            per_arm[arm] = {"mean_ipsae": mean, "seed_min": min(values), "seed_max": max(values), "max_pose_rmsd": max(poses), "candidate_threshold": gate["candidate_multiplier"] * calibrated[arm][0], "passed": passed, "control_normalized": normalized[-1]}
-        ranked.append({"candidate_id": cid, "passed": all(v["passed"] for v in per_arm.values()), "rank_score": sum(normalized)/len(normalized), "arms": per_arm})
+            bests.append(max(values))
+            per_arm[arm] = {"mean_ipsae": mean, "best_ipsae": bests[-1], "seed_min": min(values), "seed_max": bests[-1], "max_pose_rmsd": max(poses), "candidate_threshold": gate["candidate_multiplier"] * calibrated[arm][0], "passed": passed, "control_normalized": normalized[-1]}
+        components = bests if ranking_rule == "mean_of_arm_best_ipsae" else normalized
+        ranked.append({"candidate_id": cid, "passed": all(v["passed"] for v in per_arm.values()), "rank_score": sum(components)/len(components), "arms": per_arm})
     ranked.sort(key=lambda row: (not row["passed"], -row["rank_score"], row["candidate_id"]))
     output = Path(args.out)
     csv_path = output.with_suffix(".csv")
     fasta_path = output.with_suffix(".fasta")
     summary_path = output.with_suffix(".txt")
     elapsed = (max(ends) - min(starts)).total_seconds() if starts else None
-    result = {"schema": "small-campaign-report-v1", "campaign_id": settings["campaign_id"], "campaign_authorization_id": approval["campaign_authorization_id"], "plan_sha256": plan_doc["plan_sha256"], "approval_ref": approval["approval_ref"], "controls": control_summary, "ranking": ranked, "cost": {"scope": "design + rescore" if args.linked_phase else "rescore only", "provider_job_count": len(provider_receipts), "settled_usd": total_cost if not unsettled else None, "settled_component_usd": total_cost, "unsettled_job_ids": unsettled, "list_rate_estimate_usd": list_rate_estimate if not missing_rate else None, "list_rate_component_usd": list_rate_estimate, "missing_list_rate_job_ids": missing_rate, "elapsed_campaign_seconds": elapsed, "provider_wall_seconds_sum": total_wall}, "exports": {"ranked_csv": str(csv_path), "shortlist_fasta": str(fasta_path), "summary_text": str(summary_path)}, "claim": "computational shortlist; two predictor routes, five seeds each; no binding or specificity validation"}
+    seed_description = ", ".join(str(seed) for seed in seeds)
+    result = {"schema": "small-campaign-report-v1", "campaign_id": settings["campaign_id"], "campaign_authorization_id": approval["campaign_authorization_id"], "plan_sha256": plan_doc["plan_sha256"], "approval_ref": approval["approval_ref"], "rescore_seeds": seeds, "ranking_rule": ranking_rule, "controls": control_summary, "ranking": ranked, "cost": {"scope": "design + rescore" if args.linked_phase else "rescore only", "provider_job_count": len(provider_receipts), "settled_usd": total_cost if not unsettled else None, "settled_component_usd": total_cost, "unsettled_job_ids": unsettled, "list_rate_estimate_usd": list_rate_estimate if not missing_rate else None, "list_rate_component_usd": list_rate_estimate, "missing_list_rate_job_ids": missing_rate, "elapsed_campaign_seconds": elapsed, "provider_wall_seconds_sum": total_wall}, "exports": {"ranked_csv": str(csv_path), "shortlist_fasta": str(fasta_path), "summary_text": str(summary_path)}, "claim": f"computational shortlist; two predictor routes, {len(seeds)} seed-labeled prediction calls per route (seed IDs: {seed_description}); no binding or specificity validation"}
     _write(output, result)
     with csv_path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.writer(stream)
-        writer.writerow(["rank", "candidate_id", "passed", "rank_score", *[f"{arm}_mean_ipsae" for arm in arms], *[f"{arm}_max_pose_rmsd" for arm in arms]])
+        writer.writerow(["rank", "candidate_id", "passed", "ranking_rule", "rank_score", *[f"{arm}_mean_ipsae" for arm in arms], *[f"{arm}_best_ipsae" for arm in arms], *[f"{arm}_max_pose_rmsd" for arm in arms]])
         for index, item in enumerate(ranked, 1):
-            writer.writerow([index, item["candidate_id"], item["passed"], f"{item['rank_score']:.6f}", *[f"{item['arms'][arm]['mean_ipsae']:.6f}" for arm in arms], *[f"{item['arms'][arm]['max_pose_rmsd']:.3f}" for arm in arms]])
+            writer.writerow([index, item["candidate_id"], item["passed"], ranking_rule, f"{item['rank_score']:.6f}", *[f"{item['arms'][arm]['mean_ipsae']:.6f}" for arm in arms], *[f"{item['arms'][arm]['best_ipsae']:.6f}" for arm in arms], *[f"{item['arms'][arm]['max_pose_rmsd']:.3f}" for arm in arms]])
     sequence_by_id = {job["name"]: job["binder"] for job in jobs}
     with fasta_path.open("w", encoding="utf-8") as stream:
         for item in ranked:
             if item["passed"]:
                 stream.write(f">{item['candidate_id']} rank_score={item['rank_score']:.6f}\n{sequence_by_id[item['candidate_id']]}\n")
-    lines = [f"Campaign: {settings['campaign_id']}", f"Plan: {plan_doc['plan_sha256']}", f"Approval: {approval['approval_ref']}", "Computational shortlist only; binding and specificity are unvalidated.", "", "Control calibration:"]
+    ranking_description = ("raw mean of the two per-arm best-of-seeds ipSAE_min values"
+                           if ranking_rule == "mean_of_arm_best_ipsae"
+                           else "mean of two per-arm control-normalized mean ipSAE_min values")
+    lines = [f"Campaign: {settings['campaign_id']}", f"Plan: {plan_doc['plan_sha256']}", f"Approval: {approval['approval_ref']}", f"Rescore: {len(seeds)} seed IDs per predictor ({seed_description})", f"Ranking rule: {ranking_rule} ({ranking_description})", "Positive and candidate ipSAE gates use seed means; candidate pose gates use maximum RMSD across seeds.", "Computational shortlist only; binding and specificity are unvalidated.", "", "Control calibration:"]
     for arm in arms:
         control = control_summary[arm]
         lines.append(f"  {arm}: positive mean ipSAE_min={control['positive_mean_ipsae']:.4f}; negative reference={control['negative_reference']:.4f}; margin={control['margin']:.4f}; rule={control['gate']['rule_context']}")

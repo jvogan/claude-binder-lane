@@ -28,6 +28,7 @@ from .declared_artifacts import input_files, load_plan, output_artifact_id
 # the table's keys to be exactly targets by passing candidates by predictors by screen
 # seeds.
 SCREEN_SCORE_ARTIFACT_ID = "screen-score-table"
+INTERMEDIATE_SCORE_ARTIFACT_ID = "intermediate-score-table"
 OPTIMIZATION_SCORE_ARTIFACT_ID = "optimization-score-table"
 
 OPTIMIZATION_MEASUREMENT_STAGE = re.compile(r"optimization-measure-round-([1-9][0-9]*)")
@@ -130,10 +131,12 @@ def score_artifact_for_stage(stage_id: str) -> str:
     """Return the score-table artifact declared by a supported scorer stage."""
     if stage_id == "score-screen":
         return SCREEN_SCORE_ARTIFACT_ID
+    if stage_id == "score-intermediate":
+        return INTERMEDIATE_SCORE_ARTIFACT_ID
     if OPTIMIZATION_MEASUREMENT_STAGE.fullmatch(stage_id):
         return OPTIMIZATION_SCORE_ARTIFACT_ID
     raise ScorerError(
-        "interface_scorer implements score-screen and optimization-measure-round-N "
+        "interface_scorer implements score-screen, score-intermediate and optimization-measure-round-N "
         f"for positive integer N; received stage {stage_id}"
     )
 
@@ -147,6 +150,8 @@ def cofold_stage_for_score_stage(stage_id: str, predictor: dict) -> str:
                 f"predictor {predictor.get('id')} has no screen_stage for score-screen"
             )
         return screen_stage
+    if stage_id == "score-intermediate":
+        return f"cofold-intermediate-{predictor['id']}"
     match = OPTIMIZATION_MEASUREMENT_STAGE.fullmatch(stage_id)
     if match:
         return f"optimization-cofold-round-{match.group(1)}-{predictor['id']}"

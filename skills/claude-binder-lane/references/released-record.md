@@ -2,7 +2,9 @@
 
 Read this when comparing a run against the published campaign.
 
-**Scope.** The median table below carries fourteen of the release's sixteen design codes. Two are out of scope for this skill and are deliberately absent. [Published targets](published-targets.md#scope) states the rule.
+The median table below covers fourteen of the release's sixteen design codes.
+Use the [published target reference](published-targets.md#scope) to match each
+code to its construct.
 
 ## Contents
 
@@ -23,7 +25,12 @@ Several provenance columns contain values for only a subset of designs. These in
 
 Round counts range from 0 to 26 and record design ancestry depth. Two designs from one root backbone can carry different counts. A low count does not indicate that its target ran few rounds.
 
-Scope differs between the prompt and the release. The multi-target protocol names 14 targets. The released table covers 1,440 designs across 16 targets and three campaigns. Single-target campaigns ran on targets omitted from the multi-target prompt. Every figure taken from the release retains its source denominator.
+Scope differs among the sources. The multi-target prompt names 14 targets.
+Anthropic's [study post](https://www.anthropic.com/research/Claude-accelerates-protein-design)
+reports 15 targets attempted and binders found for 14. The released table
+covers 1,440 designs across 16 targets and three campaigns. Single-target
+campaigns ran on targets omitted from the multi-target prompt. Use each figure
+with its source denominator.
 
 ## Checking a run against the campaign
 

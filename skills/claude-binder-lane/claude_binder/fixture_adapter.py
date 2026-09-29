@@ -1202,7 +1202,7 @@ def normalized_candidates(
 PROMOTED_ARMS = ("rfdiffusion", "genie3", "fixture-codesign")
 
 
-def promoted_pool_rows(config: dict[str, Any]) -> list[dict[str, Any]]:
+def promoted_pool_rows(config: dict[str, Any], artifact_root: Path | None = None) -> list[dict[str, Any]]:
     """Return the pool row this fixture promotes for each arm in `PROMOTED_ARMS`.
 
     The arm list is fixed. The candidate id inside an arm is not. A co-design arm
@@ -1223,6 +1223,37 @@ def promoted_pool_rows(config: dict[str, Any]) -> list[dict[str, Any]]:
     literal list happened to be in that order, which made the agreement a
     coincidence of how the arms were written down rather than a property.
     """
+    if lane.intermediate_enabled(config) and artifact_root is not None:
+        promotion_path = artifact_root / "promotion" / "promotion-manifest.jsonl"
+        if promotion_path.is_file():
+            return load_jsonl(promotion_path)
+        score_path = artifact_root / "scores" / "intermediate-score-table.jsonl"
+        passing_path = artifact_root / "filters" / "passing-candidates.jsonl"
+        scores = load_jsonl(score_path)
+        passing = {str(row["candidate_id"]): row for row in load_jsonl(passing_path)}
+        ranked = lane.rank_candidate_cohort(config, scores, lane.parent_seed_values(config))
+        ranked = lane.apply_declared_ranking_mode(config, ranked)
+        ranked.sort(key=lambda row: lane._rank_sort_key(row, config))
+        optimization = config.get("optimization", {})
+        optimization_enabled = isinstance(optimization, dict) and optimization.get("enabled") is True
+        requested = (
+            int(optimization["parent_count_per_round"])
+            if optimization_enabled else int(config["selection"]["final_count"])
+        )
+        minimum_generators = min(
+            int(config["generation"]["minimum_generators"] if optimization_enabled else config["selection"]["minimum_generators"]),
+            requested,
+        )
+        selected, portfolio = lane.select_portfolio(
+            ranked,
+            final_count=requested,
+            minimum_generators=minimum_generators,
+            maximum_fraction=float(config["selection"]["maximum_fraction_per_generator"]),
+            sort_key=lambda row: lane._rank_sort_key(row, config),
+        )
+        if not portfolio["ok"]:
+            raise ValueError("fixture INTERMEDIATE score cohort cannot fill the parent portfolio")
+        return [passing[str(row["candidate_id"])] for row in selected]
     by_arm: dict[str, list[dict[str, Any]]] = {}
     for row in normalized_candidates(config):
         by_arm.setdefault(str(row["origin_generator"]), []).append(row)
@@ -1241,11 +1272,12 @@ def optimization_rows(
     round_index: int,
     sequence_root: Path | None = None,
     pose_root: Path | None = None,
+    artifact_root: Path | None = None,
 ) -> list[dict[str, Any]]:
     target = next(item for item in config["targets"] if item["role"] == "primary")
     roots = [
         (str(row["candidate_id"]), str(row["origin_generator"]), str(row["seq_method"]))
-        for row in promoted_pool_rows(config)
+        for row in promoted_pool_rows(config, artifact_root)
     ]
     rows: list[dict[str, Any]] = []
     for root_candidate_id, generator, seq_method in roots:
@@ -1324,7 +1356,7 @@ def optimization_rows_with_decision(
             record_hash(decision["parameter_overrides"]),
             output_dir,
         )
-    rows = optimization_rows(config, round_index, sequence_root, pose_root)
+    rows = optimization_rows(config, round_index, sequence_root, pose_root, artifact_root)
     for row in rows:
         row["decision_sha256"] = sha256(decision_path)
         row["parameter_set_sha256"] = record_hash(decision["parameter_overrides"])
@@ -1554,6 +1586,29 @@ def run_fixture(args: argparse.Namespace) -> int:
                 for seed in config["cofold"]["screen_seeds"]
             ]
         write_jsonl(path, attach_raw_artifacts(config, rows, args.attempt_dir / args.phase))
+    elif args.stage.startswith("cofold-intermediate-"):
+        predictor = args.stage.removeprefix("cofold-intermediate-")
+        candidates = load_jsonl(args.artifact_root / "scores" / "intermediate-candidates.jsonl")
+        predictor_record = next(item for item in config["cofold"]["predictors"] if item["id"] == predictor)
+        rows = [
+            raw_prediction_row(
+                config,
+                artifact_root=args.artifact_root,
+                target=target,
+                candidate_id=candidate["candidate_id"],
+                predictor=predictor_record,
+                seed=seed,
+                phase="intermediate",
+                sequence_sha256=candidate["sequence_sha256"],
+                design_pose_path=candidate["design_pose_path"],
+                design_pose_sha256=candidate["design_pose_sha256"],
+                origin_generator=candidate["origin_generator"],
+            )
+            for candidate in candidates[:args.count]
+            for target in config["targets"]
+            for seed in config["cofold"]["rescore_seeds"]
+        ]
+        write_jsonl(path, attach_raw_artifacts(config, rows, args.attempt_dir / args.phase))
     elif args.stage == "score-screen":
         raw_rows = [
             row
@@ -1575,6 +1630,27 @@ def run_fixture(args: argparse.Namespace) -> int:
                 for raw in raw_rows
             ],
         )
+    elif args.stage == "score-intermediate":
+        raw_rows = [
+            row
+            for predictor in config["cofold"]["predictors"]
+            if predictor.get("enabled", True)
+            for row in stage_rows(args.artifact_root, f"cofold-intermediate-{predictor['id']}")
+        ]
+        write_jsonl(
+            path,
+            [
+                {
+                    **observation_from_raw(
+                        raw,
+                        attempt_id="fixture-intermediate-score",
+                        filter_pass=True,
+                    ),
+                    "origin_generator": raw["origin_generator"],
+                }
+                for raw in raw_rows
+            ],
+        )
     elif args.stage == "promote":
         passing = {
             row["candidate_id"]: row
@@ -1587,7 +1663,7 @@ def run_fixture(args: argparse.Namespace) -> int:
                     "promotion_reason": "fixture",
                 }
                 for candidate_id in (
-                    str(row["candidate_id"]) for row in promoted_pool_rows(config)
+                    str(row["candidate_id"]) for row in promoted_pool_rows(config, args.artifact_root)
                 )
             ]
         write_jsonl(path, promoted)
@@ -1732,7 +1808,7 @@ def run_fixture(args: argparse.Namespace) -> int:
                 )
                 for candidate in candidates[:args.count]
                 for target in config["targets"]
-                for seed in config["cofold"]["screen_seeds"]
+                for seed in lane.parent_seed_values(config)
             ]
         write_jsonl(path, attach_raw_artifacts(config, rows, args.attempt_dir / args.phase))
     elif args.stage.startswith("optimization-measure-round-"):
@@ -1775,9 +1851,30 @@ def run_fixture(args: argparse.Namespace) -> int:
                 / "filters"
                 / "passing-candidates.jsonl"
             )
-            for candidate in candidates:
-                candidate["status"] = "eligible"
-            candidates.sort(key=lambda row: str(row["candidate_id"]))
+            if lane.intermediate_enabled(config):
+                score_rows = load_jsonl(
+                    args.artifact_root / "optimization" / "rounds"
+                    / f"round-{round_index}" / "score-table.jsonl"
+                )
+                ranked = lane.rank_candidate_cohort(config, score_rows, lane.parent_seed_values(config))
+                ranked = lane.apply_declared_ranking_mode(config, ranked, complete_only=True)
+                ranked.sort(key=lambda row: lane._rank_sort_key(row, config))
+                requested = int(config["optimization"]["parent_count_per_round"])
+                selected, portfolio = lane.select_portfolio(
+                    ranked,
+                    final_count=requested,
+                    minimum_generators=min(int(config["generation"]["minimum_generators"]), requested),
+                    maximum_fraction=float(config["selection"]["maximum_fraction_per_generator"]),
+                    sort_key=lambda row: lane._rank_sort_key(row, config),
+                )
+                if not portfolio["ok"]:
+                    raise ValueError("fixture optimization score cohort cannot fill the next parent portfolio")
+                by_id = {str(row["candidate_id"]): row for row in candidates}
+                candidates = [dict(by_id[str(row["candidate_id"])], status="eligible") for row in selected]
+            else:
+                for candidate in candidates:
+                    candidate["status"] = "eligible"
+                candidates.sort(key=lambda row: str(row["candidate_id"]))
         write_jsonl(path, candidates)
     elif args.stage.startswith("cofold-rescore-"):
         predictor = args.stage.removeprefix("cofold-rescore-")

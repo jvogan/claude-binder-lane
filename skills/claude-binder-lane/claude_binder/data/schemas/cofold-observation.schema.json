@@ -64,7 +64,7 @@
       "enum": ["same-as-site", "subset-of-site", "superset-of-site", "partially-overlaps-site", "disjoint-from-site", "unconstrained"]
     },
     "hotspot_recovery_duplicates_target_contact_recall": {"type": "boolean"},
-    "phase": {"enum": ["screen", "optimization", "uniform-rescore"]},
+    "phase": {"enum": ["screen", "intermediate", "optimization", "uniform-rescore"]},
     "seed": {"type": "integer"},
     "status": {"enum": ["scored", "failed"]},
     "mapping_status": {"enum": ["ok", "failed", "not-applicable"]},

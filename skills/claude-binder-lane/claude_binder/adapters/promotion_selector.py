@@ -953,7 +953,7 @@ def promotion_ranking_control(
             config,
             scores,
             control_rows,
-            candidate_seeds=list(config["cofold"]["screen_seeds"]),
+            candidate_seeds=lane.parent_seed_values(config),
             control_seeds=list(config["cofold"]["rescore_seeds"]),
             # assess_rank_score_direction requires controls scored through the
             # ranking path under test, and `rank_candidates` pins that path to
@@ -1017,7 +1017,7 @@ def run_stage(args: argparse.Namespace) -> int:
         plan,
         args.receipts_dir,
         args.stage,
-        artifact_id="screen-score-table",
+        artifact_id="intermediate-score-table" if lane.intermediate_enabled(config) else "screen-score-table",
     )
     _, passing_files = input_files(
         plan,
@@ -1028,7 +1028,7 @@ def run_stage(args: argparse.Namespace) -> int:
     )
     if len(score_files) != 1 or len(passing_files) != 1:
         raise AdapterError(
-            "promote requires one declared screen-score-table file and one declared "
+            "promote requires one declared parent score table file and one declared "
             "passing-candidates file through stage receipts"
         )
     score_path = score_files[0]
@@ -1052,15 +1052,19 @@ def run_stage(args: argparse.Namespace) -> int:
             raise AdapterError(
                 "promote requires one declared control-observations file through stage receipts"
             )
-    screen_check = lane.validate_screen_scored_pool(config, score_path, artifact_root)
-    if not screen_check["ok"]:
-        raise AdapterError("screen score validation failed: " + "; ".join(screen_check["errors"][:8]))
+    pool_check = (
+        lane.validate_intermediate_scored_pool(config, score_path, artifact_root)
+        if lane.intermediate_enabled(config)
+        else lane.validate_screen_scored_pool(config, score_path, artifact_root)
+    )
+    if not pool_check["ok"]:
+        raise AdapterError("parent score validation failed: " + "; ".join(pool_check["errors"][:8]))
     if control_required:
         control_check = lane.validate_control_calibration(config, artifact_root)
         if not control_check["ok"]:
             raise AdapterError("control calibration failed: " + "; ".join(control_check["errors"][:8]))
     lineage = prepare_lineage(passing)
-    ranked = lane.rank_candidate_cohort(config, scores, list(config["cofold"]["screen_seeds"]))
+    ranked = lane.rank_candidate_cohort(config, scores, lane.parent_seed_values(config))
     ranked = apply_ranking_mode(ranked, mode)
     ranked.sort(key=lambda row: lane._rank_sort_key(row, config))
     ranking_control = promotion_ranking_control(config, scores, control_files, mode)

@@ -134,7 +134,9 @@ FAILURE_ARTIFACT_WRITE = "artifact_write_failed"
 # smoke or scale phase and is a different quantity.
 STAGE_PREFIX_PHASE = {
     "cofold-screen-": "screen",
+    "cofold-intermediate-": "intermediate",
     "cofold-rescore-": "uniform-rescore",
+    "optimization-cofold-round-": "optimization",
 }
 
 # The shard slice arrives in the environment because no template token can
@@ -360,6 +362,24 @@ def candidate_manifest_path(
         return artifact_root / "optimization" / "rescore-candidates.jsonl"
     if not isinstance(inputs, list):
         raise ValueError(f"stage {stage_id} inputs must be a list")
+    if phase == "intermediate":
+        survivors = [
+            value.split(":", 1)
+            for value in inputs
+            if isinstance(value, str) and value.endswith(":intermediate-candidates")
+        ]
+        if len(survivors) != 1:
+            raise ValueError(f"stage {stage_id} must declare one intermediate-candidates input")
+        return published_artifact_path(config, artifact_root, *survivors[0])
+    if phase == "optimization":
+        passing = [
+            value.split(":", 1)
+            for value in inputs
+            if isinstance(value, str) and value.endswith(":passing-candidates")
+        ]
+        if len(passing) != 1:
+            raise ValueError(f"stage {stage_id} must declare one passing-candidates input")
+        return published_artifact_path(config, artifact_root, *passing[0])
     matches = [
         value.split(":", 1)
         for value in inputs

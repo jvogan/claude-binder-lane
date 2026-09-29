@@ -27,6 +27,7 @@
   "rescore": {
     "predictors": ["esmfold2-kit", "boltz2-kit"],
     "seeds": [0, 1, 2, 3, 4],
+    "ranking_rule": "mean_of_arm_control_normalized_mean_ipsae",
     "boltz2_mode": "fast",
     "esmfold2_variant": "fast",
     "esmfold2_mode": "fast",

@@ -54,7 +54,7 @@ MEASUREMENT_FILENAME = "measurement-source.json"
 _SLUG_UNSAFE = re.compile(r"[^a-zA-Z0-9_.-]")
 
 # The campaign phase. It goes on the row, into the measurement, and into the slug.
-PHASES = ("screen", "optimization", "uniform-rescore")
+PHASES = ("screen", "intermediate", "optimization", "uniform-rescore")
 
 # The executor's phase. It is the adapter's own --phase argument and it names the
 # directory under the attempt directory. Claude Binder builds it as

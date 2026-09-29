@@ -24,6 +24,17 @@ The template selects `fast` for both kits, which engages acceleration and can ch
 Use `exact` only after checking fidelity for the chosen configuration, or `off` for a
 deliberate stock comparison. Calibrate control thresholds separately for each selected
 mode, target, and model revision; the template's PD-L1 rules are starting points.
+The template uses five rescore seeds. For a custom campaign, Claude Science can
+set a different list in `rescore.seeds`, then plan the resulting predictor calls
+and measure controls with that same list. Record the selected seed count in the
+report. The commands in this page use seed `0`, the template's first seed. If
+you change `rescore.seeds`, replace `0` in the smoke and indexing commands with
+the first seed in your list, and run the full jobs for every listed seed.
+The candidate gate uses per-arm mean ipSAE and the maximum pose RMSD across
+seeds. The template ranks by the mean of two control-normalized arm scores.
+For the PD-L1 video example's headline score, set
+`rescore.ranking_rule` to `mean_of_arm_best_ipsae`: it ranks passed candidates
+by the raw mean of each arm's best ipSAE, without changing the control gate.
 
 ```sh
 SC=/path/to/installed/skill/scripts/small_campaign.py
@@ -91,6 +102,13 @@ python "$SC" make-roster --settings settings.json \
 python "$SC" plan --settings settings.json --jobs jobs.json --out rescore-plan.json
 ```
 
+The roster-bound plan records the selected seed IDs, full rescore jobs
+(`predictors × seeds`), and planned prediction calls (`roster entries ×
+predictors × seeds`). Roster entries include controls. Use these counts for
+the provider estimate and campaign ceiling. For example, 45 candidates and
+9 controls with two predictors and five seeds plan 10 full jobs and 540
+predictions.
+
 Approve this roster-bound plan with the **same authorization ID and no higher ceiling** in
 `rescore-approval.json`. Do not treat the second plan as new spend.
 
@@ -110,8 +128,9 @@ python /work/campaign/worker/scripts/small_campaign.py run-rescore \
   --seed 0 --smoke --kit-root /kit/esmfold2 --out /work/out/esm-smoke
 ```
 
-Repeat with `boltz2-kit` and `/kit/boltz2`. Confirm control separation, chain mapping and PAE orientation. For
-each full arm/seed 0–4 job, admit a fresh reference and run `run-rescore` with `--smoke-receipt` for that arm.
+Repeat with `boltz2-kit` and `/kit/boltz2`. Confirm control separation, chain mapping and PAE orientation.
+For each full job in the declared seed list, admit a fresh reference and run `run-rescore` with
+`--smoke-receipt` for that arm.
 Keep each job output separate. Provider receipts must include actual `provider_job_id`, `job_ref`, plan hash,
 status/exit code, UTC start/end, wall and billable seconds, USD/hour, settled USD when available,
 `worker_receipt_path` and SHA-256, and `admission_ticket_path`. Save design and full-rescore receipt arrays
@@ -133,7 +152,7 @@ python "$SC" index-artifacts --plan rescore-plan.json --arm esmfold2-kit \
 python "$SC" score --predictions manifests/*.json --out scores.json
 ```
 
-The manifests must cover all roster items in both arms and five seeds. Save `design-link.json` as
+The manifests must cover all roster items in both arms and every declared seed. Save `design-link.json` as
 `{"plan":"design-plan.json","approval":"design-approval.json", "receipts":"design-provider-receipts.json"}`.
 Then:
 
@@ -144,8 +163,9 @@ python "$SC" report --plan rescore-plan.json --approval rescore-approval.json \
 ```
 
 Read `report.json`, ranked `report.csv`, passed `report.fasta` and `report.txt`. The gate requires all controls,
-two lineages, five seeds, and binder C-alpha pose RMSD <=3.5 Å after target superposition. PD-L1 observed
-starting rules: ESMFold2 kit mean-of-five >3× largest shuffled negative best seed; Boltz-2 mean-of-five >
-largest negative mean. Recalibrate on this target. The report shows positive control, settled cost or pending
+two lineages, every declared seed, and binder C-alpha pose RMSD <=3.5 Å after target superposition. The
+template's five-seed PD-L1 starting rules are: ESMFold2 kit mean-of-five >3× the largest shuffled negative's
+best seed; Boltz-2 mean-of-five > the largest negative mean. Recalibrate on this target.
+The report shows positive control, settled cost or pending
 status, list-rate estimate, elapsed time and summed job duration. Missing artifacts, bad controls or absent
 receipts stop it; fix the source issue and admit a new job for a retry.

@@ -6,7 +6,9 @@ Source: `data/tables/design_summary.csv` in the [released dataset](https://huggi
 
 Every number here is derived, not quoted. [Re-derive the tables](#re-derive-the-tables) gives the command.
 
-**Scope.** The tables below carry fourteen of the release's sixteen design codes. Two are out of scope for this skill and are deliberately absent. [Published targets](published-targets.md#scope) states the rule. Do not add the missing codes back from the upstream table.
+The tables below cover fourteen of the release's sixteen design codes. Match
+their constructs with [published targets](published-targets.md#scope); consult
+the original dataset for a code outside these tables.
 
 ## The design roster is 16, and the prompt table is 14
 
@@ -203,7 +205,9 @@ for key in sorted(pools):
 PY
 ```
 
-The command prints every code in the release, including the two this page leaves out of scope. Compare only against a target this page lists.
+The command prints every code in the release, including codes not tabulated on
+this page. For those codes, use the original dataset's construct and result
+records for comparison.
 
 A revision later than `9e1b816` may change these counts. Re-run the command rather than editing a number in place.
 

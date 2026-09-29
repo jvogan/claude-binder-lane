@@ -17,22 +17,27 @@ Source: the [released prompt](https://huggingface.co/datasets/Anthropic/claude-p
 
  BUILD THE INSTRUMENT
    3  Tool bring-up       Install, pin, and run an N=1 canary that parses.
-   4  MSA staging         One a3m per construct, cached and read by every arm.
+   4  MSA staging         Cache an a3m per construct for MSA-capable arms.
+                          ESMFold2-Fast runs single-sequence.
    5  Validation gate     (a) The co-folder reproduces the target structure.
                           (b) A known binder scores above every negative.
 
- ======  Steps 8 to 10 are blocked until step 5 writes PASS to disk.  ======
+ ======  Production design scoring starts after step 5 writes PASS.  ======
 
  PRODUCE
    6  Generation wave     At least 50 backbones per starred method per target.
    7  Pre-score filter    Novelty, liabilities, foldability, and redundancy.
-                          Runs before any co-folding spend.
+                          Runs before candidate co-folding spend.
    8  Screen, 1 seed      Rank by the 4:1 ipSAE to sc_DockQ weighted z-score.
-   9  Promote             Higher seed tiers on the survivors. Rank on ipSAE and
-                          sc_DockQ together, never ipSAE alone.
-  10  Final rank          rank_zscore over six terms: three ipSAE_min weighted
+   9  Advance survivors   Send a budgeted fraction of screened designs to the
+                          deeper tier.
+  10  Intermediate        Five seeds per predictor on survivors; choose parents
+                          with ipSAE and paired sc_DockQ together.
+  11  Optimize            Score each new round with the parent pool's predictor
+                          set and seed count; choose the next parents.
+  12  Final rank          rank_zscore over six terms: three ipSAE_min weighted
                           4, three sc_DockQ weighted 1.
-  11  Receipts            Design-count ledger and spend ledger. One writer per
+  13  Receipts            Design-count ledger and spend ledger. One writer per
                           subfile, writes idempotent on (job_id, stage).
 ```
 
@@ -47,25 +52,45 @@ Each step maps to a page or a command here.
 | 5 Validation gate | [Target qualification](target-qualification.md), controls in [Published targets](published-targets.md) | `lane gate-scaffold`, `make_negative_control` |
 | 6 Generation wave | [Running a campaign](running-a-campaign.md) | `lane compose`, `lane materialize`, `lane execute` |
 | 7 Pre-score filter | [Design and filters](design-and-filters.md) | |
-| 8 Screen, 1 seed | [Nine decisions](the-nine-decisions.md#8-rounds-and-stopping) | `lane rank`, `lane sequence-score-table` |
-| 9 Promote | [Nine decisions](the-nine-decisions.md#8-rounds-and-stopping) | |
-| 10 Final rank | [Scoring details](scoring-details.md) | `lane rank` |
-| 11 Receipts | [Approval and spend](approval-and-spend.md), [Reading results](reading-results-in-claude-science.md) | `lane reconcile-spend` |
+| 8 Screen, 1 seed | [Scoring details](scoring-details.md#seed-tiers) | `cofold-screen-*`, `score-screen` stages |
+| 9 Advance survivors | [Nine decisions](the-nine-decisions.md#8-rounds-and-stopping) | `screen-survivors` stage; set `cofold.intermediate_fraction` |
+| 10 Intermediate | [Scoring details](scoring-details.md#seed-tiers) | `cofold-intermediate-*`, `score-intermediate`, `promote` stages |
+| 11 Optimize | [Running a campaign](running-a-campaign.md) | `optimization-plan-round-*`, `optimization-cofold-round-*`, `optimization-measure-round-*`, `optimization-select-round-*` stages |
+| 12 Final rank | [Scoring details](scoring-details.md) | `cofold-rescore-*`, `uniform-rescore`, `final-rank` stages |
+| 13 Receipts | [Approval and spend](approval-and-spend.md), [Reading results](reading-results-in-claude-science.md) | `lane reconcile-spend` |
 
-`lane execute` writes one receipt per stage to `artifacts/receipts/`, and the `render-viewer` stage writes the offline viewer. There is no single report command.
+These stage IDs belong to the full campaign profile. `lane execute` records
+each completed stage in `artifacts/receipts/`; `render-viewer` writes the
+offline viewer. The BindCraft2 small campaign uses its separate
+[fast path](small-campaign-fast-path.md), which scores its declared roster
+without a screen-survivor tier.
 
 
-**No threshold ships, and none could.** The release publishes the gate requirement and the control molecule for each target. It publishes no threshold file, and its own tables carry none: the in-silico tables are co-fold predictions, epitope contacts, provenance and constructs. That is not an omission. A gate threshold is frozen per target per instrument at gate time, and the release states that its z-scores are transductive and comparable only within the pool used to compute them. A number carried off one target, or off one arm, measures nothing on another.
+## Target-specific validation
 
-**The one gate record in this package is an example of shape, not a threshold to use.** `claude_binder/data/gates/pdl1.json` carries `status: UNVERIFIABLE` and says why: the historical panel measurements ship without the 4ZQK-derived structure and residue-map artifacts needed to re-derive them. The gate machinery never loads it. `lane._validation_gate_directory` resolves a directory only from a caller-supplied `validation_gate_dir`, `gate_dir`, or `state_root`, and returns nothing when none is given, so no path reaches the packaged file. It blocks nothing and gates nothing. Read it for the fields a gate record carries, and build your own target's panel with `make_negative_control` and your own controls.
+The released prompt gives a default pose-DockQ threshold of 0.23 and allows a
+stricter threshold to be frozen at the target's validation gate. Establish the
+control-separation rule on the chosen target and predictor instrument. Scores
+normalized within one design pool cannot serve as control thresholds for a
+different pool.
 
-Quoting a number out of that file, or out of the historical calibration prose in [measured costs](measured-costs.md), as though it were a threshold for another target is the live failure mode here. Those six values ship in no file and no code reads them.
-
-**The gate is the load-bearing step.** Production scoring is blocked until a per-target gate file says PASS. A verbal claim does not satisfy it. That is why a campaign runs its control before it runs its designs, and why a control failure is cheap news rather than a wasted round.
+The full campaign requires a per-target gate file with `status: PASS` before
+production scoring. The packaged `claude_binder/data/gates/pdl1.json` file
+shows the record format and has `status: UNVERIFIABLE`; it supplies no gate
+threshold for a new campaign. Run the target's positive and negative controls
+and save their gate record before scoring designs.
 
 ## The instrument
 
-Three co-folding arms, one sample per seed, template-free, target-chain MSA, binder single sequence: ESMFold2-Full, ESMFold2-Fast, Protenix v2. Ranking turns on the count of arms rather than their names, so a substitution that keeps three arms keeps the ranking form. When an arm is unavailable or unvalidated on a target, the release substitutes one independent-lineage co-folder per missing arm, preferring AlphaFold-Multimer-v3, then AlphaFold3 code with OpenFold3 weights, then Chai-1, then Boltz-2 or Boltz-1.
+The published instrument uses three co-folding arms, one sample per seed, and
+no template injection. ESMFold2-Fast runs single-sequence. ESMFold2-Full and
+Protenix v2 use a cached target-chain MSA; the binder is single-sequence.
+The published score needs three modes across at least two model lineages.
+A substituted arm keeps the ranking form when that count and lineage requirement
+hold. When an arm is unavailable or
+unvalidated on a target, the release substitutes one independent-lineage
+co-folder per missing arm, preferring AlphaFold-Multimer-v3, then AlphaFold3
+code with OpenFold3 weights, then Chai-1, then Boltz-2 or Boltz-1.
 
 ## What the release runs that this package does not
 
@@ -82,6 +107,12 @@ The parts worth keeping at small scale are the single-writer ledger rule, the fl
 
 ## Scale, and what a small campaign changes
 
-The release covers 14 targets, 50 backbones per starred method per target, 30 designs selected per target, and 100,000 to 1,000,000 designs generated and screened campaign-wide. A campaign at a few dozen designs reproduces the method and the shape, not the protocol. That is the second campaign shape in [published targets](published-targets.md), and it makes no baseline fidelity claim, which stops no stage.
+The released multi-target prompt lists 14 targets, requires 50 scored backbones
+per starred method per target, requests 30 designs per target, and calls for
+100,000 to 1,000,000 designs generated and screened campaign-wide. Anthropic's
+[study post](https://www.anthropic.com/research/Claude-accelerates-protein-design)
+reports 15 targets attempted and binders found for 14. A campaign at a few
+dozen designs follows the method at smaller scale; record that scale in its
+claim. [Published targets](published-targets.md) distinguishes the target lists.
 
 Thresholds do not carry across that gap. They are frozen per target at the validation gate, so a published number is a record of one target's controls rather than a setting to copy.

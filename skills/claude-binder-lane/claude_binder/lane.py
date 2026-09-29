@@ -3586,6 +3586,16 @@ def validate_campaign(
         )
     screen_seeds = cofold.get("screen_seeds")
     rescore_seeds = cofold.get("rescore_seeds")
+    intermediate_flag = cofold.get("intermediate_enabled", False)
+    if not isinstance(intermediate_flag, bool):
+        errors.append("cofold.intermediate_enabled must be boolean")
+    if intermediate_flag:
+        fraction = cofold.get("intermediate_fraction")
+        if (
+            isinstance(fraction, bool) or not isinstance(fraction, (int, float))
+            or not math.isfinite(float(fraction)) or not 0 < float(fraction) <= 1
+        ):
+            errors.append("cofold.intermediate_fraction must be in (0, 1]")
     baseline_seed_policy = _baseline_fidelity(config)
     if not baseline_seed_policy and (
         not isinstance(screen_seeds, list)
@@ -4401,6 +4411,9 @@ def validate_campaign(
     required_stage_ids.update(str(designer.get("command_stage")) for designer in enabled_items(sequence_design.get("designers")))
     required_stage_ids.update(str(predictor.get("screen_stage")) for predictor in predictors)
     required_stage_ids.update(str(predictor.get("rescore_stage")) for predictor in predictors)
+    if intermediate_enabled(config):
+        required_stage_ids.update({"screen-survivors", "score-intermediate"})
+        required_stage_ids.update(f"cofold-intermediate-{predictor['id']}" for predictor in predictors)
     if optimization.get("enabled") is True:
         expanded_rounds = {
             int(stage_id.rsplit("-", 1)[1])
@@ -4460,6 +4473,13 @@ def validate_campaign(
             errors.append(f"cofold rescore stage for {predictor.get('id')} must use smoke_scale")
         if rescore_outputs and rescore_outputs[0].get("records_per_count") != expected_rescore_records:
             errors.append(f"cofold rescore stage for {predictor.get('id')} records_per_count must match targets and rescore_seeds")
+        if intermediate_enabled(config):
+            intermediate_stage = stage_map.get(f"cofold-intermediate-{predictor['id']}", {})
+            outputs = intermediate_stage.get("outputs", [])
+            if intermediate_stage.get("mode") != "smoke_scale":
+                errors.append(f"cofold INTERMEDIATE stage for {predictor.get('id')} must use smoke_scale")
+            if outputs and outputs[0].get("records_per_count") != len(rescore_seeds or []) * max(1, len(targets)):
+                errors.append(f"cofold INTERMEDIATE stage for {predictor.get('id')} records_per_count must match configured seeds")
     produced_by_stage = {
         stage_id: {
             output.get("artifact_id")
@@ -5911,7 +5931,24 @@ def estimate_fanout(config: dict[str, Any]) -> dict[str, Any]:
         if optimization.get("enabled") is True
         else int(config["selection"]["final_count"])
     )
-    optimization_predictions = optimized_variants * target_count * len(predictors) * len(set(config["cofold"]["screen_seeds"]))
+    intermediate_survivors_upper_bound = 0
+    if intermediate_enabled(config):
+        raw_fraction = config["cofold"].get("intermediate_fraction", 0.2)
+        fraction = (
+            float(raw_fraction)
+            if isinstance(raw_fraction, (int, float)) and not isinstance(raw_fraction, bool)
+            and math.isfinite(float(raw_fraction)) and 0 < float(raw_fraction) <= 1
+            else 1.0
+        )
+        parent_floor = int(config["optimization"]["parent_count_per_round"])
+        intermediate_survivors_upper_bound = min(
+            generated_candidates, max(parent_floor, math.ceil(generated_candidates * fraction))
+        )
+        screen_predictions += (
+            intermediate_survivors_upper_bound * target_count * len(predictors)
+            * len(set(config["cofold"]["rescore_seeds"]))
+        )
+    optimization_predictions = optimized_variants * target_count * len(predictors) * len(set(parent_seed_values(config)))
     rescore_predictions = (
         rescore_candidates * target_count * len(predictors) * len(set(config["cofold"]["rescore_seeds"]))
         + control_count * target_count * len(predictors) * len(set(config["cofold"]["rescore_seeds"]))
@@ -5959,6 +5996,7 @@ def estimate_fanout(config: dict[str, Any]) -> dict[str, Any]:
         "control_count": control_count,
         "target_count": target_count,
         "screen_predictions_upper_bound": screen_predictions,
+        "intermediate_survivors_upper_bound": intermediate_survivors_upper_bound,
         "optimized_variants_upper_bound": optimized_variants,
         "optimization_predictions_upper_bound": optimization_predictions,
         "rescore_candidates_upper_bound": rescore_candidates,
@@ -7048,6 +7086,136 @@ def bind_candidate_lineage_argument(config: dict[str, Any]) -> None:
         template[position] = value
 
 
+def intermediate_enabled(config: Mapping[str, Any]) -> bool:
+    cofold = config.get("cofold")
+    return isinstance(cofold, Mapping) and cofold.get("intermediate_enabled") is True
+
+
+def parent_seed_values(config: Mapping[str, Any]) -> list[int]:
+    cofold = config["cofold"]
+    return list(cofold["rescore_seeds"] if intermediate_enabled(config) else cofold["screen_seeds"])
+
+
+def bind_intermediate_stage_graph(config: dict[str, Any]) -> None:
+    """Insert the configured INTERMEDIATE seed tier before parent selection.
+
+    An overlay that replaces ``cofold`` without ``intermediate_enabled`` retains
+    its earlier one-seed graph. This keeps smaller, single-arm profiles explicit.
+    """
+    if not intermediate_enabled(config):
+        return
+    stages = config["stages"]
+    stage_map = {stage["stage_id"]: stage for stage in stages}
+    if "score-intermediate" in stage_map:
+        return
+    score_screen = stage_map["score-screen"]
+    promote = stage_map["promote"]
+    survivors = {
+        "stage_id": "screen-survivors",
+        "adapter_id": "screen-survivor-selector",
+        "required_role": "promotion-selector",
+        "description": "Select a bounded SCREEN-scored subset for configured-seed INTERMEDIATE measurement.",
+        "depends_on": ["score-screen", "filter-novelty"],
+        "inputs": ["score-screen:screen-score-table", "filter-novelty:passing-candidates"],
+        "outputs": [{
+            "artifact_id": "intermediate-candidates",
+            "artifact_type": "passing-candidate-manifest",
+            "path_template": "{{attempt_dir}}/{{phase}}/intermediate-candidates.jsonl",
+            "kind": "jsonl",
+            "minimum_count": 1,
+            "required_fields": list(stage_map["filter-novelty"]["outputs"][1]["required_fields"]),
+            "publish_path": "scores/intermediate-candidates.jsonl",
+        }],
+        "fanout": {}, "mode": "single", "timeout_minutes": 30, "heartbeat_seconds": 60,
+    }
+    selector = json.loads(json.dumps(next(
+        adapter for adapter in config["adapters"]
+        if adapter["adapter_id"] == "promotion-selector"
+    )))
+    selector["adapter_id"] = "screen-survivor-selector"
+    selector["accepted_artifacts"] = ["screen-score-table", "passing-candidate-manifest"]
+    selector["produced_artifacts"] = ["passing-candidate-manifest"]
+    for field in ("toolcheck_argv", "command_argv_template", "parser_argv_template"):
+        command = selector[field]
+        if len(command) < 3 or command[1] != "-m":
+            raise ValueError(f"promotion-selector {field} must use a Python module command")
+        selector[field] = [
+            *command[:2], "claude_binder.adapters.screen_survivor_selector", *command[3:]
+        ]
+    config["adapters"].append(selector)
+    scorer_adapter = next(adapter for adapter in config["adapters"] if adapter["adapter_id"] == "interface-scorer")
+    scorer_adapter["produced_artifacts"] = list(dict.fromkeys([
+        *scorer_adapter["produced_artifacts"], "intermediate-score-table",
+    ]))
+    promotion_adapter = next(adapter for adapter in config["adapters"] if adapter["adapter_id"] == "promotion-selector")
+    promotion_adapter["accepted_artifacts"] = list(dict.fromkeys([
+        *promotion_adapter["accepted_artifacts"], "intermediate-score-table",
+    ]))
+    optimizer_adapter = next(adapter for adapter in config["adapters"] if adapter["adapter_id"] == "optimization-controller")
+    optimizer_adapter["accepted_artifacts"] = list(dict.fromkeys([
+        *optimizer_adapter["accepted_artifacts"], "intermediate-score-table",
+    ]))
+    predictor_stages: list[dict[str, Any]] = []
+    for predictor in enabled_items(config["cofold"]["predictors"]):
+        predictor_id = str(predictor["id"])
+        screen = stage_map[predictor["screen_stage"]]
+        intermediate = json.loads(json.dumps(screen))
+        intermediate_id = f"cofold-intermediate-{predictor_id}"
+        artifact_id = f"{predictor_id}-intermediate"
+        intermediate["stage_id"] = intermediate_id
+        intermediate["description"] = f"Measure {predictor_id} at the configured INTERMEDIATE seeds before parent selection."
+        intermediate["depends_on"] = list(dict.fromkeys([
+            "screen-survivors" if value == "filter-novelty" else value
+            for value in screen["depends_on"]
+        ]))
+        intermediate["inputs"] = [
+            "screen-survivors:intermediate-candidates"
+            if value == "filter-novelty:passing-candidates" else value
+            for value in screen["inputs"]
+        ]
+        intermediate["outputs"][0]["artifact_id"] = artifact_id
+        intermediate["outputs"][0]["records_per_count"] = (
+            max(1, len(config["targets"])) * len(set(config["cofold"]["rescore_seeds"]))
+        )
+        intermediate["fanout"] = {"count_from": {
+            "stage_id": "screen-survivors", "artifact_id": "intermediate-candidates", "value": "records",
+        }}
+        predictor_stages.append(intermediate)
+    score = json.loads(json.dumps(score_screen))
+    score["stage_id"] = "score-intermediate"
+    score["description"] = "Normalize INTERMEDIATE predictions for optimization parent selection."
+    score["depends_on"] = [stage["stage_id"] for stage in predictor_stages]
+    score["inputs"] = [
+        f"{stage['stage_id']}:{stage['outputs'][0]['artifact_id']}"
+        for stage in predictor_stages
+    ]
+    score["outputs"][0]["artifact_id"] = "intermediate-score-table"
+    score["outputs"][0]["path_template"] = "{{attempt_dir}}/{{phase}}/intermediate-score-table.jsonl"
+    score["outputs"][0]["publish_path"] = "scores/intermediate-score-table.jsonl"
+    promote["depends_on"] = [
+        "score-intermediate" if value == "score-screen" else value
+        for value in promote["depends_on"]
+    ]
+    promote["inputs"] = [
+        "score-intermediate:intermediate-score-table"
+        if value == "score-screen:screen-score-table" else value
+        for value in promote["inputs"]
+    ]
+    optimization_plan = stage_map.get("optimization-plan")
+    if isinstance(optimization_plan, dict):
+        optimization_plan["depends_on"] = [
+            "score-intermediate" if value == "score-screen" else value
+            for value in optimization_plan["depends_on"]
+        ]
+        optimization_plan["inputs"] = [
+            "score-intermediate:intermediate-score-table"
+            if value == "score-screen:screen-score-table" else value
+            for value in optimization_plan["inputs"]
+        ]
+    insertion_index = stages.index(promote)
+    stages[insertion_index:insertion_index] = [survivors, *predictor_stages, score]
+
+
 def bind_dynamic_stage_contracts(config: dict[str, Any]) -> None:
     """Derive multiplicative record contracts from the resolved campaign axes.
 
@@ -7056,6 +7224,7 @@ def bind_dynamic_stage_contracts(config: dict[str, Any]) -> None:
     every entry point calls after the stage graph is settled.
     """
     bind_optional_stage_graph(config)
+    bind_intermediate_stage_graph(config)
     target_count = max(1, len(config.get("targets", [])))
     stage_map = {
         stage.get("stage_id"): stage
@@ -7101,6 +7270,14 @@ def bind_dynamic_stage_contracts(config: dict[str, Any]) -> None:
             stage["outputs"][0]["schema_path"] = (
                 "schemas/raw-prediction-manifest.schema.json"
             )
+        if intermediate_enabled(config):
+            intermediate = stage_map.get(f"cofold-intermediate-{predictor['id']}")
+            if isinstance(intermediate, dict) and intermediate.get("outputs"):
+                intermediate["outputs"][0]["records_per_count"] = (
+                    target_count * len(set(config["cofold"]["rescore_seeds"]))
+                )
+                intermediate["outputs"][0]["required_fields"] = list(RAW_PREDICTION_FIELDS)
+                intermediate["outputs"][0]["schema_path"] = "schemas/raw-prediction-manifest.schema.json"
     control_stage = stage_map.get("control-calibration")
     if isinstance(control_stage, dict) and control_stage.get("outputs"):
         control_count = sum(
@@ -7134,8 +7311,10 @@ def bind_dynamic_stage_contracts(config: dict[str, Any]) -> None:
     target_prepare_stage = stage_map.get(TARGET_PREPARE_STAGE_ID)
     if isinstance(target_prepare_stage, dict):
         bind_rfd3_specification_output(target_prepare_stage, config.get("targets", []))
-    score_stage = stage_map.get("score-screen")
-    if isinstance(score_stage, dict) and score_stage.get("outputs"):
+    for score_stage_id in ("score-screen", "score-intermediate"):
+        score_stage = stage_map.get(score_stage_id)
+        if not isinstance(score_stage, dict) or not score_stage.get("outputs"):
+            continue
         score_stage["outputs"][0]["required_fields"] = [
             "target_id",
             "target_sha256",
@@ -7271,6 +7450,7 @@ def bind_dynamic_stage_contracts(config: dict[str, Any]) -> None:
                 # check that compares them.
                 artifact_type = {
                     "screen-score-table": "screen-score-table",
+                    "intermediate-score-table": "intermediate-score-table",
                     "optimization-score-table": "optimization-score-table",
                 }.get(artifact_id)
             elif role == "promotion-selector":
@@ -7347,7 +7527,10 @@ def expand_optimization_rounds(config: dict[str, Any]) -> None:
     select_template = stage_map["promote"]
     predictor_records = enabled_items(config["cofold"]["predictors"])
     predictor_stage_templates = {
-        predictor["id"]: stage_map[predictor["screen_stage"]]
+        predictor["id"]: stage_map[
+            f"cofold-intermediate-{predictor['id']}" if intermediate_enabled(config)
+            else predictor["screen_stage"]
+        ]
         for predictor in predictor_records
     }
     insertion_index = min(stages.index(plan_template), stages.index(optimize_template))
@@ -7363,6 +7546,12 @@ def expand_optimization_rounds(config: dict[str, Any]) -> None:
         plan_stage["stage_id"] = plan_stage_id
         plan_stage["optimization_round"] = round_index
         plan_stage["description"] = f"Prepare and validate optimization round {round_index}."
+        if round_index == 1 and intermediate_enabled(config):
+            plan_stage["depends_on"] = ["promote", "score-intermediate"]
+            plan_stage["inputs"] = [
+                "promote:promotion-manifest",
+                "score-intermediate:intermediate-score-table",
+            ]
         if previous_select_id is not None and previous_measure_id is not None:
             plan_stage["depends_on"] = [previous_select_id, previous_measure_id]
             plan_stage["inputs"] = [
@@ -7519,7 +7708,7 @@ def expand_optimization_rounds(config: dict[str, Any]) -> None:
             predictor_stage["outputs"][0]["artifact_id"] = artifact_id
             predictor_stage["outputs"][0]["artifact_type"] = "raw-prediction-manifest"
             predictor_stage["outputs"][0]["records_per_count"] = (
-                max(1, len(config["targets"])) * len(set(config["cofold"]["screen_seeds"]))
+                max(1, len(config["targets"])) * len(set(parent_seed_values(config)))
             )
             predictor_stage["outputs"][0]["required_fields"] = list(RAW_PREDICTION_FIELDS)
             predictor_stage["outputs"][0]["schema_path"] = (
@@ -13066,6 +13255,86 @@ def validate_screen_scored_pool(
     }
 
 
+def validate_intermediate_scored_pool(
+    config: dict[str, Any], score_table_path: Path, artifact_root: Path
+) -> dict[str, Any]:
+    """Require a complete configured-seed score matrix before choosing parents."""
+    screen = validate_screen_scored_pool(
+        config, artifact_root / "scores/screen-score-table.jsonl", artifact_root
+    )
+    errors = list(screen["errors"])
+    if not intermediate_enabled(config):
+        errors.append("INTERMEDIATE score validation requires cofold.intermediate_enabled")
+    try:
+        rows = load_jsonl(score_table_path)
+        passing_rows = load_jsonl(artifact_root / "scores/intermediate-candidates.jsonl")
+        all_passing_rows = load_jsonl(artifact_root / "filters/passing-candidates.jsonl")
+    except Exception as exc:
+        return {"ok": False, "errors": [*errors, f"could not read INTERMEDIATE inputs: {type(exc).__name__}: {exc}"]}
+    passing = {str(row["candidate_id"]): row for row in passing_rows}
+    all_passing = {
+        str(row["candidate_id"]): row
+        for row in all_passing_rows
+    }
+    if not passing or not set(passing) <= set(all_passing):
+        errors.append("INTERMEDIATE survivors must be a nonempty subset of filter-passing candidates")
+    fraction = float(config["cofold"].get("intermediate_fraction", 0.2))
+    parent_count = int(config["optimization"]["parent_count_per_round"])
+    maximum_survivors = min(len(all_passing), max(parent_count, math.ceil(len(all_passing) * fraction)))
+    if len(passing) != len(passing_rows) or len(passing) > maximum_survivors or len(passing) < parent_count:
+        errors.append("INTERMEDIATE survivor count violates its SCREEN fraction or parent floor")
+    for candidate_id, survivor in passing.items():
+        source = all_passing.get(candidate_id)
+        if source is None:
+            continue
+        for field, value in source.items():
+            if survivor.get(field) != value:
+                errors.append(f"INTERMEDIATE survivor {candidate_id} changed passing field {field}")
+    targets = {str(row["target_id"]): row for row in config["targets"]}
+    predictor_records = {str(row["id"]): row for row in enabled_items(config["cofold"]["predictors"])}
+    adapters = {str(row["adapter_id"]): row for row in config["adapters"]}
+    seeds = set(config["cofold"]["rescore_seeds"])
+    if not seeds or len(seeds) != len(config["cofold"]["rescore_seeds"]):
+        errors.append("INTERMEDIATE requires distinct configured rescore seeds")
+    expected = {
+        (target_id, candidate_id, predictor_id, seed)
+        for target_id in targets for candidate_id in passing
+        for predictor_id in predictor_records for seed in seeds
+    }
+    seen: set[tuple[str, str, str, int]] = set()
+    for index, row in enumerate(rows):
+        key = (row.get("target_id"), row.get("candidate_id"), row.get("predictor"), row.get("seed"))
+        if key in seen:
+            errors.append(f"duplicate INTERMEDIATE score key: {key}")
+        seen.add(key)
+        target = targets.get(str(row.get("target_id")))
+        candidate = passing.get(str(row.get("candidate_id")))
+        predictor = predictor_records.get(str(row.get("predictor")))
+        if target is None or candidate is None or predictor is None:
+            errors.append(f"INTERMEDIATE score row {index} has unknown target, candidate or predictor")
+            continue
+        expected_fields = {
+            "target_sha256": target.get("structure_sha256"),
+            "origin_generator": candidate.get("origin_generator"),
+            "sequence_sha256": candidate.get("sequence_sha256"),
+            "design_pose_sha256": candidate.get("design_pose_sha256"),
+            "model_revision": adapters[predictor["adapter_id"]].get("model_revision"),
+            "phase": "intermediate",
+            "filter_pass": True,
+            "status": "scored",
+        }
+        for field, value in expected_fields.items():
+            if row.get(field) != value:
+                errors.append(f"INTERMEDIATE score row {index} does not match {field}")
+    if seen != expected:
+        errors.append("INTERMEDIATE score keys do not exactly match targets × survivors × predictors × configured seeds")
+    errors.extend(validate_observations(
+        config, rows, expected_phase="intermediate",
+        required_seed_values=sorted(seeds), require_controls=False,
+    ))
+    return {"ok": not errors, "screen": screen, "errors": errors}
+
+
 def promotion_output_artifact_id(stage: dict[str, Any]) -> str | None:
     """Return the artifact id declared for the promotion manifest path."""
     matches = [
@@ -13084,9 +13353,15 @@ def validate_promotion_manifest(
     promotion_path: Path,
 ) -> dict[str, Any]:
     errors: list[str] = []
-    score_path = artifact_root / "scores" / "screen-score-table.jsonl"
+    score_path = artifact_root / "scores" / (
+        "intermediate-score-table.jsonl" if intermediate_enabled(config) else "screen-score-table.jsonl"
+    )
     passing_path = artifact_root / "filters" / "passing-candidates.jsonl"
-    screen_check = validate_screen_scored_pool(config, score_path, artifact_root)
+    screen_check = (
+        validate_intermediate_scored_pool(config, score_path, artifact_root)
+        if intermediate_enabled(config)
+        else validate_screen_scored_pool(config, score_path, artifact_root)
+    )
     errors.extend(screen_check["errors"])
     control_check = validate_control_calibration(config, artifact_root)
     errors.extend(f"control calibration: {error}" for error in control_check["errors"])
@@ -13100,7 +13375,7 @@ def validate_promotion_manifest(
     promoted = {str(row.get("candidate_id")): row for row in promoted_rows}
     if len(promoted) != len(promoted_rows):
         errors.append("promotion manifest has duplicate candidate IDs")
-    ranked = rank_candidate_cohort(config, scores, list(config["cofold"]["screen_seeds"]))
+    ranked = rank_candidate_cohort(config, scores, parent_seed_values(config))
     # Rank the recomputation the same way the promotion adapter ranks. A
     # candidate-level profile declares a reduced method, the raw mean of
     # ipsae_min and sc_dockq, and the adapter applies it before selecting. This
@@ -18551,7 +18826,7 @@ def validate_optimization_measurements(
         for target in config["targets"]
         for candidate in candidates
         for predictor in enabled_items(config["cofold"]["predictors"])
-        for seed in config["cofold"]["screen_seeds"]
+        for seed in parent_seed_values(config)
     }
     score_by_key: dict[tuple[str, str, str, int], dict[str, Any]] = {}
     for row in score_rows:
@@ -18599,7 +18874,7 @@ def validate_optimization_measurements(
             config,
             score_rows,
             expected_phase="optimization",
-            required_seed_values=list(config["cofold"]["screen_seeds"]),
+            required_seed_values=parent_seed_values(config),
             require_controls=False,
         )
     )
@@ -18704,7 +18979,7 @@ def validate_optimization_selection(
         errors.append("optimization passing manifest has duplicate candidate IDs")
     if len(selected_by_id) != len(selected_rows):
         errors.append("optimization selection has duplicate candidate IDs")
-    ranked = rank_candidate_cohort(config, score_rows, list(config["cofold"]["screen_seeds"]))
+    ranked = rank_candidate_cohort(config, score_rows, parent_seed_values(config))
     # The optimization controller applies the declared ranking method before
     # choosing its parents.  Recompute that same method here; otherwise both
     # sides can agree on the cohort's published-composite audit score while a
@@ -18969,6 +19244,7 @@ def aggregate_group(
     *,
     seed_aggregation: str = "max",
     minimum_observations: int | None = None,
+    include_partial_observations: bool = False,
 ) -> dict[str, Any]:
     if seed_aggregation not in SEED_AGGREGATION_CHOICES:
         raise ValueError(f"seed aggregation is not registered: {seed_aggregation}")
@@ -19055,7 +19331,7 @@ def aggregate_group(
                     "selected_seed": None,
                     "primary_tie": None,
                 }
-            if coverage[predictor_id]["complete"]:
+            if coverage[predictor_id]["complete"] or include_partial_observations:
                 selected_by_predictor[predictor_id] = selected
     selected_rows = list(selected_by_predictor.values())
     first = rows[0]
@@ -19096,6 +19372,10 @@ def aggregate_group(
     status = "scored" if all(row.get("status") == "scored" for row in rows) else (
         "failed" if failure_reasons or failure_codes else "incomplete"
     )
+    if include_partial_observations and not all(
+        coverage[predictor]["complete"] for predictor in predictor_ids
+    ):
+        status = "incomplete"
     per_predictor = {
         predictor: {
             **aggregated_metrics_by_predictor[predictor],
@@ -19144,7 +19424,10 @@ def aggregate_group(
         "predictor_coverage": len(selected_rows),
         "predictors_required": len(predictor_ids),
         "coverage": coverage,
-        "coverage_complete": len(selected_rows) == len(predictor_ids),
+        "coverage_complete": (
+            len(selected_rows) == len(predictor_ids)
+            and all(coverage[predictor]["complete"] for predictor in predictor_ids)
+        ),
         "seed_aggregation": seed_aggregation,
         "minimum_seed_observations": minimum_observations,
         "selected_seed_by_predictor": selected_seed_by_predictor,
@@ -20513,6 +20796,7 @@ def rank_candidates(
             pose_metric,
             seed_aggregation=aggregation,
             minimum_observations=minimum_seed_observations(config, required_seeds),
+            include_partial_observations=True,
         )
         for rows in grouped.values()
     ]
@@ -20537,36 +20821,17 @@ def rank_candidates(
         for predictor_id in predictor_ids:
             coverage = row["coverage"].get(predictor_id, {})
             observed = coverage.get("scored_seed_count")
-            if not isinstance(observed, int) or observed < configured_minimum_observations:
+            if not isinstance(observed, int) or observed < 1:
                 reasons.append(
-                    f"predictor {predictor_id} recorded {observed} scored seeds; "
-                    f"the configured minimum is {configured_minimum_observations}"
+                    f"predictor {predictor_id} recorded no scored seeds"
                 )
         reasons.extend(counter_screen_refusal_reasons(row))
         if reasons:
             refusal_reasons[candidate_id] = reasons
-    comparable_candidates = [
-        row for row in candidates if str(row["candidate_id"]) not in refusal_reasons
-    ]
-    if aggregation in {"max", "min"} and comparable_candidates:
-        signatures = {
-            tuple(
-                int(row["coverage"][predictor_id]["scored_seed_count"])
-                for predictor_id in predictor_ids
-            )
-            for row in comparable_candidates
-        }
-        if len(signatures) > 1:
-            for row in comparable_candidates:
-                candidate_id = str(row["candidate_id"])
-                signature = tuple(
-                    int(row["coverage"][predictor_id]["scored_seed_count"])
-                    for predictor_id in predictor_ids
-                )
-                refusal_reasons[candidate_id] = [
-                    f"{aggregation} seed aggregation requires equal scored fold counts across compared candidates; "
-                    f"this candidate has counts {signature}"
-                ]
+    # FINAL retains an attempted design with a scored result in every arm even
+    # when some configured top-up calls failed. The count is disclosed below;
+    # complete designs always sort ahead of partial ones, so best-of-N scores
+    # with unequal N cannot displace a fully measured candidate.
     ranked_candidates = [
         row for row in candidates if str(row["candidate_id"]) not in refusal_reasons
     ]
@@ -20596,10 +20861,11 @@ def rank_candidates(
     complete_candidates = [
         row for row in ranked_candidates if candidate_is_rank_complete(row, config)
     ]
+    partial_candidates = [row for row in ranked_candidates if not row["coverage_complete"]]
     ranking_metrics = _ranking_term_metrics(config)
     normalization = (
         ranking_normalization(
-            complete_candidates,
+            complete_candidates or ranked_candidates,
             predictor_ids,
             ranking_metrics,
         )
@@ -20611,7 +20877,7 @@ def rank_candidates(
     ungated_scores = is_ungated_candidate_claim(config)
     for row in ranked_candidates:
         candidate_id = str(row["candidate_id"])
-        if candidate_is_rank_complete(row, config) and normalization is not None:
+        if row["predictor_coverage"] == len(predictor_ids) and normalization is not None:
             apply_rank_score(
                 row,
                 predictor_ids=predictor_ids,
@@ -20724,7 +20990,23 @@ def rank_candidates(
     # every dollar was committed. A single-design pool hides the disagreement
     # rather than removing it.
     ranked_candidates = apply_declared_ranking_mode(config, ranked_candidates, complete_only=True)
-    ranked_candidates.sort(key=lambda row: _rank_sort_key(row, config))
+    if partial_candidates:
+        partial_ids = {str(row["candidate_id"]) for row in partial_candidates}
+        rescored_partial = {
+            str(row["candidate_id"]): row
+            for row in ranking_policy.apply_ranking_mode(
+                [row for row in ranked_candidates if str(row["candidate_id"]) in partial_ids],
+                ranking_mode,
+            )
+        }
+        ranked_candidates = [
+            rescored_partial.get(str(row["candidate_id"]), row)
+            for row in ranked_candidates
+        ]
+    def final_sort_key(row: dict[str, Any]) -> tuple[Any, ...]:
+        return (not row["coverage_complete"], *_rank_sort_key(row, config))
+
+    ranked_candidates.sort(key=final_sort_key)
     pose_threshold_value = thresholds["minimum_sc_dockq_ensemble"]
     pose_threshold = (
         float(pose_threshold_value)
@@ -20733,7 +21015,7 @@ def rank_candidates(
     )
     for index, row in enumerate(ranked_candidates, start=1):
         row["rank"] = index
-        row["rank_status"] = "ranked"
+        row["rank_status"] = "ranked" if row["coverage_complete"] else "partial"
         finalize_ranked_row(
             row,
             predictor_ids,
@@ -20743,7 +21025,13 @@ def rank_candidates(
         add_score_disclosures(row, config)
         row["rank_score_scope"] = ranking_policy.rank_score_scope(ranking_mode)
         errors.extend(validate_ranked_row_contract(row, predictor_ids, ranking_mode))
-    separability = assess_ranking_separability(ranked_candidates)
+    separability = assess_ranking_separability(
+        [row for row in ranked_candidates if row["coverage_complete"]]
+    )
+    for row in ranked_candidates:
+        if not row["coverage_complete"]:
+            row["tied_within_noise"] = None
+            row["adjacent_separability"] = []
     selection = config["selection"]
     configured_final_count = int(selection["final_count"])
     effective_final_count = configured_final_count if final_count is None else final_count
@@ -20762,7 +21050,7 @@ def rank_candidates(
         final_count=effective_final_count,
         minimum_generators=int(selection["minimum_generators"]),
         maximum_fraction=float(selection["maximum_fraction_per_generator"]),
-        sort_key=lambda row: _rank_sort_key(row, config),
+        sort_key=final_sort_key,
     )
     portfolio_summary = {
         **portfolio_summary,
@@ -20926,9 +21214,19 @@ def rank_candidates(
             else []
         ),
         "ranking_receipt": {
-            "status": "refused" if unranked_candidates else "ranked",
+            "status": "refused" if unranked_candidates else "partial" if partial_candidates else "ranked",
             "minimum_seed_observations": configured_minimum_observations,
             "seed_aggregation": aggregation,
+            "partial_candidates": [
+                {
+                    "candidate_id": row["candidate_id"],
+                    "scored_seed_count_by_predictor": {
+                        predictor_id: row["coverage"][predictor_id]["scored_seed_count"]
+                        for predictor_id in predictor_ids
+                    },
+                }
+                for row in ranked_candidates if not row["coverage_complete"]
+            ],
             "unranked_candidates": [
                 {
                     "candidate_id": row["candidate_id"],
