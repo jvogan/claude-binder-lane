@@ -261,7 +261,7 @@
           "fast"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off serialized atom-site records matched on the full public PD-L1 input; gzip container bytes differed. All intermediate tensors and general workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "This entry pins rc-foundry 0.2.0+app-09dd49945f0e6142 and the kit pins 0.2.1.dev13, thirteen commits later. The kit's checkpoint digest and byte count match this entry's own, which is independent confirmation rather than new information. This sentence used to say the kit supplies a digest this entry lacks; it does not. What this entry records as unverified is the weights licence, where spdx is a TODO and commercial_use reads unknown, and no kit file settles that. It needs NVIDIA apex 0.1, which the kit pins to a commit on the public NVIDIA repository and builds from source, about ten minutes on sixteen cores with nvcc 13.0, gcc and ninja. No prebuilt wheel exists for the pinned torch. Without apex the kernel census exits 5. This note previously said apex is not distributed, which is wrong: the source is public and the kit gives the build line. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -269,8 +269,24 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/rfdiffusion3_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/rfdiffusion3-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "claim_scope": "Named modes produced independently parsed public-input artifacts on native Modal. See dated evidence for exact parameters, handoffs and limits; Claude Science execution and a full graph binding are separate qualifications.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off",
+            "fast"
+          ]
+        }
       }
     },
     "genie3": {
@@ -298,7 +314,7 @@
       "availability": {
         "status": "operator_configured",
         "lineage_id": "genie3",
-        "note": "The profile carries a complete adapter contract and route. The command, toolcheck and parser argv were filled on 2026-09-12 from the shipped genie3_generator_gpu Modal recipe and the adapter's own argparse, so the row is adapter-shipped. The source revision, model revision and environment identity ship; the environment spec_sha and the container image digest remain required operator values. Nothing has run and the arm is unpriced. Its C-alpha-only output also needs a compatible sequence-design route, which ships.",
+        "note": "The profile carries a complete adapter contract and route. The command, toolcheck and parser argv were filled on 2026-09-12 from the shipped genie3_generator_gpu Modal recipe and the adapter's own argparse, so the row is adapter-shipped. The source revision, model revision and environment identity ship; the environment spec_sha and the container image digest remain required operator values. This fixed Binder adapter contract has not been qualified and is unpriced. Native kit execution is separately qualified in the dated accelerated-kit record. Its C-alpha-only output also needs a compatible sequence-design route, which ships.",
         "evidence": [
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP) | adapter contract with required operator values",
           "skills/claude-binder-lane/references/tool-catalogue.md (SHIP) | C-alpha-only compatibility limitation"
@@ -385,7 +401,7 @@
           "fast"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off PDB bytes and parsed atom coordinates matched on the public PD-L1 input. This is output parity for the named small run; all intermediate tensors and general workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "This entry pins source commit 5214459c42e69b01fadfc7d7ebda09d8e5082115 and the kit pins d77ae5ac04212ff1e8b29b585859a3244c614804. Both name the same weights host, and the kit adds a checkpoint digest this entry does not carry. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -393,8 +409,24 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/genie3_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/genie3-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "claim_scope": "Named modes produced independently parsed public-input artifacts on native Modal. See dated evidence for exact parameters, handoffs and limits; Claude Science execution and a full graph binding are separate qualifications.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off",
+            "fast"
+          ]
+        }
       }
     },
     "pxdesign": {
@@ -504,7 +536,7 @@
           "big"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off CIF bytes and parsed atom coordinates matched with the full 400-step sampler. The disclosed stock-isolation driver patch preserved every mode output relative to its original-driver run. All intermediate tensors and general workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "The commit matches this entry's own pin. The kit supplies a checkpoint digest and a named download host for weights this entry records as fetched at first inference with an unverified status and a missing licence. It fetches PXDesignBench 0.1.2 from GitHub at install time, which is an unpinned build input. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -512,8 +544,25 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/pxdesign_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/pxdesign-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off",
+            "fast",
+            "big"
+          ],
+          "claim_scope": "Full 400-step public-input generation passed all four modes. Hash-gated removal of an unused kit-driver import gives clean stock isolation; generated outputs match original-driver runs. Native execution does not imply a fixed Binder graph binding or Claude Science session qualification.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md"
+        }
       }
     },
     "proteina-complexa": {
@@ -624,7 +673,7 @@
           "big"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact and Big generated PDB bytes and all saved non-path AF2 reward CSV values matched Off for two public-input replicas. Fast differed as expected. All intermediate tensors and general workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "This entry pins 54058860d43444c7289873f77d3e50b5b02348cd and the kit pins 916eaaedce5b07c205efb6ef32370c01d366591e. The kit states the two differ only under .github/ with src/ and configs/ byte-identical, so the divergence does not change the model. The kit confirms the weights sit under the NVIDIA Open Model License while the code is Apache-2.0, which is what this entry already records. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -632,8 +681,25 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/complexa_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/complexa-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off",
+            "fast",
+            "big"
+          ],
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "claim_scope": "Full default best-of-n generation with two replicas and actual AF2 reward passed all four modes on public input. Sampler400, recycles3 and upstream default single-model AF2 selection were preserved. Separate evaluate/analyze dependencies and a Claude Science session remain separately qualified."
+        }
       }
     },
     "boltzgen": {
@@ -744,7 +810,7 @@
           "big"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off structures and coordinate archives matched through the six-step public-input pipeline. Two design_iiptm confidence arrays differed; whole-pipeline bit identity was not established.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "The version matches this entry's own pin. Of the two Hugging Face snapshot revisions the kit pins, the model one, c1be29e1f82ffcc72264f64b993c43fb4e0d17f0 on boltzgen/boltzgen-1, is already this entry's own weights revision at status resolved. The new one is the inference-data snapshot, c3d36fd276e9caf098c75d4113c6d5eb320b1a4c on boltzgen/inference-data, which supplies mols.zip and which this entry does not record. This sentence used to call both of them a hole this entry left open, which was wrong about the model half. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -752,8 +818,25 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/boltzgen_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/boltzgen-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "claim_scope": "All six pipeline steps completed on two public-input designs per mode with original inference defaults and independently parsed outputs. Exact/off structures matched but design_iiptm had a recorded numerical difference; whole-pipeline bitwise equality is unproven.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off",
+            "fast",
+            "big"
+          ]
+        }
       }
     },
     "proteinmpnn": {
@@ -825,10 +908,11 @@
       "hardware": {
         "gpu_required": true,
         "gpu_memory_gb": 8,
-        "recommended_gpu": "TODO: an operator recording the GPU their own deployment of this route requests, in an environment recipe under skills/claude-binder-lane/envs/",
+        "recommended_gpu": "Native kit: H100, with upstream A100/H200 card alternatives. Legacy local/hosted routes follow the selected deployment resources.",
         "evidence": [
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP) | resources cpu 4 gpu 1 memory 12 gpu_memory 8",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers proteinmpnn, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it"
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
+          "skills/claude-binder-lane/envs/proteinmpnn_kit_gpu.py (SHIP) | Full-backbone vanilla and soluble native kit image and H100 default; legacy adapter resources remain separate."
         ]
       },
       "runtime_network": {
@@ -842,7 +926,7 @@
           ],
           "local-process": []
         },
-        "note": "One value per route, because the two routes differ. The hosted route posts to a fal application through the packaged client and refuses any other hostname. The local route runs an externally supplied ProteinMPNN checkout against a weights directory the caller names, and the wrapper fetches nothing at job time: its only use of urllib is parsing the fal endpoint URL. github.com is where a cold install comes from, before any job runs. No environment recipe for ProteinMPNN ships in this package, so staging the checkout is the operator's step. The route keys are the route classes claude_binder.route_matrix reports.",
+        "note": "One value per route, because the two routes differ. The hosted route posts to a fal application through the packaged client and refuses any other hostname. The local route runs an externally supplied ProteinMPNN checkout against a weights directory the caller names, and the wrapper fetches nothing at job time: its only use of urllib is parsing the fal endpoint URL. github.com is where a cold install comes from, before any job runs. The separate native ProteinMPNN kit recipe stages the pinned checkout and verifies both weight sets during hydration; selecting it does not change this legacy adapter's interface. The route keys are the route classes claude_binder.route_matrix reports.",
         "evidence": [
           "claude_binder/clients/fal_mpnn_client.py (SHIP) | line 33, FAL_HOST is fal.run and :66 builds the HTTPS deployment URL",
           "claude_binder/adapters/proteinmpnn_designer.py (SHIP) | line 238, the endpoint validator refuses any hostname other than fal.run",
@@ -872,7 +956,7 @@
           "exact"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off FASTA bytes and every saved NPZ array value matched for two full-backbone public monomers with vanilla weights. Broader workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "This entry pins the v1.0.1 release read from docs and the kit pins a commit. The kit answers this entry's weights.host TODO: the parameters ship inside the upstream repository rather than from a download host. It offers no fast or big mode, only off and exact. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -880,8 +964,23 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#pins-and-digests-this-release-settles (SHIP) | kit pin, digests and stack as stock/PINS.json records them",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
-          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+          "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode",
+          "skills/claude-binder-lane/references/accelerated-kit-integration.md (SHIP) | Native setup and campaign-local integration remain available independently of a fixed Binder graph binding"
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/proteinmpnn_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/proteinmpnn-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "claim_scope": "Public monomers and actual generated PXDesign/RFdiffusion3 complexes passed vanilla/soluble Exact and Off; FASTA and every saved NPZ array value matched. Sampled indices and masks confirmed frozen target sequences. See dated evidence for coordinate lineage and limitations. Claude Science sessions and fixed graph bindings remain separate qualifications.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off"
+          ]
+        }
       }
     },
     "solublempnn": {
@@ -912,7 +1011,7 @@
       "availability": {
         "status": "operator_configured",
         "lineage_id": "solublempnn",
-        "note": "The shared ProteinMPNN adapter and profile route ship, but the current package does not carry a qualified soluble checkpoint runtime and complete network/environment record.",
+        "note": "The shared ProteinMPNN adapter and profile route ship; their complete graph environment record remains operator-configured. The separate native full-backbone soluble kit has passed H100 inference and is documented in the dated accelerated-kit qualification record.",
         "evidence": [
           "claude_binder/adapters/proteinmpnn_designer.py (SHIP) | shared adapter implementation",
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP) | solublempnn profile route"
@@ -953,10 +1052,11 @@
       "hardware": {
         "gpu_required": true,
         "gpu_memory_gb": 8,
-        "recommended_gpu": "TODO: an operator recording the GPU their own deployment of this route requests, in an environment recipe under skills/claude-binder-lane/envs/",
+        "recommended_gpu": "Native kit: H100, with upstream A100/H200 card alternatives. Legacy local/hosted routes follow the selected deployment resources.",
         "evidence": [
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP)",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers solublempnn, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it"
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
+          "skills/claude-binder-lane/envs/proteinmpnn_kit_gpu.py (SHIP) | Full-backbone vanilla and soluble native kit image and H100 default; legacy adapter resources remain separate."
         ]
       },
       "runtime_network": {
@@ -970,7 +1070,7 @@
           ],
           "local-process": []
         },
-        "note": "SolubleMPNN ships inside the ProteinMPNN repository and runs on the same runner through the same wrapper, so its job-time network behaviour is identical to ProteinMPNN and is recorded per route for the same reason. One value per route, because the two routes differ. The hosted route posts to a fal application through the packaged client and refuses any other hostname. The local route runs an externally supplied ProteinMPNN checkout against a weights directory the caller names, and the wrapper fetches nothing at job time: its only use of urllib is parsing the fal endpoint URL. github.com is where a cold install comes from, before any job runs. No environment recipe for ProteinMPNN ships in this package, so staging the checkout is the operator's step. The route keys are the route classes claude_binder.route_matrix reports.",
+        "note": "SolubleMPNN ships inside the ProteinMPNN repository and runs on the same runner through the same wrapper, so its job-time network behaviour is identical to ProteinMPNN and is recorded per route for the same reason. One value per route, because the two routes differ. The hosted route posts to a fal application through the packaged client and refuses any other hostname. The local route runs an externally supplied ProteinMPNN checkout against a weights directory the caller names, and the wrapper fetches nothing at job time: its only use of urllib is parsing the fal endpoint URL. github.com is where a cold install comes from, before any job runs. The separate native ProteinMPNN kit recipe stages the pinned checkout and verifies both weight sets during hydration; selecting it does not change this legacy adapter's interface. The route keys are the route classes claude_binder.route_matrix reports.",
         "evidence": [
           "claude_binder/adapters/proteinmpnn_designer.py (SHIP) | line 4, one wrapper serves both the proteinmpnn-designer and solublempnn-designer adapter IDs, and SolubleMPNN ships in the same repository on the same runner",
           "claude_binder/clients/fal_mpnn_client.py (SHIP) | line 33, FAL_HOST is fal.run for the hosted route",
@@ -998,7 +1098,7 @@
           "exact"
         ],
         "mode_stated_bit_identical": "exact",
-        "bit_identity_measured_for_this_tool": "Not separately recorded for this tool. The release states exact reproduces the unmodified model bit for bit; the report measures it and reports bit-identity for 10 of the 11 configurations it checked, with deterministic settings enabled, against the tuned default baseline rather than against off. A fidelity claim resting on exact needs the per-configuration result for this tool.",
+        "bit_identity_measured_for_this_tool": "2026-09-30 native H100 qualification: Exact/Off FASTA bytes and every saved NPZ array value matched for two full-backbone public monomers with soluble weights. Broader workloads were not compared.",
         "forward_pass_speedup": null,
         "dispatchable_here": false,
         "note": "One kit serves both the vanilla and soluble parameter sets. The digest above is the soluble v_48_020 checkpoint, which confirms this entry's statement that the soluble weights ship inside the ProteinMPNN repository. It offers no fast or big mode, only off and exact. The report's Figure 3 covers structure prediction only, so no per-mode forward-pass figure is published for this tool.",
@@ -1007,7 +1107,21 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#forward-pass-speed-ups-on-h100-80-gb (SHIP) | geometric mean per mode against the report's tuned default baseline on H100 80 GB",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
-        ]
+        ],
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/proteinmpnn_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/proteinmpnn-kit-modal.md",
+        "native_execution": {
+          "status": "native-modal-tested",
+          "surface": "provider-native",
+          "claim_scope": "Public monomers and actual generated PXDesign/RFdiffusion3 complexes passed vanilla/soluble Exact and Off; FASTA and every saved NPZ array value matched. Sampled indices and masks confirmed frozen target sequences. See dated evidence for coordinate lineage and limitations. Claude Science sessions and fixed graph bindings remain separate qualifications.",
+          "evidence": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+          "tested_hardware": "H100",
+          "tested_modes": [
+            "exact",
+            "off"
+          ]
+        }
       }
     },
     "solublecaliby": {
@@ -1195,7 +1309,7 @@
         "note": "The runner selects CUDA when it is available and CPU otherwise, with no flag to choose. A CPU design of 93 residues finished in seconds during bring-up, so a GPU shortens the stage rather than enabling it. No measurement on the operator's own hardware exists.",
         "evidence": [
           "claude_binder/adapters/ligandmpnn_designer.py (SHIP) | the argv carries no device flag",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers ligandmpnn, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it"
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources."
         ]
       },
       "runtime_network": {
@@ -1376,7 +1490,7 @@
         "note": "The GPU class comes from the environment the operator builds, not from this package.",
         "evidence": [
           "claude_binder/adapters/boltz2_local_predictor.py (SHIP) | the arm declares no hardware of its own",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers boltz-local, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for boltz-local"
         ]
       },
@@ -1506,7 +1620,7 @@
         "note": "The inventory names GPU use and records no memory minimum or recommended GPU.",
         "evidence": [
           "references/evidence/claude-science-platform-skills.md#chai1 (PLATFORM SNAPSHOT 0.1.41-release) | requirements: [gpu] declared; no memory minimum and no recommended GPU stated",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers chai1, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for chai1"
         ]
       },
@@ -1633,7 +1747,7 @@
         "evidence": [
           "TODO(evidence): This field records the OpenFold3 GPU requirement as unknown, but the platform declares `requirements: [gpu]` at references/evidence/claude-science-platform-skills.md#openfold3. Citing the snapshot here would attach evidence that contradicts the field. Settled by: a value pass that adopts `gpu_required: true` from the platform declaration, or a hardware read that supersedes it. Memory and recommended GPU stay unknown either way, because the platform states neither.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the openfold3 section, the openfold3 section records Declared requirements as [gpu], which is the platform skill's own frontmatter",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers openfold3, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for openfold3"
         ]
       },
@@ -1757,7 +1871,7 @@
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP) | resources cpu 4 gpu 1 memory 32 gpu_memory 24",
           "skills/claude-binder-lane/envs/binder_scoring_gpu.py (SHIP) | Python pin note",
           "skills/claude-binder-lane/references/tool-bringup.md (SHIP) | the compute skill ships an esmfold2_gpu environment carrying this stack",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers esmfold2, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it"
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources."
         ]
       },
       "runtime_network": {
@@ -1807,7 +1921,15 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
         ],
-        "catalogue_pin_agreement": "differs"
+        "catalogue_pin_agreement": "differs",
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/esmfold2_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/esmfold2-kit-modal.md",
+        "native_execution": {
+          "status": "recipe-shipped",
+          "surface": "provider-native",
+          "claim_scope": "Pinned setup is packaged. Read dated execution evidence for tested hardware, modes and artifacts. A fixed Binder graph binding is optional."
+        }
       }
     },
     "esmfold2-fast": {
@@ -1873,7 +1995,7 @@
         "recommended_gpu": "TODO: an operator recording the GPU their own deployment of this route requests, in an environment recipe under skills/claude-binder-lane/envs/",
         "evidence": [
           "claude_binder/data/templates/profiles/full-ensemble.template.json (SHIP)",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers esmfold2-fast, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it"
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources."
         ]
       },
       "runtime_network": {
@@ -1930,7 +2052,15 @@
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#the-four-modes (SHIP) | mode vocabulary and what exact guarantees",
           "skills/claude-binder-lane/references/accelerated-upstream-builds.md#what-a-claude-science-user-can-do-with-this-today (SHIP) | no adapter here dispatches to a kit and no profile field selects a mode"
         ],
-        "catalogue_pin_agreement": "differs"
+        "catalogue_pin_agreement": "differs",
+        "modal_environment_recipe": "skills/claude-binder-lane/envs/esmfold2_kit_gpu.py",
+        "mode_verifier": "claude_binder.kit_engagement",
+        "native_setup_reference": "skills/claude-binder-lane/references/esmfold2-kit-modal.md",
+        "native_execution": {
+          "status": "recipe-shipped",
+          "surface": "provider-native",
+          "claim_scope": "Pinned setup is packaged. Read dated execution evidence for tested hardware, modes and artifacts. A fixed Binder graph binding is optional."
+        }
       }
     },
     "esmfold2-native-design": {
@@ -2207,7 +2337,7 @@
         "note": "The shipped skill requires a GPU but documents no memory minimum or recommended GPU for AlphaFold2-Multimer-v3.",
         "evidence": [
           "references/evidence/claude-science-platform-skills.md#alphafold2 (PLATFORM SNAPSHOT 0.1.41-release) | requirements: [gpu] declared; no memory minimum and no recommended GPU stated",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers alphafold-multimer-v3, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for alphafold-multimer-v3"
         ]
       },
@@ -2618,7 +2748,7 @@
         "evidence": [
           "TODO(evidence): This field records the ESM-2 GPU requirement as unknown, but the platform declares `requirements: [gpu]` at references/evidence/claude-science-platform-skills.md#fair-esm2. Citing the snapshot here would attach evidence that contradicts the field. Settled by: a value pass that adopts `gpu_required: true` from the platform declaration, or a hardware read that supersedes it. Memory and recommended GPU stay unknown either way, because the platform states neither.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the fair-esm2 section, the fair-esm2 section records Declared requirements as [gpu], which is the platform skill's own frontmatter",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers fair-esm2, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for fair-esm2"
         ]
       },
@@ -2813,7 +2943,7 @@
         "evidence": [
           "TODO(evidence): This field records the DiffDock-L GPU requirement as unknown, but the platform declares `requirements: [gpu]` at references/evidence/claude-science-platform-skills.md#diffdock. Citing the snapshot here would attach evidence that contradicts the field. Settled by: a value pass that adopts `gpu_required: true` from the platform declaration, or a hardware read that supersedes it. Memory and recommended GPU stay unknown either way, because the platform states neither.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the diffdock section, the diffdock section records Declared requirements as [gpu], which is the platform skill's own frontmatter",
-          "skills/claude-binder-lane/envs (SHIP) | the directory holds three recipes, binder_scoring_gpu.py, genie3_generator_gpu.py and rfdiffusion_generator_gpu.py, and none covers diffdock, so no file in this repository states a GPU model for this route, because the platform snapshot records only a boolean requirement and this tree ships no environment recipe for it",
+          "skills/claude-binder-lane/envs (SHIP) | Native kit recipes are separate execution surfaces; a named GPU for a legacy graph route still follows its selected deployment and profile resources.",
           "references/evidence/claude-science-platform-skills.md (PLATFORM SNAPSHOT 0.1.41-release) | the per-skill tables record a Declared requirements row and no memory figure anywhere, so the snapshot cannot state gpu_memory_gb for diffdock"
         ]
       },

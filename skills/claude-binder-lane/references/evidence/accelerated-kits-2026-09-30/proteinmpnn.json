@@ -1,0 +1,492 @@
+{
+  "controller_exit_code": 0,
+  "cost_and_cleanup_evidence": "Owned by the launching controller; this file establishes artifact and activation evidence only.",
+  "input_basis": "pinned upstream public monomer fixtures 5L33 and 6MRR",
+  "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+  "limitations": [
+    "Qualification covers two public full-backbone monomers, one designed sequence per target, one temperature, seed 37, and H100.",
+    "Upstream reports sort_by_length as unobserved in both exact manifests; it reports no partial, opted-out, unavailable, or fallback levers.",
+    "The small smoke is not a production throughput benchmark or an accelerated C-alpha qualification."
+  ],
+  "provider": "modal",
+  "requested": {
+    "batch_size": 1,
+    "card": "h100",
+    "num_seq_per_target": 1,
+    "save_probs": 1,
+    "save_score": 1,
+    "seed": 37
+  },
+  "review_date": "2026-09-30",
+  "schema": "claude_binder.kit_qualification/1",
+  "tool": "proteinmpnn",
+  "upstream_commit": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+  "variants": {
+    "soluble": {
+      "parity": {
+        "comparison": "proteinmpnn_off_exact",
+        "comparison_scope": "FASTA bytes and every stored NPZ array; ZIP container bytes are not the identity criterion",
+        "files": [
+          "probs/5L33.npz",
+          "probs/6MRR.npz",
+          "scores/5L33.npz",
+          "scores/6MRR.npz",
+          "seqs/5L33.fa",
+          "seqs/6MRR.fa"
+        ],
+        "identical": true
+      },
+      "runs": {
+        "exact": {
+          "activation": {
+            "active": true,
+            "allow_partial": false,
+            "fused_draw_mismatched_steps": 0,
+            "hybrid_gemm_max_abs_diff": 0.0,
+            "levers_applied": [
+              "stream",
+              "sort_by_length",
+              "chunk_gemm",
+              "cache_enc_ctx",
+              "graph_rng",
+              "single_graph",
+              "fused_draw",
+              "analytic_offsets",
+              "stock_shape_enc",
+              "hybrid_gemm",
+              "lowmem"
+            ],
+            "levers_fallback": [],
+            "levers_unavailable": [],
+            "levers_unobserved": [
+              "sort_by_length"
+            ],
+            "native_header_pin_and_seed_match": true,
+            "opted_out": [],
+            "partial": [],
+            "probe_verdict": "PASS",
+            "route": "worker",
+            "worker": {
+              "batch_size": 1,
+              "bb_batch": 16,
+              "fused_draw": true,
+              "graph_stats": {
+                "capture_s": 0.06856513023376465,
+                "captures": 1,
+                "enc_cache_hits": 3,
+                "replays": 106
+              },
+              "hybrid_gemm_active": true,
+              "n_backbones": 2,
+              "n_seqs": 2,
+              "num_batches": 1,
+              "peak_alloc_GB": 0.244,
+              "seed": 37,
+              "temperatures": [
+                0.1
+              ]
+            }
+          },
+          "exit_code": 0,
+          "log": {
+            "file": "artifacts/logs/soluble-exact.log",
+            "sha256": "b9f4f37d7e4dba9a1d9a0a7400e8b70192f0b72be6e5e15ae70649376efb1fed"
+          },
+          "manifest": {
+            "file": "artifacts/out/soluble-exact/opt_manifest.json",
+            "sha256": "863eea15902536a563ffbe4c92d3d3ca12e9f097d095409e3757b9c1a8321ba8"
+          },
+          "outputs": {
+            "artifacts": [
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/soluble-exact/scores/5L33.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "e1ee7073c6b5ccef58bd72dc42c78f06b10086ecea3a69803789ca819342f6f1"
+                  },
+                  {
+                    "file": "artifacts/out/soluble-exact/probs/5L33.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "86088459bd668ec57cc9b079799532eb592ea38133a8cfbb40a1b830170a5bdf"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  106
+                ],
+                "designs": 1,
+                "file": "artifacts/out/soluble-exact/seqs/5L33.fa",
+                "sha256": "d70085dbafef5e252aae7c9eb329681b549cc160657f27863cf760c16bc31345"
+              },
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/soluble-exact/scores/6MRR.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "991d59b9203d5f84bb2c40bc68a55214de6719c58871d55d26068782527f6718"
+                  },
+                  {
+                    "file": "artifacts/out/soluble-exact/probs/6MRR.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "01d554914e8e6d2a66d94442d5bb5377e8569d95afd1765fa372ebbb8ff10db2"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  68
+                ],
+                "designs": 1,
+                "file": "artifacts/out/soluble-exact/seqs/6MRR.fa",
+                "sha256": "d3ca3ffbce8b6688bc4d7f9ec5a0a9d4f5f64594279478891f2b4ac60b3874ce"
+              }
+            ],
+            "designs": 2,
+            "targets": 2,
+            "tool": "proteinmpnn"
+          },
+          "wall_s": 4.254
+        },
+        "off": {
+          "activation": {
+            "active": false,
+            "allow_partial": false,
+            "levers_applied": [],
+            "levers_fallback": [],
+            "levers_unavailable": [],
+            "levers_unobserved": [],
+            "native_header_pin_and_seed_match": true,
+            "opted_out": [],
+            "partial": [],
+            "probe_verdict": "not applicable",
+            "route": "stock"
+          },
+          "exit_code": 0,
+          "log": {
+            "file": "artifacts/logs/soluble-off.log",
+            "sha256": "345d639676b5e1c7b21cfcc1b96c3d13ca1cc549a0066d5bacd42fedce1ef53b"
+          },
+          "manifest": {
+            "file": "artifacts/out/soluble-off/opt_manifest.json",
+            "sha256": "fd7111f2523eb72c74e0896bfe0c2190715939bce5070416a82cac5d8a98da1d"
+          },
+          "outputs": {
+            "artifacts": [
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/soluble-off/scores/5L33.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "e1ee7073c6b5ccef58bd72dc42c78f06b10086ecea3a69803789ca819342f6f1"
+                  },
+                  {
+                    "file": "artifacts/out/soluble-off/probs/5L33.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "86088459bd668ec57cc9b079799532eb592ea38133a8cfbb40a1b830170a5bdf"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  106
+                ],
+                "designs": 1,
+                "file": "artifacts/out/soluble-off/seqs/5L33.fa",
+                "sha256": "d70085dbafef5e252aae7c9eb329681b549cc160657f27863cf760c16bc31345"
+              },
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/soluble-off/scores/6MRR.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "991d59b9203d5f84bb2c40bc68a55214de6719c58871d55d26068782527f6718"
+                  },
+                  {
+                    "file": "artifacts/out/soluble-off/probs/6MRR.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "01d554914e8e6d2a66d94442d5bb5377e8569d95afd1765fa372ebbb8ff10db2"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  68
+                ],
+                "designs": 1,
+                "file": "artifacts/out/soluble-off/seqs/6MRR.fa",
+                "sha256": "d3ca3ffbce8b6688bc4d7f9ec5a0a9d4f5f64594279478891f2b4ac60b3874ce"
+              }
+            ],
+            "designs": 2,
+            "targets": 2,
+            "tool": "proteinmpnn"
+          },
+          "wall_s": 4.86
+        }
+      }
+    },
+    "vanilla": {
+      "parity": {
+        "comparison": "proteinmpnn_off_exact",
+        "comparison_scope": "FASTA bytes and every stored NPZ array; ZIP container bytes are not the identity criterion",
+        "files": [
+          "probs/5L33.npz",
+          "probs/6MRR.npz",
+          "scores/5L33.npz",
+          "scores/6MRR.npz",
+          "seqs/5L33.fa",
+          "seqs/6MRR.fa"
+        ],
+        "identical": true
+      },
+      "runs": {
+        "exact": {
+          "activation": {
+            "active": true,
+            "allow_partial": false,
+            "fused_draw_mismatched_steps": 0,
+            "hybrid_gemm_max_abs_diff": 0.0,
+            "levers_applied": [
+              "stream",
+              "sort_by_length",
+              "chunk_gemm",
+              "cache_enc_ctx",
+              "graph_rng",
+              "single_graph",
+              "fused_draw",
+              "analytic_offsets",
+              "stock_shape_enc",
+              "hybrid_gemm",
+              "lowmem"
+            ],
+            "levers_fallback": [],
+            "levers_unavailable": [],
+            "levers_unobserved": [
+              "sort_by_length"
+            ],
+            "native_header_pin_and_seed_match": true,
+            "opted_out": [],
+            "partial": [],
+            "probe_verdict": "PASS",
+            "route": "worker",
+            "worker": {
+              "batch_size": 1,
+              "bb_batch": 16,
+              "fused_draw": true,
+              "graph_stats": {
+                "capture_s": 0.10668563842773438,
+                "captures": 1,
+                "enc_cache_hits": 3,
+                "replays": 106
+              },
+              "hybrid_gemm_active": true,
+              "n_backbones": 2,
+              "n_seqs": 2,
+              "num_batches": 1,
+              "peak_alloc_GB": 0.244,
+              "seed": 37,
+              "temperatures": [
+                0.1
+              ]
+            }
+          },
+          "exit_code": 0,
+          "log": {
+            "file": "artifacts/logs/vanilla-exact.log",
+            "sha256": "362e7714dd90a2df40f2788dceda964f3dd6c403b48cdbe4336dc60db14ed33a"
+          },
+          "manifest": {
+            "file": "artifacts/out/vanilla-exact/opt_manifest.json",
+            "sha256": "2140161d6acc169a4359e5699e04a37ef36c8c46385df99e947e53cec38b3b5a"
+          },
+          "outputs": {
+            "artifacts": [
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/vanilla-exact/scores/5L33.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "c44f85dd693cc0a5592b499e577b871e489a670dbd4e99839ae8e2fb59546d65"
+                  },
+                  {
+                    "file": "artifacts/out/vanilla-exact/probs/5L33.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "2b182ff8b878355d288bc1491f37f0bab69721a034d82f67572e36f739a6bdf8"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  106
+                ],
+                "designs": 1,
+                "file": "artifacts/out/vanilla-exact/seqs/5L33.fa",
+                "sha256": "44f90b613a62486c363fe0eb776894aca9a1a4020825d267d316f660644a42c0"
+              },
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/vanilla-exact/scores/6MRR.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "49d246c89fb96c59254e74e45f910f3a07772ac4ff40637b00d4b39807fab51f"
+                  },
+                  {
+                    "file": "artifacts/out/vanilla-exact/probs/6MRR.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "aee87f17de6f2692bbac5d919b383fcb6be1899f7ebed3738ff9c8f8e4658a06"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  68
+                ],
+                "designs": 1,
+                "file": "artifacts/out/vanilla-exact/seqs/6MRR.fa",
+                "sha256": "d638c85cc55fdf19a9172a46650b78b0e830b6ae40102439216b2fa0fc2f7328"
+              }
+            ],
+            "designs": 2,
+            "targets": 2,
+            "tool": "proteinmpnn"
+          },
+          "wall_s": 6.435
+        },
+        "off": {
+          "activation": {
+            "active": false,
+            "allow_partial": false,
+            "levers_applied": [],
+            "levers_fallback": [],
+            "levers_unavailable": [],
+            "levers_unobserved": [],
+            "native_header_pin_and_seed_match": true,
+            "opted_out": [],
+            "partial": [],
+            "probe_verdict": "not applicable",
+            "route": "stock"
+          },
+          "exit_code": 0,
+          "log": {
+            "file": "artifacts/logs/vanilla-off.log",
+            "sha256": "c7d28bd1dea01085efbe7f20abbc55a81338bf041dfe664d7bec6cfda638525a"
+          },
+          "manifest": {
+            "file": "artifacts/out/vanilla-off/opt_manifest.json",
+            "sha256": "0454ae200fa3900153def2f10675d78950ffbca1a98f7c0f47f163574a4c4637"
+          },
+          "outputs": {
+            "artifacts": [
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/vanilla-off/scores/5L33.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "c44f85dd693cc0a5592b499e577b871e489a670dbd4e99839ae8e2fb59546d65"
+                  },
+                  {
+                    "file": "artifacts/out/vanilla-off/probs/5L33.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "2b182ff8b878355d288bc1491f37f0bab69721a034d82f67572e36f739a6bdf8"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  106
+                ],
+                "designs": 1,
+                "file": "artifacts/out/vanilla-off/seqs/5L33.fa",
+                "sha256": "44f90b613a62486c363fe0eb776894aca9a1a4020825d267d316f660644a42c0"
+              },
+              {
+                "arrays": [
+                  {
+                    "file": "artifacts/out/vanilla-off/scores/6MRR.npz",
+                    "keys": [
+                      "global_score",
+                      "score"
+                    ],
+                    "sha256": "49d246c89fb96c59254e74e45f910f3a07772ac4ff40637b00d4b39807fab51f"
+                  },
+                  {
+                    "file": "artifacts/out/vanilla-off/probs/6MRR.npz",
+                    "keys": [
+                      "S",
+                      "chain_order",
+                      "log_probs",
+                      "mask",
+                      "probs"
+                    ],
+                    "sha256": "aee87f17de6f2692bbac5d919b383fcb6be1899f7ebed3738ff9c8f8e4658a06"
+                  }
+                ],
+                "designed_chain_lengths": [
+                  68
+                ],
+                "designs": 1,
+                "file": "artifacts/out/vanilla-off/seqs/6MRR.fa",
+                "sha256": "d638c85cc55fdf19a9172a46650b78b0e830b6ae40102439216b2fa0fc2f7328"
+              }
+            ],
+            "designs": 2,
+            "targets": 2,
+            "tool": "proteinmpnn"
+          },
+          "wall_s": 4.994
+        }
+      }
+    }
+  }
+}

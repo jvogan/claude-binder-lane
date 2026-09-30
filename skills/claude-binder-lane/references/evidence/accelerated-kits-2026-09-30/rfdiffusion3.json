@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "tool": "rfdiffusion3",
+  "attempt": 2,
+  "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+  "status": "gpu_artifacts_validated",
+  "gpu_execution_observed": true,
+  "hardware": {
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "cuda": "13.0",
+    "torch": "2.13.0+cu130",
+    "python": "3.12.1"
+  },
+  "source_recipe_sha256": "7722f783d219bd1345e5fec5800a3e7800c2e80732b19f3977be4bb1c8cec922",
+  "artifact_archive_sha256": "cc3305f7a2be88aee811bd43e9669a5c3787cd92f3bcd0864fbabc7952538dcc",
+  "fixture": {
+    "name": "upstream_pdl1_binder",
+    "spec_sha256": "27ff8c911d2b27e1382a7fd7c478321156674827f301c7764faa5a3812571bd0",
+    "target_pdb_sha256": "ba8b75816d8180d8c9ddf7388834d7cbf72163e77ecb612b22449b4375e633a0",
+    "target_input_chain": "A",
+    "output_target_chain": "B",
+    "output_binder_chain": "A",
+    "target_residues": 115,
+    "binder_residues": 95
+  },
+  "modes": [
+    {
+      "tool": "rfdiffusion3",
+      "mode": "exact",
+      "designs": 1,
+      "counters": {
+        "stats.rollouts": 1,
+        "stats.entries_last": 0,
+        "stats.hits_last": 23,
+        "graph.installs": 1,
+        "graph.captures": 1,
+        "graph.hits": 0,
+        "graph.fallbacks": 0,
+        "graph.declined": 0,
+        "fzt.installs": 1,
+        "fzt.fused_calls": 28,
+        "fzt.stock_calls": 28,
+        "fzt.modules_packed": 8,
+        "init_chunk.calls": 1,
+        "init_chunk.chunked_calls": 1,
+        "init_chunk.blocks": 5,
+        "init_chunk.max_atoms": 2239,
+        "init_chunk.pairs_per_block": 1048576,
+        "compile.installs": 0,
+        "compile.wrapped": 0,
+        "compile.declared": 0,
+        "compile.graphs": 0,
+        "compile.graph_breaks": 0,
+        "compile.frames_ok": 0,
+        "compile.frames_total": 0,
+        "compile.frames_skipped": 0,
+        "compile.recompile_limit_hits": 0
+      },
+      "artifacts": [
+        {
+          "file": "pdl1-only_pdl1_0_model_0.cif.gz",
+          "sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+          "chains": {
+            "A": 95,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 95,
+          "chain_sequence_sha256": {
+            "A": "f10a79849603c1d4049c9b852e03d4690099dbbf2c604deb1ea0bd7ea90e4c64",
+            "B": "7c6c29f6a7ad25ac02ba80f521320fa138b9cee63b3f62a9becb0598fd48ac04"
+          },
+          "binder_sequence_sha256": "f10a79849603c1d4049c9b852e03d4690099dbbf2c604deb1ea0bd7ea90e4c64",
+          "metadata": {
+            "file": "pdl1-only_pdl1_0_model_0.json",
+            "sha256": "bc816b7a9528fe4dc962a4e6a2715019e2389d07bfcab91cf0e10aca2b2bd8ab"
+          }
+        }
+      ],
+      "levers_applied": [
+        "RFD3_CUDAGRAPH",
+        "RFD3_FZT",
+        "RFD3_HOIST",
+        "RFD3_INIT_CHUNK"
+      ],
+      "interpreter_label": "patched",
+      "requested_det": 1,
+      "seed": 101
+    },
+    {
+      "tool": "rfdiffusion3",
+      "mode": "off",
+      "designs": 1,
+      "counters": {},
+      "artifacts": [
+        {
+          "file": "pdl1-only_pdl1_0_model_0.cif.gz",
+          "sha256": "1b3ca12e50a2b3a1ae446731d6d11beb9a8ec690fe2d0156e667e1c4ba5bb72a",
+          "chains": {
+            "A": 95,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 95,
+          "chain_sequence_sha256": {
+            "A": "f10a79849603c1d4049c9b852e03d4690099dbbf2c604deb1ea0bd7ea90e4c64",
+            "B": "7c6c29f6a7ad25ac02ba80f521320fa138b9cee63b3f62a9becb0598fd48ac04"
+          },
+          "binder_sequence_sha256": "f10a79849603c1d4049c9b852e03d4690099dbbf2c604deb1ea0bd7ea90e4c64",
+          "metadata": {
+            "file": "pdl1-only_pdl1_0_model_0.json",
+            "sha256": "bc816b7a9528fe4dc962a4e6a2715019e2389d07bfcab91cf0e10aca2b2bd8ab"
+          }
+        }
+      ],
+      "levers_applied": [],
+      "interpreter_label": "pristine",
+      "requested_det": 1,
+      "seed": 101
+    },
+    {
+      "tool": "rfdiffusion3",
+      "mode": "fast",
+      "designs": 1,
+      "counters": {
+        "stats.rollouts": 1,
+        "stats.entries_last": 0,
+        "stats.hits_last": 23,
+        "graph.installs": 1,
+        "graph.captures": 1,
+        "graph.hits": 0,
+        "graph.fallbacks": 0,
+        "graph.declined": 0,
+        "fzt.installs": 1,
+        "fzt.fused_calls": 28,
+        "fzt.stock_calls": 28,
+        "fzt.modules_packed": 8,
+        "init_chunk.calls": 1,
+        "init_chunk.chunked_calls": 1,
+        "init_chunk.blocks": 5,
+        "init_chunk.max_atoms": 2239,
+        "init_chunk.pairs_per_block": 1048576,
+        "compile.installs": 1,
+        "compile.wrapped": 4,
+        "compile.declared": 4,
+        "compile.graphs": 39,
+        "compile.graph_breaks": 45,
+        "compile.frames_ok": 90,
+        "compile.frames_total": 101,
+        "compile.frames_skipped": 11,
+        "compile.recompile_limit_hits": 0,
+        "compile.cache_entries_max": 1,
+        "compile.cache_size_limit": 64,
+        "compile.frames_skipped_allowed": 11,
+        "gather.installs": 1,
+        "gather.served": 27,
+        "gather.stock": 0,
+        "gather.idx_builds": 3
+      },
+      "artifacts": [
+        {
+          "file": "pdl1-only_pdl1_0_model_0.cif.gz",
+          "sha256": "3c53eb6503ec0fb07d54db84409c5f5eeb4e1a3bc90137d1f48e5bc6bd4997b8",
+          "chains": {
+            "A": 95,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 95,
+          "chain_sequence_sha256": {
+            "A": "219f6c0837eb548c7362bca971f62ad1137d263bff16a613ec9e7e6eab0902cb",
+            "B": "7c6c29f6a7ad25ac02ba80f521320fa138b9cee63b3f62a9becb0598fd48ac04"
+          },
+          "binder_sequence_sha256": "219f6c0837eb548c7362bca971f62ad1137d263bff16a613ec9e7e6eab0902cb",
+          "metadata": {
+            "file": "pdl1-only_pdl1_0_model_0.json",
+            "sha256": "ff9ee99d4e3130d642c9cd0c73483e07ddd4261bfc62ef42fe5982be1ec676fd"
+          }
+        }
+      ],
+      "levers_applied": [
+        "RFD3_COMPILE",
+        "RFD3_CUDAGRAPH",
+        "RFD3_FZT",
+        "RFD3_GATHER_ATTN",
+        "RFD3_HOIST",
+        "RFD3_INIT_CHUNK",
+        "RFD3_TOKEN_SDPA"
+      ],
+      "interpreter_label": "patched",
+      "requested_det": 1,
+      "seed": 101
+    }
+  ],
+  "exact_off_comparison": {
+    "serialized_atom_records_identical": true,
+    "structures": [
+      "pdl1-only_pdl1_0_model_0.cif.gz"
+    ],
+    "prediction_arrays_identical": null,
+    "prediction_arrays": []
+  },
+  "comparison_scope": "All generated mmCIF atom-site records, including serialized coordinates and residue identities. Hidden model tensors are outside this observation.",
+  "fast_off_serialized_atom_records_identical": false,
+  "cleanup": {
+    "sandbox_terminated": true,
+    "volume_cleanup_errors_present": false
+  },
+  "scientific_quality_assessed": false,
+  "provider_settled_cost_usd": null,
+  "parameters": {
+    "n_batches": 1,
+    "diffusion_batch_size": 1,
+    "seed": 101,
+    "det": 1,
+    "contig": "50-120,/0,A17-131",
+    "select_hotspots": {
+      "A56": "CG,OH",
+      "A115": "CG,SD",
+      "A123": "CD2,OH"
+    },
+    "is_non_loopy": true,
+    "infer_ori_strategy": "hotspots",
+    "num_timesteps": 200,
+    "num_timesteps_evidence": "Pinned inference_engine/rfdiffusion3.yaml default; no run argv override. The runtime did not serialize this resolved field.",
+    "inference_config_sha256": "814d103c51702fa4843c5ef8aae0da7446625ed2b51295caca68be51f5338812"
+  },
+  "downstream_bridge": {
+    "schema_version": 1,
+    "source_tool": "rfdiffusion3",
+    "source_mode": "exact",
+    "source_structure_sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+    "bridge": "claude_binder.adapters.rfdiffusion3_generator.cif_to_pdb",
+    "bridge_structure_file": "rfdiffusion3-exact.pdb",
+    "bridge_structure_sha256": "219611665c25df1b77ebe49f22ce1af348236b250f301c0c46bfbfbaa769fa4c",
+    "pdb_atom_count": 1521,
+    "chain_roles": {
+      "A": {
+        "role": "binder",
+        "residues": 95,
+        "designable": true
+      },
+      "B": {
+        "role": "target",
+        "residues": 115,
+        "designable": false
+      }
+    },
+    "full_backbone_verified": true,
+    "proteinmpnn_execution": "not_launched_by_this_validator",
+    "atom_identity_mapping_verified": true,
+    "bridge_coordinate_precision": "Standard PDB 8.3 formatting; all coordinates retained to 0.001 Angstrom precision.",
+    "max_coordinate_component_rounding_angstrom": 0.0005000000000006111,
+    "max_atom_coordinate_rounding_distance_angstrom": 0.0008660254037854971
+  }
+}

@@ -1,0 +1,638 @@
+{
+  "af2_scored_structures": 8,
+  "execution": {
+    "af2_complete_parameter_set_check_passed": true,
+    "complexa_pinned_size_sha_hydration_passed": true,
+    "env_recipe": {
+      "artifact": "recipe.py",
+      "sha256": "bc13cc43da149e2fd8b2cb9c474d452ebf8b213d0935191f8e0e5b9bc3f3574d"
+    },
+    "gpu_class": "H100",
+    "jax_gpu_observed": true,
+    "worker_log": {
+      "artifact": "artifacts/controller-worker.log",
+      "sha256": "b4fe34997674bf07e92d76aa62352d4bcee126f4e0d8f2f14c374007ecda177c"
+    },
+    "worker_script": {
+      "artifact": "worker.sh",
+      "sha256": "cbd8c64ffabce457517fb784dc840d946319f6a9d94666ad5c937c84d9346d81"
+    }
+  },
+  "generated_structures": 8,
+  "limitations": [
+    "Bounded public PD-L1 case: one requested sample, batch1, two default replicas, generationseed5; not a throughput or quality benchmark.",
+    "All sampler/reward settings retained upstream defaults except sample count, batch size and generation seed.",
+    "The stock manifest designs_expected=1 omits the default two-replica search multiplier; independent validators require2 fresh structures and2 actual AF2 reward rows.",
+    "Five AF2-Multimer parameter sets are available; the preserved upstream inference default evaluates model0 per reward, not all five models.",
+    "Fast and Big pair-bias counters include24 stock-guard calls for attention without a wired bank or pair features; corresponding optimized sites served10400/11200 calls. No requested lever is gated or partial.",
+    "Generation plus enabled AF2 reward was executed; separate filter/evaluate/analyze, optional external reward tools, downstream assays and biological validation were not qualified.",
+    "Provider spend accounting and cleanup are independently owned by the launcher."
+  ],
+  "off_comparisons": [
+    {
+      "all_reward_csv_values_identical_excluding_absolute_pdb_path": true,
+      "baseline": "off",
+      "claim_scope": "Exact-output parity",
+      "mode": "exact",
+      "pdb_bytes_identical": true
+    },
+    {
+      "all_reward_csv_values_identical_excluding_absolute_pdb_path": true,
+      "baseline": "off",
+      "claim_scope": "Exact-output parity",
+      "mode": "big",
+      "pdb_bytes_identical": true
+    },
+    {
+      "all_reward_csv_values_identical_excluding_absolute_pdb_path": false,
+      "baseline": "off",
+      "claim_scope": "Fast numerical mode; no exact-output parity claim",
+      "mode": "fast",
+      "pdb_bytes_identical": false
+    }
+  ],
+  "pins": {
+    "autoencoder_sha256": "35f8865efd269995eeaf1670e1c1085acfe2988c40abdeda8e09a0e15eb40816",
+    "complexa_commit": "916eaaedce5b07c205efb6ef32370c01d366591e",
+    "complexa_version": "1.1.0",
+    "denoiser_sha256": "589db1741f29838c7961386f6b873087238c72682e56189b89e0ae02610c19e9",
+    "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e"
+  },
+  "runs": [
+    {
+      "activation": {
+        "active": false,
+        "gated": [],
+        "manifest": {
+          "artifact": "artifacts/out/off/opt_manifest.json",
+          "sha256": "95aaa06fb3ae965436ce0f1343339f195714ebf415f87fa1110100ea946ad01e"
+        },
+        "partial": [],
+        "route": "stock"
+      },
+      "actual_expected_with_default_replicas": 2,
+      "af2_reward_summaries": [
+        {
+          "i_pae": 0.50162643,
+          "model_index": 0,
+          "plddt": 0.7702259,
+          "recycles": 3,
+          "total_reward": -0.50162643
+        },
+        {
+          "i_pae": 0.4274098,
+          "model_index": 0,
+          "plddt": 0.7202793,
+          "recycles": 3,
+          "total_reward": -0.4274098
+        }
+      ],
+      "artifact_root": "artifacts/out/off",
+      "log": {
+        "artifact": "artifacts/logs/off.log",
+        "sha256": "e719d9be88a9c9956438c4646e98d76c7795616d25b6097e6cafc7a196b23f00"
+      },
+      "mode": "off",
+      "outputs": {
+        "af2_reward": {
+          "artifacts": [
+            {
+              "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/rewards_search_binder_local_pipeline_0.csv",
+              "sha256": "5bd1347c36c64bb7a6194fbab953931db8ade40277826d8ad3bc3694a3e4aa98"
+            }
+          ],
+          "required_metrics": [
+            "total_reward",
+            "af2folding_i_pae",
+            "af2folding_plddt_log",
+            "af2folding_pae_log",
+            "af2folding_i_pae_log"
+          ],
+          "scored_designs": 2
+        },
+        "artifacts": [
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_0_bon_orig0_r0/job_0_n_195_id_0_bon_orig0_r0.pdb",
+            "sha256": "e440ab611f8c7ec4bfa426a58a865ac5d548d77c596d8487a9b924fa630d6b9d",
+            "target_chain": "A",
+            "target_residues": 115
+          },
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_1_bon_orig0_r1/job_0_n_195_id_1_bon_orig0_r1.pdb",
+            "sha256": "074cdb97e66efa5c16375808a156bf0c20c21a0acd6d7e81bb2380dc585f876c",
+            "target_chain": "A",
+            "target_residues": 115
+          }
+        ],
+        "claim_scope": "generation_with_af2_reward",
+        "designs": 2,
+        "tool": "complexa"
+      },
+      "scientific_configuration": {
+        "af2_initial_guess": true,
+        "af2_model_selection_override": false,
+        "af2_multimer": true,
+        "af2_protocol": "binder",
+        "af2_recycles": 3,
+        "af2_reward_i_pae_weight": -1.0,
+        "af2_seed": 0,
+        "available_af2_model_indices_default": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "batch_size": 1,
+        "generation_seed": 5,
+        "observed_af2_model_index": 0,
+        "replicas": 2,
+        "request_samples": 1,
+        "sampler_steps": 400,
+        "search": "best-of-n",
+        "self_conditioning": true,
+        "upstream_default_models_evaluated_per_reward": 1
+      },
+      "upstream_manifest_designs_expected": 1
+    },
+    {
+      "activation": {
+        "active": true,
+        "gated": [],
+        "kit_record": {
+          "artifact": "artifacts/out/exact/kit_records/kit_157.json",
+          "sha256": "a7837573c49b9072075f5d7aa066ad0f36e442f37608f94409dc0b6662e7242f"
+        },
+        "levers": {
+          "loop_desync": {
+            "counters": {
+              "served": 1600
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "onehot_f32": {
+            "counters": {
+              "served": 7207
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "pair_assembly": {
+            "counters": {
+              "assembled": 800,
+              "check_computed": 1,
+              "check_served": 799,
+              "padded": 0
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "target_hoist": {
+            "counters": {
+              "computed": 2,
+              "served": 1598
+            },
+            "state": "on",
+            "tier": "exact"
+          }
+        },
+        "manifest": {
+          "artifact": "artifacts/out/exact/opt_manifest.json",
+          "sha256": "5c537f524c2d838ce6e09c44d5ec0e5f7a12118a0780710c1eba9f99e610e6f0"
+        },
+        "partial": [],
+        "requested_levers": [
+          "onehot_f32",
+          "target_hoist",
+          "pair_assembly",
+          "loop_desync"
+        ],
+        "route": "kit",
+        "sampler_forwards": 800
+      },
+      "actual_expected_with_default_replicas": 2,
+      "af2_reward_summaries": [
+        {
+          "i_pae": 0.50162643,
+          "model_index": 0,
+          "plddt": 0.7702259,
+          "recycles": 3,
+          "total_reward": -0.50162643
+        },
+        {
+          "i_pae": 0.4274098,
+          "model_index": 0,
+          "plddt": 0.7202793,
+          "recycles": 3,
+          "total_reward": -0.4274098
+        }
+      ],
+      "artifact_root": "artifacts/out/exact",
+      "log": {
+        "artifact": "artifacts/logs/exact.log",
+        "sha256": "798239f9099c75f0b0995d8909305d196d96d1a8ff73b1fda93549fc31aa4fdb"
+      },
+      "mode": "exact",
+      "outputs": {
+        "af2_reward": {
+          "artifacts": [
+            {
+              "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/rewards_search_binder_local_pipeline_0.csv",
+              "sha256": "a349aee227a4fa3b608730befd723c7d9f0ecad9c7e1d2bff7520bb538580e9c"
+            }
+          ],
+          "required_metrics": [
+            "total_reward",
+            "af2folding_i_pae",
+            "af2folding_plddt_log",
+            "af2folding_pae_log",
+            "af2folding_i_pae_log"
+          ],
+          "scored_designs": 2
+        },
+        "artifacts": [
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_0_bon_orig0_r0/job_0_n_195_id_0_bon_orig0_r0.pdb",
+            "sha256": "e440ab611f8c7ec4bfa426a58a865ac5d548d77c596d8487a9b924fa630d6b9d",
+            "target_chain": "A",
+            "target_residues": 115
+          },
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_1_bon_orig0_r1/job_0_n_195_id_1_bon_orig0_r1.pdb",
+            "sha256": "074cdb97e66efa5c16375808a156bf0c20c21a0acd6d7e81bb2380dc585f876c",
+            "target_chain": "A",
+            "target_residues": 115
+          }
+        ],
+        "claim_scope": "generation_with_af2_reward",
+        "designs": 2,
+        "tool": "complexa"
+      },
+      "scientific_configuration": {
+        "af2_initial_guess": true,
+        "af2_model_selection_override": false,
+        "af2_multimer": true,
+        "af2_protocol": "binder",
+        "af2_recycles": 3,
+        "af2_reward_i_pae_weight": -1.0,
+        "af2_seed": 0,
+        "available_af2_model_indices_default": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "batch_size": 1,
+        "generation_seed": 5,
+        "observed_af2_model_index": 0,
+        "replicas": 2,
+        "request_samples": 1,
+        "sampler_steps": 400,
+        "search": "best-of-n",
+        "self_conditioning": true,
+        "upstream_default_models_evaluated_per_reward": 1
+      },
+      "upstream_manifest_designs_expected": 1
+    },
+    {
+      "activation": {
+        "active": true,
+        "gated": [],
+        "kit_record": {
+          "artifact": "artifacts/out/fast/kit_records/kit_396.json",
+          "sha256": "15c5636f23143d4fc29b3e5cc9d0985dc562b7ae55763c06d407d822e787be7a"
+        },
+        "levers": {
+          "attn_sdpa": {
+            "counters": {
+              "check_computed": 2,
+              "check_served": 11222,
+              "served": 11224
+            },
+            "state": "on",
+            "tier": "tolerance"
+          },
+          "loop_desync": {
+            "counters": {
+              "served": 1600
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "onehot_f32": {
+            "counters": {
+              "served": 7207
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "pair_assembly": {
+            "counters": {
+              "assembled": 800,
+              "check_computed": 1,
+              "check_served": 799,
+              "padded": 0
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "pair_bias_fused": {
+            "counters": {
+              "alloc": 1,
+              "computed": 800,
+              "fallback_stock": 24,
+              "served": 10400,
+              "wired": 1
+            },
+            "state": "on",
+            "tier": "tolerance"
+          },
+          "target_hoist": {
+            "counters": {
+              "computed": 2,
+              "served": 1598
+            },
+            "state": "on",
+            "tier": "exact"
+          }
+        },
+        "manifest": {
+          "artifact": "artifacts/out/fast/opt_manifest.json",
+          "sha256": "de8da7aafaba0f8c0e299ceb2c055d1c72b7f17fb637118f74d04bc5409c938e"
+        },
+        "partial": [],
+        "requested_levers": [
+          "onehot_f32",
+          "target_hoist",
+          "pair_assembly",
+          "loop_desync",
+          "pair_bias_fused",
+          "attn_sdpa"
+        ],
+        "route": "kit",
+        "sampler_forwards": 800
+      },
+      "actual_expected_with_default_replicas": 2,
+      "af2_reward_summaries": [
+        {
+          "i_pae": 0.50408256,
+          "model_index": 0,
+          "plddt": 0.769234,
+          "recycles": 3,
+          "total_reward": -0.50408256
+        },
+        {
+          "i_pae": 0.43997774,
+          "model_index": 0,
+          "plddt": 0.7204428,
+          "recycles": 3,
+          "total_reward": -0.43997774
+        }
+      ],
+      "artifact_root": "artifacts/out/fast",
+      "log": {
+        "artifact": "artifacts/logs/fast.log",
+        "sha256": "5e771f9391e1ee5ac85c240a10e70a7091cd88fbd1aa6dbfcca408c909e546cf"
+      },
+      "mode": "fast",
+      "outputs": {
+        "af2_reward": {
+          "artifacts": [
+            {
+              "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/rewards_search_binder_local_pipeline_0.csv",
+              "sha256": "bd7734e30d3b4d0ba1993724b0b59f7f419bab76936248481aa35fce5b409d93"
+            }
+          ],
+          "required_metrics": [
+            "total_reward",
+            "af2folding_i_pae",
+            "af2folding_plddt_log",
+            "af2folding_pae_log",
+            "af2folding_i_pae_log"
+          ],
+          "scored_designs": 2
+        },
+        "artifacts": [
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_0_bon_orig0_r0/job_0_n_195_id_0_bon_orig0_r0.pdb",
+            "sha256": "c85c326b961b57a81551a71aaeb5b3ca4760314cdff312de58cb41181110f8be",
+            "target_chain": "A",
+            "target_residues": 115
+          },
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_1_bon_orig0_r1/job_0_n_195_id_1_bon_orig0_r1.pdb",
+            "sha256": "a6d2b5a492d71ca3c87c4c44c8ea32aa7f1dac014abf246e2a6c0efe1b4015fd",
+            "target_chain": "A",
+            "target_residues": 115
+          }
+        ],
+        "claim_scope": "generation_with_af2_reward",
+        "designs": 2,
+        "tool": "complexa"
+      },
+      "scientific_configuration": {
+        "af2_initial_guess": true,
+        "af2_model_selection_override": false,
+        "af2_multimer": true,
+        "af2_protocol": "binder",
+        "af2_recycles": 3,
+        "af2_reward_i_pae_weight": -1.0,
+        "af2_seed": 0,
+        "available_af2_model_indices_default": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "batch_size": 1,
+        "generation_seed": 5,
+        "observed_af2_model_index": 0,
+        "replicas": 2,
+        "request_samples": 1,
+        "sampler_steps": 400,
+        "search": "best-of-n",
+        "self_conditioning": true,
+        "upstream_default_models_evaluated_per_reward": 1
+      },
+      "upstream_manifest_designs_expected": 1
+    },
+    {
+      "activation": {
+        "active": true,
+        "gated": [],
+        "kit_record": {
+          "artifact": "artifacts/out/big/kit_records/kit_515.json",
+          "sha256": "83c81ee04e2bd1d5e40d8076d00dcab6f8396eaee2fb8a729d1168eee57a4bc0"
+        },
+        "levers": {
+          "loop_desync": {
+            "counters": {
+              "served": 1600
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "onehot_f32": {
+            "counters": {
+              "served": 7207
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "pair_assembly": {
+            "counters": {
+              "assembled": 800,
+              "check_computed": 1,
+              "check_served": 799,
+              "padded": 0
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "pair_bias_rows": {
+            "counters": {
+              "fallback_stock": 24,
+              "served": 11200,
+              "wired": 1
+            },
+            "state": "on",
+            "tier": "exact"
+          },
+          "target_hoist": {
+            "counters": {
+              "computed": 2,
+              "served": 1598
+            },
+            "state": "on",
+            "tier": "exact"
+          }
+        },
+        "manifest": {
+          "artifact": "artifacts/out/big/opt_manifest.json",
+          "sha256": "96a728d2341b1f846e88c06707fac9743f39ef6493e478fee20f9b42218fc6f9"
+        },
+        "partial": [],
+        "requested_levers": [
+          "onehot_f32",
+          "target_hoist",
+          "pair_assembly",
+          "loop_desync",
+          "pair_bias_rows"
+        ],
+        "route": "kit",
+        "sampler_forwards": 800
+      },
+      "actual_expected_with_default_replicas": 2,
+      "af2_reward_summaries": [
+        {
+          "i_pae": 0.50162643,
+          "model_index": 0,
+          "plddt": 0.7702259,
+          "recycles": 3,
+          "total_reward": -0.50162643
+        },
+        {
+          "i_pae": 0.4274098,
+          "model_index": 0,
+          "plddt": 0.7202793,
+          "recycles": 3,
+          "total_reward": -0.4274098
+        }
+      ],
+      "artifact_root": "artifacts/out/big",
+      "log": {
+        "artifact": "artifacts/logs/big.log",
+        "sha256": "7a65f0b7f21b93b1da3f751e87858e1a6d69dd0b154dbd4487213b61d46c714a"
+      },
+      "mode": "big",
+      "outputs": {
+        "af2_reward": {
+          "artifacts": [
+            {
+              "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/rewards_search_binder_local_pipeline_0.csv",
+              "sha256": "ff7929a6930365ec37fed9d8d5d6b667eeb8f61a43072c2a4c2030f1526df0f4"
+            }
+          ],
+          "required_metrics": [
+            "total_reward",
+            "af2folding_i_pae",
+            "af2folding_plddt_log",
+            "af2folding_pae_log",
+            "af2folding_i_pae_log"
+          ],
+          "scored_designs": 2
+        },
+        "artifacts": [
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_0_bon_orig0_r0/job_0_n_195_id_0_bon_orig0_r0.pdb",
+            "sha256": "e440ab611f8c7ec4bfa426a58a865ac5d548d77c596d8487a9b924fa630d6b9d",
+            "target_chain": "A",
+            "target_residues": 115
+          },
+          {
+            "binder_chain": "B",
+            "binder_residues": 80,
+            "file": "inference/search_binder_local_pipeline_02_PDL1_search_binder_local/job_0_n_195_id_1_bon_orig0_r1/job_0_n_195_id_1_bon_orig0_r1.pdb",
+            "sha256": "074cdb97e66efa5c16375808a156bf0c20c21a0acd6d7e81bb2380dc585f876c",
+            "target_chain": "A",
+            "target_residues": 115
+          }
+        ],
+        "claim_scope": "generation_with_af2_reward",
+        "designs": 2,
+        "tool": "complexa"
+      },
+      "scientific_configuration": {
+        "af2_initial_guess": true,
+        "af2_model_selection_override": false,
+        "af2_multimer": true,
+        "af2_protocol": "binder",
+        "af2_recycles": 3,
+        "af2_reward_i_pae_weight": -1.0,
+        "af2_seed": 0,
+        "available_af2_model_indices_default": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "batch_size": 1,
+        "generation_seed": 5,
+        "observed_af2_model_index": 0,
+        "replicas": 2,
+        "request_samples": 1,
+        "sampler_steps": 400,
+        "search": "best-of-n",
+        "self_conditioning": true,
+        "upstream_default_models_evaluated_per_reward": 1
+      },
+      "upstream_manifest_designs_expected": 1
+    }
+  ],
+  "schema": "complexa-full-af2-reward-qualification/1",
+  "source_model_selection_evidence": {
+    "af2_reward_source_sha256": "32c611c2c7c4cb849bd3432d2ae0f71854415139cd4b007878b9574241582294",
+    "colabdesign_model_defaults_source_sha256": "a9dd3828e6aa09ba0a79bb215e016b34354eaa494b8b3b20df14a7310d38f93e",
+    "colabdesign_run_source_sha256": "c269a89b3c12d033020262c0bd74abaf089116a27e740a4091d62ad58e65cad7",
+    "explanation": "AF2RewardModel retains model indices0\u20134 as available. Inference sets sample_models=false and omits num_models. ColabDesign default num_models=1 chooses model0; reward CSV corroborates model0 and3recycles."
+  },
+  "status": "qualified"
+}

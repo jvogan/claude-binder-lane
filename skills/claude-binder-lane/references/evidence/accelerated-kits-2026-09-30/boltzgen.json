@@ -1,0 +1,1062 @@
+{
+  "schema_version": 1,
+  "tool": "boltzgen",
+  "attempt": 2,
+  "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+  "status": "gpu_artifacts_validated_with_exact_confidence_exception",
+  "gpu_execution_observed": true,
+  "hardware": {
+    "gpu": "NVIDIA H100 80GB HBM3",
+    "cuda": "13.0",
+    "torch": "2.13.0+cu130",
+    "python": "3.11.5"
+  },
+  "source_recipe_sha256": "39fbe23dcdeac2b9b29de59cefd595980cc13684445f49812375a584aed1eeae",
+  "artifact_archive_sha256": "b1837c12c572cb800d779cf35561788158d255a93bc921419a0c572d74a836ff",
+  "fixture": {
+    "name": "upstream_pdl1_ref",
+    "spec_sha256": "fb487eb8b09d84ed91715771a68b9be84efcf16486cca4d26e9e1c5abd205179",
+    "target_pdb_sha256": "f6cffaf13744787ebd9fe0735adde833b309177c5808012034158c0718b6a22f",
+    "input_target_chain": "A",
+    "input_binder_chain": "B",
+    "output_target_chain": "B",
+    "output_binder_chain": "A",
+    "target_residues": 115,
+    "binder_residues_each": [
+      66,
+      66
+    ],
+    "binder_length_range": [
+      60,
+      80
+    ],
+    "designs_per_mode": 2,
+    "diffusion_batch_size": 2
+  },
+  "modes": [
+    {
+      "tool": "boltzgen",
+      "mode": "exact",
+      "designs": 2,
+      "full_pipeline": true,
+      "steps": [
+        "design",
+        "inverse_folding",
+        "folding",
+        "design_folding",
+        "analysis",
+        "filtering"
+      ],
+      "counters": {
+        "captures": 1,
+        "replays": 500,
+        "graph_calls": 1,
+        "initializers_skipped": 1378,
+        "hoist_uses": 19297
+      },
+      "artifacts": [
+        {
+          "file": "intermediate_designs/pdl1_ref_0.cif",
+          "sha256": "bfdf5cbb434843c1062e50a2903dc7dea7ae7dd65697d5482863b89475bebc7d",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "3f52800b5a557c559721367c48039431115c3e63bf45d408118b187a48626eff",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "3f52800b5a557c559721367c48039431115c3e63bf45d408118b187a48626eff"
+        },
+        {
+          "file": "intermediate_designs/pdl1_ref_1.cif",
+          "sha256": "5866e105e8604d0b5f29b9bc7198d6ffbb580b77f3a6341fbe135995723dd68a",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "298c9b3b198ae817565b0803be4e164a1796cdc5c54f67a8f0a09da250d9dd5b",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "298c9b3b198ae817565b0803be4e164a1796cdc5c54f67a8f0a09da250d9dd5b"
+        }
+      ],
+      "prediction_arrays": [
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_0.npz",
+          "sha256": "2d25695f8defc6f186adbd5db03ebc6317e382abaca040eb95bf5021118dfedd",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_0.npz",
+          "sha256": "53759bd76975f60984fb4f1b2462680a457327a5aeac8486bfb5239ce781dc25",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_1.npz",
+          "sha256": "6bcf3c0924e8bb727a9250e783a918151055471b72c23c37e6e420c366ad74e9",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_1.npz",
+          "sha256": "721328ba3cd29a6684952b816cedc96ba7a6aa9203bcf4b41f6903f37d5fc448",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        }
+      ],
+      "metric_tables": [
+        {
+          "file": "intermediate_designs_inverse_folded/aggregate_metrics_analyze.csv",
+          "sha256": "08d3c6562a3f43bf8c26fc3b73d255a6cee062eb47dc6b23c1eb741003735207",
+          "rows": 2
+        },
+        {
+          "file": "final_ranked_designs/all_designs_metrics.csv",
+          "sha256": "1310224af2739ea415de82b69d04004121f71a24991e5ca9b6a051c2488ef341",
+          "rows": 2,
+          "filters_passed": 1
+        }
+      ],
+      "levers_applied": [
+        "graph_sampler",
+        "fastinit",
+        "hoist",
+        "async_writer",
+        "inproc"
+      ],
+      "seed": 0,
+      "resolved_settings": {
+        "design": {
+          "sampling_steps": 500,
+          "recycling_steps": 3
+        },
+        "inverse_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "design_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "filtering": {
+          "budget": 30
+        }
+      }
+    },
+    {
+      "tool": "boltzgen",
+      "mode": "off",
+      "designs": 2,
+      "full_pipeline": true,
+      "steps": [
+        "design",
+        "inverse_folding",
+        "folding",
+        "design_folding",
+        "analysis",
+        "filtering"
+      ],
+      "counters": {},
+      "artifacts": [
+        {
+          "file": "intermediate_designs/pdl1_ref_0.cif",
+          "sha256": "bfdf5cbb434843c1062e50a2903dc7dea7ae7dd65697d5482863b89475bebc7d",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "3f52800b5a557c559721367c48039431115c3e63bf45d408118b187a48626eff",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "3f52800b5a557c559721367c48039431115c3e63bf45d408118b187a48626eff"
+        },
+        {
+          "file": "intermediate_designs/pdl1_ref_1.cif",
+          "sha256": "5866e105e8604d0b5f29b9bc7198d6ffbb580b77f3a6341fbe135995723dd68a",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "298c9b3b198ae817565b0803be4e164a1796cdc5c54f67a8f0a09da250d9dd5b",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "298c9b3b198ae817565b0803be4e164a1796cdc5c54f67a8f0a09da250d9dd5b"
+        }
+      ],
+      "prediction_arrays": [
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_0.npz",
+          "sha256": "9cd8c6be3ead5bec9b18a8d1d738914d04c5b4948a608611b26c9f2e91d7f690",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_0.npz",
+          "sha256": "53759bd76975f60984fb4f1b2462680a457327a5aeac8486bfb5239ce781dc25",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_1.npz",
+          "sha256": "bc06bbed67e3b97cfbff3bfebf5504d71f34414396280cf520076a328cfce59e",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_1.npz",
+          "sha256": "721328ba3cd29a6684952b816cedc96ba7a6aa9203bcf4b41f6903f37d5fc448",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        }
+      ],
+      "metric_tables": [
+        {
+          "file": "intermediate_designs_inverse_folded/aggregate_metrics_analyze.csv",
+          "sha256": "fbc78cd4d2e9c0e88d7cc17b37723b8135816764c1de1480001e3ed20c951b2a",
+          "rows": 2
+        },
+        {
+          "file": "final_ranked_designs/all_designs_metrics.csv",
+          "sha256": "4918f0830f2a2400f723a0c068a3ce49436a03bc60c1f78e65641082156d16d5",
+          "rows": 2,
+          "filters_passed": 1
+        }
+      ],
+      "levers_applied": [],
+      "seed": 0,
+      "resolved_settings": {
+        "design": {
+          "sampling_steps": 500,
+          "recycling_steps": 3
+        },
+        "inverse_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "design_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "filtering": {
+          "budget": 30
+        }
+      }
+    },
+    {
+      "tool": "boltzgen",
+      "mode": "fast",
+      "designs": 2,
+      "full_pipeline": true,
+      "steps": [
+        "design",
+        "inverse_folding",
+        "folding",
+        "design_folding",
+        "analysis",
+        "filtering"
+      ],
+      "counters": {
+        "captures": 1,
+        "replays": 500,
+        "graph_calls": 1,
+        "initializers_skipped": 1378,
+        "hoist_uses": 19297
+      },
+      "artifacts": [
+        {
+          "file": "intermediate_designs/pdl1_ref_0.cif",
+          "sha256": "e26ee5740b3aad26d9d1c24576a715246358af87c7d9932ad2d9312ca0312271",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "6f75e5e561488122dca9007ec7c8047331970caafdd1ab1e5ad32e814b7d4082",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "6f75e5e561488122dca9007ec7c8047331970caafdd1ab1e5ad32e814b7d4082"
+        },
+        {
+          "file": "intermediate_designs/pdl1_ref_1.cif",
+          "sha256": "7ac3578881fbaaef262dc664694891c8bb75768b355269cae40f7de835083ab0",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "f540c9b743da0a1eed3eef4661ec71f762ae6edb99a023cd06c42366714799d8",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "f540c9b743da0a1eed3eef4661ec71f762ae6edb99a023cd06c42366714799d8"
+        }
+      ],
+      "prediction_arrays": [
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_0.npz",
+          "sha256": "421f41bdb4b2e4e6ac357354fc11f45193226333e34e46f9caa4b8387a4f3185",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_0.npz",
+          "sha256": "cd0b3cbed07448b018d938f77974e99a1f1d6cf202f7307b9331a6ec9d895bdd",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_1.npz",
+          "sha256": "dd1202f80f405a0d9e595c627861147bcbaad83862b87a67fffa485dfe3ffe9e",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_1.npz",
+          "sha256": "f4180b40467efd1cd04e8b83ebec097edda0e61405c50abcded54f90c03241f2",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        }
+      ],
+      "metric_tables": [
+        {
+          "file": "intermediate_designs_inverse_folded/aggregate_metrics_analyze.csv",
+          "sha256": "21d7397397fe4be95221e342135ac4931c4bb7ee076eec1d35a2d2c9c0923f41",
+          "rows": 2
+        },
+        {
+          "file": "final_ranked_designs/all_designs_metrics.csv",
+          "sha256": "2c2eaea4943880c6a409e0a48e5a5a2b82a0c99b52029be1edc20d180a94e53b",
+          "rows": 2,
+          "filters_passed": 0
+        }
+      ],
+      "levers_applied": [
+        "graph_sampler",
+        "fastinit",
+        "hoist",
+        "async_writer",
+        "cond_dedup",
+        "attn_bf16",
+        "attn_cudnn",
+        "dit_fused",
+        "inproc"
+      ],
+      "seed": 0,
+      "resolved_settings": {
+        "design": {
+          "sampling_steps": 500,
+          "recycling_steps": 3
+        },
+        "inverse_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "design_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "filtering": {
+          "budget": 30
+        }
+      }
+    },
+    {
+      "tool": "boltzgen",
+      "mode": "big",
+      "designs": 2,
+      "full_pipeline": true,
+      "steps": [
+        "design",
+        "inverse_folding",
+        "folding",
+        "design_folding",
+        "analysis",
+        "filtering"
+      ],
+      "counters": {
+        "captures": 0,
+        "replays": 0,
+        "graph_calls": 0,
+        "initializers_skipped": 1378
+      },
+      "artifacts": [
+        {
+          "file": "intermediate_designs/pdl1_ref_0.cif",
+          "sha256": "1d63145622a278b99783b8040da067b5ad95a70c34be0cc897491b1c5e3e9107",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "e8f65b64084a3151c904f568cd4bd45566a7339211e27b692d1636e024a38814",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "e8f65b64084a3151c904f568cd4bd45566a7339211e27b692d1636e024a38814"
+        },
+        {
+          "file": "intermediate_designs/pdl1_ref_1.cif",
+          "sha256": "92b21cec7531442170305894bb9eedd81235b31b3662179b7c043b9450ca4470",
+          "chains": {
+            "A": 66,
+            "B": 115
+          },
+          "binder_chain": "A",
+          "target_chain": "B",
+          "binder_residues": 66,
+          "chain_sequence_sha256": {
+            "A": "b4da085719f6bf9915b002751ccb23840b64d81d09a30737f9596840b2f687ff",
+            "B": "c434254957dd7a7d80ce4ca859f9a6d101a1205f4ff822177dd0b3c31f02e968"
+          },
+          "binder_sequence_sha256": "b4da085719f6bf9915b002751ccb23840b64d81d09a30737f9596840b2f687ff"
+        }
+      ],
+      "prediction_arrays": [
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_0.npz",
+          "sha256": "c10de9430a3da321946c93aa7b7b8e9e0d4d63d70a62ebb3de5f42fe2b9cb5fd",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_0.npz",
+          "sha256": "b1d01b2e10b00044a36f50c8607b77b621a2b16688c261bd3140b531bb25c98b",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_1.npz",
+          "sha256": "31413457444ea187725960d8ef363648acdad53fd670e91adf300d38f9c8f152",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        },
+        {
+          "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_1.npz",
+          "sha256": "fdf89bc7a4350ed0cbc55c697e73709cdeabf574dad307cf7940c0434e7141f3",
+          "keys": [
+            "atom_resolved_mask",
+            "atom_to_token",
+            "backbone_mask",
+            "complex_ipde",
+            "complex_iplddt",
+            "complex_pde",
+            "complex_plddt",
+            "coords",
+            "design_iiptm",
+            "design_ipsae_min",
+            "design_iptm",
+            "design_ptm",
+            "design_residue_iptm",
+            "design_to_target_ipsae",
+            "design_to_target_iptm",
+            "input_coords",
+            "interaction_pae",
+            "iptm",
+            "ligand_iptm",
+            "min_design_to_target_pae",
+            "min_interaction_pae",
+            "mol_type",
+            "protein_iptm",
+            "ptm",
+            "res_type",
+            "target_ptm",
+            "target_to_design_ipsae",
+            "token_index"
+          ]
+        }
+      ],
+      "metric_tables": [
+        {
+          "file": "intermediate_designs_inverse_folded/aggregate_metrics_analyze.csv",
+          "sha256": "21e75e02ce2c81b65f7d5aac7c81c646a6bd5153e8f39c2803680412cef001a9",
+          "rows": 2
+        },
+        {
+          "file": "final_ranked_designs/all_designs_metrics.csv",
+          "sha256": "26e4adee38b6f4446bffafae427cdda53344a87a13008c577888b4ef16f61cdf",
+          "rows": 2,
+          "filters_passed": 0
+        }
+      ],
+      "levers_applied": [
+        "fastinit",
+        "td_chunk",
+        "async_writer",
+        "inproc"
+      ],
+      "seed": 0,
+      "resolved_settings": {
+        "design": {
+          "sampling_steps": 500,
+          "recycling_steps": 3
+        },
+        "inverse_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "design_folding": {
+          "sampling_steps": 200,
+          "recycling_steps": 3
+        },
+        "filtering": {
+          "budget": 30
+        }
+      }
+    }
+  ],
+  "exact_off_comparison": {
+    "serialized_atom_records_identical": true,
+    "structures": [
+      "intermediate_designs/pdl1_ref_0.cif",
+      "intermediate_designs/pdl1_ref_1.cif",
+      "intermediate_designs_inverse_folded/pdl1_ref_0.cif",
+      "intermediate_designs_inverse_folded/pdl1_ref_1.cif",
+      "intermediate_designs_inverse_folded/refold_cif/pdl1_ref_0.cif",
+      "intermediate_designs_inverse_folded/refold_cif/pdl1_ref_1.cif",
+      "intermediate_designs_inverse_folded/refold_design_cif/pdl1_ref_0.cif",
+      "intermediate_designs_inverse_folded/refold_design_cif/pdl1_ref_1.cif"
+    ],
+    "coordinate_arrays_identical": true,
+    "all_prediction_arrays_identical": false,
+    "prediction_array_keys_compared": 112,
+    "prediction_arrays": [
+      {
+        "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_0.npz",
+        "coordinate_arrays_identical": true,
+        "all_arrays_identical": false,
+        "differing_arrays": [
+          {
+            "key": "design_iiptm",
+            "shape": [
+              5
+            ],
+            "dtype": "float32",
+            "max_absolute_difference": 0.003147631883621216
+          }
+        ]
+      },
+      {
+        "file": "intermediate_designs_inverse_folded/fold_out_npz/pdl1_ref_1.npz",
+        "coordinate_arrays_identical": true,
+        "all_arrays_identical": false,
+        "differing_arrays": [
+          {
+            "key": "design_iiptm",
+            "shape": [
+              5
+            ],
+            "dtype": "float32",
+            "max_absolute_difference": 0.0012052059173583984
+          }
+        ]
+      },
+      {
+        "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_0.npz",
+        "coordinate_arrays_identical": true,
+        "all_arrays_identical": true,
+        "differing_arrays": []
+      },
+      {
+        "file": "intermediate_designs_inverse_folded/fold_out_design_npz/pdl1_ref_1.npz",
+        "coordinate_arrays_identical": true,
+        "all_arrays_identical": true,
+        "differing_arrays": []
+      }
+    ],
+    "metric_table_differing_columns": {
+      "intermediate_designs_inverse_folded/aggregate_metrics_analyze.csv": [
+        "design_iiptm"
+      ],
+      "final_ranked_designs/all_designs_metrics.csv": [
+        "design_iiptm"
+      ]
+    },
+    "scope": "Generated, inverse-folded, complex-refolded and binder-refolded serialized atom-site records, four prediction archives and the emitted score tables. Hidden model tensors were not captured."
+  },
+  "known_limits": [
+    "Big mode applies td_chunk according to upstream activation evidence, but the pinned upstream runner does not export its per-call counter.",
+    "Exact and stock differ in complex-folding design_iiptm confidence outputs and the corresponding score-table column. All saved coordinate arrays and other saved prediction arrays match.",
+    "Ranked output retains candidates that fail the unchanged upstream filters."
+  ],
+  "cleanup": {
+    "sandbox_terminated": true,
+    "volume_cleanup_errors_present": false
+  },
+  "scientific_quality_assessed": false,
+  "provider_settled_cost_usd": null,
+  "confidence_exception_diagnosis": {
+    "status": "inference_supported_by_stock_source_and_offline_contact_mask_inspection",
+    "stock_source": "boltzgen/model/layers/confidence_utils.py:357",
+    "operation": "interact_mask.scatter_(dim=1, index=argmax(atom_to_token), src=atom_interact_mask)",
+    "duplicate_token_indices_per_candidate": 181,
+    "mixed_contact_flag_tokens_first_prediction": [
+      9,
+      16
+    ],
+    "pytorch_documentation": "https://docs.pytorch.org/docs/main/generated/torch.Tensor.scatter_.html",
+    "interpretation": "The stock confidence computation overwrites duplicate token indices with mixed boolean values. The documented nondeterminism of scatter_ is a likely explanation of the observed design_iiptm differences.",
+    "causal_gpu_experiment_performed": false,
+    "model_code_changed": false
+  }
+}

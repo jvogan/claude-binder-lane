@@ -9,9 +9,11 @@ configurations where that identity was measured. And the release states pins and
 digests for artifacts this catalogue carries as holes.
 
 This page records the upstream release and the package's routes into it.
-The small-campaign worker invokes the Boltz-2 and ESMFold2 kits; their Modal
-image recipes are shipped separately. Other kits remain selectable through
-their documented native interfaces when Claude Science prepares a route.
+The small-campaign worker invokes the Boltz-2 and ESMFold2 kits. Modal recipes
+also ship for Genie3, PXDesign, RFdiffusion3, BoltzGen, Complexa, and full-backbone
+ProteinMPNN. Read the [integration guide](accelerated-kit-integration.md) to
+prepare those kits and connect their artifacts to the scientist's workflow.
+Other kits remain selectable through their documented native interfaces.
 
 Read 2026-09-17.
 
@@ -41,19 +43,22 @@ that provider's own terms.
 
 ## The four modes
 
-Every kit offers the same vocabulary. The distinction between `exact` and `fast`
-is the one that decides whether a reproduction claim holds.
+The release uses these mode names where the selected kit supports them.
+Genie3 and RFdiffusion3 offer `off`, `exact`, and `fast`; ProteinMPNN offers
+`off` and `exact`. Read the selected kit's mode and hardware contract before
+dispatch. A reproduction claim requires its actual fidelity evidence.
 
 | Mode | What it guarantees | Use it when |
 | --- | --- | --- |
 | `off` | Upstream exactly as published, no optimization engaged | Establishing a reference result |
-| `exact` | Outputs identical to `off`, measured bit-identical for 10 of 11 configurations checked | A run claims baseline fidelity |
+| `exact` | Intended stock-output fidelity; the report measured bit identity for 10 of 11 configurations checked | A run needs a per-tool baseline comparison |
 | `fast` | Numerics differ within the tool's own seed-to-seed spread | Cost matters more than bit reproducibility |
-| `big` | Lowest peak GPU memory, splits across cards with `--n_gpu P` | An input does not fit one card |
+| `big` | Memory-oriented route; supported levers and output semantics depend on the kit | A supported input needs a smaller memory footprint |
 
-`fast` is the default in most kits. `big` across two GPUs matches the single-GPU
-run within tolerance rather than bit for bit, so multi-GPU `big` is not a
-bit-identical mode even against itself on one card.
+`fast` is the default in most kits. Some kits expose multi-GPU `big` through
+`--n_gpu P`; BoltzGen's kit refuses multi-device execution. For the report's
+multi-GPU configurations, results match single-GPU runs within tolerance rather
+than bit for bit. A `big` mode name alone establishes no multi-GPU capability.
 
 **Read the `exact` guarantee as measured, not absolute.** The release states the
 guarantee as outputs identical to `off`. The report measures it and reports a
@@ -208,8 +213,10 @@ It exits 3 and says why if the build you paid for is not the build that ran. Rea
 hydrated cache, the image is large because the shared core carries prebuilt
 kernels, and the driver requirement is an open question recorded there.
 
-Two of the sixteen catalogued acceleration kits now have a Modal recipe:
-Boltz-2 and [ESMFold2](esmfold2-kit-modal.md). The ESMFold2 recipe stages the three CUDA extension builds and
+Eight kit families have a Modal recipe: Boltz-2, [ESMFold2](esmfold2-kit-modal.md),
+and the six [design and sequence kits](accelerated-kit-integration.md). These
+recipes preserve the pinned stacks and available kit modes; a fixed Binder
+graph binding is optional. The ESMFold2 recipe stages the three CUDA extension builds and
 keeps the pinned weights on a Volume. Its source and H100 selection have offline
 checks; the image build, hydration, GPU check, and prediction have not been run
 through this recipe. Claude Science should qualify that route in the scientist's
@@ -268,19 +275,22 @@ kit workflow directly. The procedure is the kit's own: build from
 `environment/Dockerfile`, `bash run.sh install --weights DIR`, then `bash run.sh
 check --config h100 --mode exact` before any real work.
 
-**The remaining qualification.** For each selected kit, run a real complex in
-the scientist's account at a named mode, parse its CIF and PAE with the shipped
-scorer, and capture both a successful exit code and the `ACTIVE mode=` line in
-the worker receipt. Record provider ID, measured billable time and charge.
+**The remaining qualification.** For each selected kit, run a real input in
+the scientist's account at a named mode and independently parse its declared
+structure or sequence outputs. Capture the successful exit code, matching
+activation and the kit's own manifest and counters. Carry one real output
+through the selected next stage. Predictors supplying CIF and PAE can then use
+the shipped scorers. Record provider identity, billable time and charge.
 This is a paid GPU run and needs the plan-bound operator approval and remaining
 campaign ceiling before dispatch. Offline source checks and fake-worker tests
 do not establish a measured GPU route.
 
 ## Why the mode has to be checked rather than assumed
 
-An accelerated run and a stock run cost the same GPU minutes and write the same
-kind of output. The only thing that distinguishes them is what the kit prints,
-and the kit prints `NOT ACTIVE` in two completely different situations: when a
+Accelerated and stock runs write the same output formats. Output presence and
+exit status alone do not prove that requested acceleration engaged. Read the
+kit's activation, manifest and runtime counters together. The kit prints
+`NOT ACTIVE` in two completely different situations: when a
 mode could not engage, and when `off` was requested and stock ran as asked. So
 scanning for that string rejects legitimate stock runs, and trusting the exit
 code accepts a run that asked for `fast` and served stock.

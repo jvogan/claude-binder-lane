@@ -113,6 +113,12 @@ TIER_VRAM: dict[str, int] = dict(GPU_TIERS)
 # environment_identity carries. Values come from the META block of each file in
 # the org skill tree's remote-compute-modal/envs/, cited per row.
 SHIPPED_GPU_DEFAULTS: dict[str, str] = {
+    "genie3_kit_gpu": "H100",
+    "pxdesign_kit_gpu": "H100",
+    "rfdiffusion3_kit_gpu": "H100",
+    "boltzgen_kit_gpu": "H100",
+    "complexa_kit_gpu": "H100",
+    "proteinmpnn_kit_gpu": "H100",
     "chemistry_gpu": "A100",  # chemistry_gpu.py:12
     "esmfold2_gpu": "A100-80GB",  # esmfold2_gpu.py:23
     "esmfold2_kit_gpu": "H100",  # envs/esmfold2_kit_gpu.py META

@@ -13,6 +13,10 @@ records what each one does and which of its paths other components depend on.
 | `small-campaign-settings.template.json` | Plan template for a bounded BindCraft2 campaign with controls, two predictor lineages, five seeds, and a shared spend ceiling. |
 | `small_campaign.py` | Agent-run commands for plan validation, admission tickets, BindCraft2 shards, prediction workers, artifact indexing, scoring, and ranked cost reports. |
 | `small_campaign_esmfold.py` | Stock ESMFold2-Fast worker selected by the explicit `esmfold2-platform` arm. |
+| `validate_complexa_proteinmpnn.py` | Independently checks Complexa structures, ProteinMPNN FASTA/NPZ outputs, and exact/off semantic parity. |
+| `prepare_proteinmpnn_handoff.py` | Prepares an explicit generated-complex handoff through the pinned native parser, preserves atom and residue lineage, records fixed chains, and verifies sampled target sequences and masks. |
+| `validate_genie_px.py` | Parses actual Genie3/PXDesign atom tables, chain roles, kit manifests, and runtime lever evidence. |
+| `validate_rfdiffusion3_boltzgen.py` | Checks RFdiffusion3 structures and engagement; verifies BoltzGen generation or full pipeline outputs and original inference defaults. |
 | `validation/check_ipsae.py` | Independently recomputes ipSAE and compares it with recorded values. |
 | `validation/check_mmseqs2_uniref90.py` | Checks the MMseqs2/UniRef90 sequence-search contract and captured outputs. |
 | `validation/check_sc_dockq.py` | Independently recomputes sc_DockQ and compares it with recorded values. |

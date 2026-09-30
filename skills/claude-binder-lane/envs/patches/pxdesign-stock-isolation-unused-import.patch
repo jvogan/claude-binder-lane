@@ -1,0 +1,10 @@
+--- a/pxdesign/opt/pxdesign_opt/infer_loop.py
++++ b/pxdesign/opt/pxdesign_opt/infer_loop.py
+@@ -126,7 +126,6 @@
+         configs.input_json_path = os.path.join(configs.dump_dir, "input_tasks.json")
+         with open(configs.input_json_path, "w") as f:
+             json.dump(orig_inputs, f, indent=4)
+-    from . import stack                                                   # here, never at module import: the stock caller imports this module before its environment proof, which lists pxdesign_opt.stack among the modules that must be absent
+     runner = I.InferenceRunner(configs)                                   # loads the model and the checkpoint (the hook fires here under a kit mode)
+     if on_runner is not None:
+         on_runner(runner)

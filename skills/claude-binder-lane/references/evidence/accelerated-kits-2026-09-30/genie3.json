@@ -1,0 +1,293 @@
+{
+  "all_outputs_match_initial_attempt_bytes_and_coordinates": true,
+  "all_requested_modes_produced_fresh_structures": true,
+  "all_requested_modes_valid": true,
+  "chain_roles": {
+    "binder": "A",
+    "evidence": "pinned Genie3 input contract and actual binder68/target116 chain census",
+    "target": "B"
+  },
+  "comparison_to_initial_attempt": {
+    "exact": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    },
+    "fast": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    },
+    "off": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    }
+  },
+  "current_recipe_sha256": "a3b478c3b0891db72d8229b5b991f9dbba6b01a2d91fb1098370da7e6d289fb4",
+  "date": "2026-09-30",
+  "exact_vs_off": {
+    "atom_identities_equal": true,
+    "bytes_equal": true,
+    "coordinates_equal": true,
+    "max_coordinate_difference_angstrom": 0.0
+  },
+  "executed_driver_local_patches": [],
+  "executed_recipe_sha256": "a3b478c3b0891db72d8229b5b991f9dbba6b01a2d91fb1098370da7e6d289fb4",
+  "final_shipped_recipe_gpu_qualified": true,
+  "gpu": "H100",
+  "kit": "genie3",
+  "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+  "limitations": [
+    "One candidate per mode on H100 qualifies bounded execution and requested-mode evidence; it does not establish biological quality or repeated warm throughput.",
+    "Fast timing includes first-use Inductor compilation and CUDA graph capture; no warmed speedup claim is made.",
+    "Each accelerated run captured one graph with no between-batch graph reuse because N_sample1/batch1 requested one batch.",
+    "Genie3 generated binder A has68 CA-only residues. TargetB has116 CA residues with some interface sidechains and no complete N/CA/C/O backbone. Full-backbone ProteinMPNN exact kit cannot directly consume this output; use a qualified compatible CA checkpoint/native or explicit kit-off route and record the substitution.",
+    "Off sampler-step evidence comes from the unchanged pinned upstream100-step default and composed request; accelerated modes additionally record actual sampler timings.",
+    "Other hardware and provider environments require their own qualification.",
+    "Provider cost settlement and resource cleanup are tracked separately from inference artifact validation."
+  ],
+  "provider": "Modal",
+  "public_input_case": "04_pdl1 from pinned Genie3 public binder-design experiment",
+  "recipe_hash_matches_executed_copy": true,
+  "reports": {
+    "exact": {
+      "actual_sampler": {
+        "direction_scale": 0.0,
+        "eta": 1.0,
+        "n_sample_step": 100,
+        "n_timestep": 1000,
+        "noise_scale": 1.0,
+        "step_size": 10
+      },
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "compiled_shapes": null,
+        "global_state_checks_passed": 1,
+        "graph_captures": 1,
+        "graph_reuses": 0,
+        "levers_declined": {},
+        "levers_evidenced": [
+          "L1",
+          "L11",
+          "L17",
+          "L18",
+          "L19",
+          "L2",
+          "L4",
+          "L8",
+          "L9"
+        ],
+        "matmul_policy": "highest",
+        "matmul_tf32": false,
+        "numerics_verdict": "ok",
+        "sampler_steps": 100,
+        "sampler_steps_source": "driver-timings",
+        "triangle_kernel_served_calls": null
+      },
+      "expected_structures": 1,
+      "kit": "genie3",
+      "log_sha256": "2d86ae229688d05cef98d77a9821c933a9ed77a05a5e9bc1698640c0372c1577",
+      "manifest_sha256": "ba094ea83fa6f1517621ad95d1d5d556a5cf893299dfc458c19b7d89bd9e0cf7",
+      "mode": "exact",
+      "request_yaml_matches_initial_attempt_bytes": true,
+      "request_yaml_sha256": "228e85286223a8240b37fc96b7a98bcde534882ec3af539e1448d5fcca7c8559",
+      "run_parameters": {
+        "batch_size": 1,
+        "det": 1,
+        "direction_scale": 0.0,
+        "n_sample": 1,
+        "sampler_steps": 100,
+        "seed": 101,
+        "selections": "04_pdl1"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 222,
+          "bytes": 17982,
+          "chains": {
+            "A": {
+              "ca_only_residues": 68,
+              "ca_residues": 68,
+              "full_backbone_residues": 0,
+              "residues": 68
+            },
+            "B": {
+              "ca_only_residues": 108,
+              "ca_residues": 116,
+              "full_backbone_residues": 0,
+              "residues": 116
+            }
+          },
+          "file": "04_pdl1/pdbs/04_pdl1_0.pdb",
+          "sha256": "21ecd9bdd10af1966a1a72804dbbdae1ce4c67805901b49c649111ed75a1833e"
+        }
+      ],
+      "timings": {
+        "graph_capture_s": [
+          0.467
+        ],
+        "inprocess_total_s": 15.804,
+        "model_setup_s": 8.284,
+        "sampling_loop_s": 4.423,
+        "wall_s": 19.48
+      },
+      "valid": true
+    },
+    "fast": {
+      "actual_sampler": {
+        "direction_scale": 0.0,
+        "eta": 1.0,
+        "n_sample_step": 100,
+        "n_timestep": 1000,
+        "noise_scale": 1.0,
+        "step_size": 10
+      },
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "compiled_shapes": 1,
+        "global_state_checks_passed": 1,
+        "graph_captures": 1,
+        "graph_reuses": 0,
+        "levers_declined": {},
+        "levers_evidenced": [
+          "L1",
+          "L11",
+          "L12",
+          "L13",
+          "L16",
+          "L17",
+          "L18",
+          "L19",
+          "L2",
+          "L4",
+          "L7",
+          "L8",
+          "L9"
+        ],
+        "matmul_policy": "high",
+        "matmul_tf32": true,
+        "numerics_verdict": "ok",
+        "sampler_steps": 100,
+        "sampler_steps_source": "driver-timings",
+        "triangle_kernel_served_calls": 40
+      },
+      "expected_structures": 1,
+      "kit": "genie3",
+      "log_sha256": "604b996cbcf3a4d5422c1fe2d41949309f11ea00b6afb8bcbc54ab717ede1f37",
+      "manifest_sha256": "26e93125c38b648860d9bcf8efacd258cded359112bc7b2d49a7c0180694b59a",
+      "mode": "fast",
+      "request_yaml_matches_initial_attempt_bytes": true,
+      "request_yaml_sha256": "c6d7d14ed051627fdda922d2a250bf4ca02669a423c47b5b7d0bb90ccf9e0c43",
+      "run_parameters": {
+        "batch_size": 1,
+        "det": 1,
+        "direction_scale": 0.0,
+        "n_sample": 1,
+        "sampler_steps": 100,
+        "seed": 101,
+        "selections": "04_pdl1"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 222,
+          "bytes": 17982,
+          "chains": {
+            "A": {
+              "ca_only_residues": 68,
+              "ca_residues": 68,
+              "full_backbone_residues": 0,
+              "residues": 68
+            },
+            "B": {
+              "ca_only_residues": 108,
+              "ca_residues": 116,
+              "full_backbone_residues": 0,
+              "residues": 116
+            }
+          },
+          "file": "04_pdl1/pdbs/04_pdl1_0.pdb",
+          "sha256": "ca48bf6ad4231f98168e8f5edf9fb1545535cbad071ef06d16922156bcede48b"
+        }
+      ],
+      "timings": {
+        "graph_capture_s": [
+          28.57
+        ],
+        "inprocess_total_s": 44.107,
+        "model_setup_s": 8.276,
+        "sampling_loop_s": 33.713,
+        "wall_s": 48.31
+      },
+      "valid": true
+    },
+    "off": {
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "sampler_steps": 100,
+        "sampler_steps_source": "pinned-upstream-default",
+        "stock_proof_ok": true
+      },
+      "expected_structures": 1,
+      "kit": "genie3",
+      "log_sha256": "d0ae9587ccbd6b3b2ec5f45f3388f5b1d125e085df894fb0e7bd340d8de908da",
+      "manifest_sha256": "b4b1f6f2f57aa44d5fd1a795a6bcfabad217d6df127e7c25d9be0a23e468f814",
+      "mode": "off",
+      "request_yaml_matches_initial_attempt_bytes": true,
+      "request_yaml_sha256": "a8238bc5641454c0c0346864fe53276f2766026e5ede3165614432a069f256d1",
+      "run_parameters": {
+        "batch_size": 1,
+        "det": 1,
+        "direction_scale": 0.0,
+        "n_sample": 1,
+        "sampler_steps": 100,
+        "seed": 101,
+        "selections": "04_pdl1"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "stock_source_files_checked": 188,
+      "structures": [
+        {
+          "atoms": 222,
+          "bytes": 17982,
+          "chains": {
+            "A": {
+              "ca_only_residues": 68,
+              "ca_residues": 68,
+              "full_backbone_residues": 0,
+              "residues": 68
+            },
+            "B": {
+              "ca_only_residues": 108,
+              "ca_residues": 116,
+              "full_backbone_residues": 0,
+              "residues": 116
+            }
+          },
+          "file": "04_pdl1/pdbs/04_pdl1_0.pdb",
+          "sha256": "21ecd9bdd10af1966a1a72804dbbdae1ce4c67805901b49c649111ed75a1833e"
+        }
+      ],
+      "timings": {
+        "wall_s": 21.56
+      },
+      "valid": true
+    }
+  },
+  "schema": "binder.acceleration_qualification/1",
+  "validator_sha256": "8ca29459c14330fab98898f552d0e8c0c52797e60c10f77ca91ae0fa98d4cf96"
+}

@@ -1,5 +1,13 @@
 # Route status
 
+## Accelerated design and sequence kits, 2026-09-30
+
+Account-local recipes and handoff guides ship for Genie3, PXDesign,
+RFdiffusion3, BoltzGen, Complexa, and full-backbone ProteinMPNN. The
+[dated qualification](accelerated-kit-qualification-2026-09-30.md) separates
+actual native Modal inference from recipe availability, Claude Science
+execution, full graph bindings, and scientific validation.
+
 ## BindCraft2 on Modal, 2026-09-21
 
 The packaged image ran BindCraft2 on a Modal A100-80GB. The adapter toolcheck
@@ -322,4 +330,3 @@ Modal settled costs are readable. `WorkspaceBillingReport` is a unary-stream RPC
 a unary-unary call blocks until the timeout. Iterating it returns per-app, per-hour rows carrying a
 decimal `cost` string. The report lags by hours, so a job that has just finished still has no settled
 figure and its cost stays an estimate until one appears.
-

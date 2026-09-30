@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "public-release",
-  "skill_manifest_sha256": "e5ea4370d1c8034e5b721b64ccd90ea8921360eb5438bba7e19332fa841ad64a",
+  "status": "local-release",
+  "skill_manifest_sha256": "a8db763fdbd91215d72f69a3fb74059fa984ba4da65c7ac3eae0bf3c64e3a879",
   "files": [
     {
       "path": ".gitignore",
@@ -15,8 +15,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13378,
-      "sha256": "f5d89c3b2685495a581107013fe31637c6348128bf5ee60c0f5c4785dba1af8d"
+      "bytes": 13841,
+      "sha256": "36cd4cb7e65c1b5a020953d580af1581c32c8f3f31d262feefd0eeceb25e472f"
     },
     {
       "path": "assets/campaign-workflow.svg",
@@ -50,8 +50,8 @@
     },
     {
       "path": "skills/claude-binder-lane/.claude-binder-skill-build",
-      "bytes": 110,
-      "sha256": "6373ec3aa4cb1bbbe622222a43e8a8564f0266664e5c7942d00ea0e1f3c3052f"
+      "bytes": 133,
+      "sha256": "3f0c4fe90c8fea56a83dfc1fa8dc4d0098f75d33bc45f8c71e31d60f6199bece"
     },
     {
       "path": "skills/claude-binder-lane/LICENSE.txt",
@@ -60,8 +60,8 @@
     },
     {
       "path": "skills/claude-binder-lane/SKILL.md",
-      "bytes": 13409,
-      "sha256": "b188483dfd7b8bd8e5cafb11c9703c185a67a263ecd5811ea980d0c33b0ae59e"
+      "bytes": 14070,
+      "sha256": "f2b93dfade8391c7f1cd4ac651e088359d2f1daf736218c0c07bf5a1f434a060"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/__init__.py",
@@ -220,8 +220,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/modal_platform.py",
-      "bytes": 30890,
-      "sha256": "55989b4ea33037fe8bdd66634f58b5622480f691d74fbbb541c7450481c947d5"
+      "bytes": 31516,
+      "sha256": "1e7b5577d8bfce9659ad05789a582b52150220d2e07973081244684a21b65e84"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/novelty_filter.py",
@@ -301,7 +301,7 @@
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/runpod_platform.py",
       "bytes": 33907,
-      "sha256": "f02d3100a02c719107c525a7c9c128ae4aa5c51af4fe0d43f5874a1e902c9131"
+      "sha256": "23495d0847d7dbf531c63abb489456392a5529db238d69723a1a0eb8fdd9e554"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/adapters/runtime_validator.py",
@@ -465,8 +465,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/catalog.json",
-      "bytes": 242840,
-      "sha256": "3fa41d3d6cb8ddeb607d77d84eafd6833f8950c70ae27dc8dd1919d8848d0968"
+      "bytes": 249313,
+      "sha256": "d194bf8ff653ccec6479f04bd8153203b6075dbc30e4c6995143a522f07a23b0"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/data/demo/tslp/README.md",
@@ -1040,8 +1040,8 @@
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/route_matrix.py",
-      "bytes": 29306,
-      "sha256": "b3d3cd3c31c09b1f765391180cc9c729557e7bcde09247d3367e07e0ff1dab3b"
+      "bytes": 30134,
+      "sha256": "ca4c5bfc2f60359ea975638415186766ec55f3923ef2cb7d7f9ace51f06a0ef0"
     },
     {
       "path": "skills/claude-binder-lane/claude_binder/selection_policy.py",
@@ -1104,6 +1104,16 @@
       "sha256": "c95ed1c074e2371090e471e8ca67d2815c0ab54e14f8b7814f1cc215fdf499fa"
     },
     {
+      "path": "skills/claude-binder-lane/envs/boltzgen_kit_gpu.py",
+      "bytes": 7633,
+      "sha256": "39fbe23dcdeac2b9b29de59cefd595980cc13684445f49812375a584aed1eeae"
+    },
+    {
+      "path": "skills/claude-binder-lane/envs/complexa_kit_gpu.py",
+      "bytes": 9635,
+      "sha256": "cec9fb56447f9488d17c1a337a21b879e652d5e7df4bd6e6b1c23e974d56b969"
+    },
+    {
       "path": "skills/claude-binder-lane/envs/esmfold2_kit_gpu.py",
       "bytes": 12955,
       "sha256": "a17129e52c6d78a9d513ea3d466c2ded1a7198720122d57f12954ec3c1e693c9"
@@ -1114,9 +1124,49 @@
       "sha256": "5c16e90313a0156f029aa363c853d6b79c96c8c2d01b12e65f912aac69bacb33"
     },
     {
+      "path": "skills/claude-binder-lane/envs/genie3_kit_gpu.py",
+      "bytes": 5363,
+      "sha256": "a3b478c3b0891db72d8229b5b991f9dbba6b01a2d91fb1098370da7e6d289fb4"
+    },
+    {
+      "path": "skills/claude-binder-lane/envs/patches/pxdesign-stock-isolation-unused-import.patch",
+      "bytes": 754,
+      "sha256": "39c8e5f7bd83ceb735c0771bb041fd9ea68e56766185acab3547a75b17885a68"
+    },
+    {
+      "path": "skills/claude-binder-lane/envs/proteinmpnn_kit_gpu.py",
+      "bytes": 6696,
+      "sha256": "92432fd561e39d2379461a1b83109263673ea76a379e5b69558b2b0739ca5277"
+    },
+    {
+      "path": "skills/claude-binder-lane/envs/pxdesign_kit_gpu.py",
+      "bytes": 8590,
+      "sha256": "731c9858b3d0c9f42a362b0293058da4d2ba22e574f81b221f9c0897bf5921b1"
+    },
+    {
+      "path": "skills/claude-binder-lane/envs/rfdiffusion3_kit_gpu.py",
+      "bytes": 12551,
+      "sha256": "7722f783d219bd1345e5fec5800a3e7800c2e80732b19f3977be4bb1c8cec922"
+    },
+    {
       "path": "skills/claude-binder-lane/envs/rfdiffusion_generator_gpu.py",
       "bytes": 3993,
       "sha256": "4ca8774eeab1e5c3cc3b127a0dd93791ee27f86becbf127c49b2b427799a65aa"
+    },
+    {
+      "path": "skills/claude-binder-lane/examples/complexa-kit-pdl1.json",
+      "bytes": 301,
+      "sha256": "5ccf88224e1ac70dd9bdd715f4d54edade8a20723cf540a2d38c98211d0d8b67"
+    },
+    {
+      "path": "skills/claude-binder-lane/examples/genie3-kit-pdl1.yaml",
+      "bytes": 469,
+      "sha256": "84b9148b00b920555f757ded9e4c5229e6cb8b1891182d6d49cf204bca02e280"
+    },
+    {
+      "path": "skills/claude-binder-lane/examples/pxdesign-kit-pdl1.json",
+      "bytes": 331,
+      "sha256": "5da4b92a8352b98b7e7b9f56548f92f222c35980b3c2c4685d0ecdb02bfc27fb"
     },
     {
       "path": "skills/claude-binder-lane/kernel.py",
@@ -1139,9 +1189,19 @@
       "sha256": "14b96f88a98299a2e741a97961f23bcf8f18a8707ef62fc22d401b8535fae6b8"
     },
     {
+      "path": "skills/claude-binder-lane/references/accelerated-kit-integration.md",
+      "bytes": 6618,
+      "sha256": "485a727ef37b4bdd86c8fc4e5dce245437fa8633cd4b52f9f52c46515e123cc5"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/accelerated-kit-qualification-2026-09-30.md",
+      "bytes": 7035,
+      "sha256": "2adaea8bfdc32613a1696ba15bdb6519bf47dd1581959ce0b3c96a08dae2c6ad"
+    },
+    {
       "path": "skills/claude-binder-lane/references/accelerated-upstream-builds.md",
-      "bytes": 27421,
-      "sha256": "94b3e1e610b1abc3a55195bb2305af641ddc9bca10fcf4170c689441b6f00d5c"
+      "bytes": 28245,
+      "sha256": "1d8c8ecb18a11b19dbd8cc74797489b78a2cd3b2735e8849786567daf64587b7"
     },
     {
       "path": "skills/claude-binder-lane/references/approval-and-spend.md",
@@ -1159,6 +1219,11 @@
       "sha256": "f09a9a8a7e82d1f64273ce7b14e0237a7f5df83bcdc8fd8ff46d4e2bb26c56a5"
     },
     {
+      "path": "skills/claude-binder-lane/references/boltzgen-kit-modal.md",
+      "bytes": 7335,
+      "sha256": "5cdd4f29a148c740d2e5f8d1347a5cb42f58c40e90e2c2aca22ccdaec9a0c438"
+    },
+    {
       "path": "skills/claude-binder-lane/references/campaign-fields.md",
       "bytes": 8105,
       "sha256": "b725ad69cc7c53ed971018eeda280e04f9be7f527e56b0fb75b4caa04af4acaf"
@@ -1167,6 +1232,11 @@
       "path": "skills/claude-binder-lane/references/cofold-scoring-hazards.md",
       "bytes": 12862,
       "sha256": "3dd4d77835a9b121d334bf1783e83189b4a2564d566aea74d15eae57bc317349"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/complexa-kit-modal.md",
+      "bytes": 11623,
+      "sha256": "49b73d2518347d0e64443dfb02adb1c81d431e315f67cdaf1df774b9db88d775"
     },
     {
       "path": "skills/claude-binder-lane/references/compute-and-pacing.md",
@@ -1180,8 +1250,8 @@
     },
     {
       "path": "skills/claude-binder-lane/references/current-status.md",
-      "bytes": 21604,
-      "sha256": "513207ac8056d4cce0de9376ef8cda5357c194af9cf6d4e80b59cf83c56e4819"
+      "bytes": 22001,
+      "sha256": "9ab4cb4f6e15c881c366410d6bab4761326cb49d8a143954db0cf5ad5f80bca6"
     },
     {
       "path": "skills/claude-binder-lane/references/design-and-filters.md",
@@ -1192,6 +1262,41 @@
       "path": "skills/claude-binder-lane/references/esmfold2-kit-modal.md",
       "bytes": 5024,
       "sha256": "140a8f9dfac5e92ce973b2c5e581732685c10b3096eecfebe29114929ce7cbcc"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/boltzgen.json",
+      "bytes": 33386,
+      "sha256": "628db09d1eae97fa2d627fab0f0db09763a1b3fd247cea553576c63cc1b0611a"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/complexa.json",
+      "bytes": 21003,
+      "sha256": "b059930947055805ec188987e309cc7004fe4f5b2b41810fd50da40163dd2bc2"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/genie3.json",
+      "bytes": 9868,
+      "sha256": "5d3b1b2297812699ccb57a494f1232d3c52241eb77f6370c086d9f20c5bf9bb9"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/proteinmpnn-handoff.json",
+      "bytes": 26037,
+      "sha256": "54f6eb5131b9a7a0a64540a8a9843dfe6213a1261ee41b6463629612662fb69c"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/proteinmpnn.json",
+      "bytes": 17165,
+      "sha256": "3832e76500f43fd3acbedb12fd13280335ed942f793ee36ab5c7bc740594e630"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/pxdesign.json",
+      "bytes": 14087,
+      "sha256": "0ae5d592955efc44327d6dd40ed38cd1c36c08e997445920fd4bd926e45eae5e"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/evidence/accelerated-kits-2026-09-30/rfdiffusion3.json",
+      "bytes": 8717,
+      "sha256": "707f86b40aa8246dbdaef4b23a5f591a8013ec0d888f4358f509c510ff57dc80"
     },
     {
       "path": "skills/claude-binder-lane/references/evidence/claude-science-platform-skills-0.1.47.md",
@@ -1272,6 +1377,11 @@
       "path": "skills/claude-binder-lane/references/free-run.md",
       "bytes": 2008,
       "sha256": "3b37123de92db8d9476bf3030068b1c53395ab6414aa9166f949bcbaf7f2d7f0"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/genie3-kit-modal.md",
+      "bytes": 8377,
+      "sha256": "0db8a6416d390afc4ff8b5db396dc6c79d1a49b082eaef0f1d191b237272774f"
     },
     {
       "path": "skills/claude-binder-lane/references/getting-started.md",
@@ -1359,6 +1469,11 @@
       "sha256": "86c883e71f9824c9b2c81c7d1da971aa0d0e484d94883c4fd88d432ced7a55ed"
     },
     {
+      "path": "skills/claude-binder-lane/references/proteinmpnn-kit-modal.md",
+      "bytes": 10784,
+      "sha256": "4d54b4ee72be11191d5c55eb41723ba11cbda70a6da9f0390de740fd4103f497"
+    },
+    {
       "path": "skills/claude-binder-lane/references/protenix-v2-bringup.md",
       "bytes": 23899,
       "sha256": "dfb8c15b5abefb879641bb6ccef34ac29060048c3b9ad842d48f2f9796225776"
@@ -1389,6 +1504,11 @@
       "sha256": "b553575efe0bcc7f74936498cb8f25458bc4bdf2dda1969ed2663325d1506901"
     },
     {
+      "path": "skills/claude-binder-lane/references/pxdesign-kit-modal.md",
+      "bytes": 11113,
+      "sha256": "f12382de9d978916c7ec9a9f53ee3269baae1c322c0ee93a10bb8ee2d0ac28b9"
+    },
+    {
       "path": "skills/claude-binder-lane/references/reading-results-in-claude-science.md",
       "bytes": 5977,
       "sha256": "74e9c554a7f7f95f09a40f7a082043e2e2f64928a35c40656e590fabef861ed5"
@@ -1407,6 +1527,11 @@
       "path": "skills/claude-binder-lane/references/resume.md",
       "bytes": 857,
       "sha256": "d3f8cecd483aa3517b09b4a22517e3979b926559936ed05dbf0f6c3fbbe00b97"
+    },
+    {
+      "path": "skills/claude-binder-lane/references/rfdiffusion3-kit-modal.md",
+      "bytes": 6645,
+      "sha256": "7fb4211cea6c73d450beb63ecabff5275fe20ff61be2f75aa690d0262f5871df"
     },
     {
       "path": "skills/claude-binder-lane/references/running-a-campaign.md",
@@ -1460,13 +1585,13 @@
     },
     {
       "path": "skills/claude-binder-lane/references/tool-catalogue-details.md",
-      "bytes": 46021,
-      "sha256": "2e16ca4391f7e799312d4a3143970ef1dcc76015570146c5ce2935c36bdbd692"
+      "bytes": 46263,
+      "sha256": "e2863c5ed2613e8692f33fdb854c73f51998e5e6b49f2e38ddf62f6020ad31e7"
     },
     {
       "path": "skills/claude-binder-lane/references/tool-catalogue.md",
-      "bytes": 48683,
-      "sha256": "05475ad919a90ba99fb87cf458ce81d699bf38329617bd0e8ffe08c9d86e7d40"
+      "bytes": 49306,
+      "sha256": "1d54890c65218390bb1621feb0ba689674abe137df358f5c12e1d29fbd81014e"
     },
     {
       "path": "skills/claude-binder-lane/references/tool-licences.md",
@@ -1490,8 +1615,8 @@
     },
     {
       "path": "skills/claude-binder-lane/scripts/MANIFEST.md",
-      "bytes": 4094,
-      "sha256": "12b785c91c31ae2b7e4be93d5c49371b3e5acf06b4008c191f68353b11a6a32e"
+      "bytes": 4770,
+      "sha256": "d3f1396e2f102a8d4282ed4c65349f6090cbd2d5d400a0e590ce9a91ae7b1b5b"
     },
     {
       "path": "skills/claude-binder-lane/scripts/bootstrap_environments.py",
@@ -1505,8 +1630,13 @@
     },
     {
       "path": "skills/claude-binder-lane/scripts/dispatch_modal.py",
-      "bytes": 287283,
-      "sha256": "d4664a2480b791ef70c03795ba29b40a6bbbf676fa0cf417de099288299f7df7"
+      "bytes": 287480,
+      "sha256": "33885cd75b39bd78ac21168352508db2cc2ce6f27087b9ecdf9e95bfea8102af"
+    },
+    {
+      "path": "skills/claude-binder-lane/scripts/prepare_proteinmpnn_handoff.py",
+      "bytes": 33078,
+      "sha256": "d319f8ad4859865c1f198ef3911686658e2f5b1326138f0afae4c1ff264b81db"
     },
     {
       "path": "skills/claude-binder-lane/scripts/small-campaign-settings.template.json",
@@ -1522,6 +1652,21 @@
       "path": "skills/claude-binder-lane/scripts/small_campaign_esmfold.py",
       "bytes": 3195,
       "sha256": "2632f87ab4fd6dbfe98330104cc32fb06c8b975fb88f130b17fa1086478a5000"
+    },
+    {
+      "path": "skills/claude-binder-lane/scripts/validate_complexa_proteinmpnn.py",
+      "bytes": 12922,
+      "sha256": "8db750355f7cea06b76394c891a3e725e78fb1baa550f8ed82e5d6e5fe1ca7c0"
+    },
+    {
+      "path": "skills/claude-binder-lane/scripts/validate_genie_px.py",
+      "bytes": 25165,
+      "sha256": "8ca29459c14330fab98898f552d0e8c0c52797e60c10f77ca91ae0fa98d4cf96"
+    },
+    {
+      "path": "skills/claude-binder-lane/scripts/validate_rfdiffusion3_boltzgen.py",
+      "bytes": 27469,
+      "sha256": "685dbebe27086009f3b613703aeba91b1fc0e30d7940cbdd73d2a5478279d005"
     },
     {
       "path": "skills/claude-binder-lane/scripts/validation/check_ipsae.py",
@@ -1565,8 +1710,8 @@
     },
     {
       "path": "verify.py",
-      "bytes": 19824,
-      "sha256": "cbfba60239d11958506af76e6aab99781b00ecc2d25f18dd1272a7c1be2ce131"
+      "bytes": 19924,
+      "sha256": "fbc159313ab100d8b830e956b318548aca45f2b426efcf52b55e7e80679a995e"
     }
   ]
 }

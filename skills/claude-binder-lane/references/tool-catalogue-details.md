@@ -348,9 +348,20 @@ The weights host is `yeqinglin/genie3` at revision `9ae31ebb8c56eebdc05ab282a8fd
 
 The code licence is Apache-2.0, with commercial use permitted in [tool-licences.md](tool-licences.md). The weights carry Apache-2.0 as well, declared as model card metadata at `yeqinglin/genie3` and not in a licence file, because that repository holds none. [catalog.json](../claude_binder/data/catalog.json) records the declaration with commercial use permitted.
 
-For production campaigns, select RFdiffusion or RFdiffusion3 for backbone generation routed to ProteinMPNN.
+Full-backbone ProteinMPNN Exact requires N/CA/C/O backbones, such as qualified
+RFdiffusion3 or PXDesign outputs. Genie3's C-alpha binder output instead uses
+the documented compatible C-alpha designer route. Its [native kit](genie3-kit-modal.md)
+has passed Modal inference and remains available for the user's selected
+workflow.
 
-One thing stands between Genie3 and a pipeline run: the `genie3-generator` contract's `environment_identity` and its `resources.container_image_digest`. The `genie3 generate` command line was written into all three argv templates on 2026-09-12, from the shipped Modal recipe and the adapter's own argparse. The `--ca-only` designer route, both revisions, the weights licence, and a pinned environment are settled. `catalog.json` still marks `runtime_network` unresolved, and the recipe's own declaration of `huggingface.co`, `*.hf.co`, and an offline job body would close it.
+For the fixed `genie3-generator` graph contract, the operator still resolves
+`environment_identity` and `resources.container_image_digest`. Its command
+line was written into the three argv templates on 2026-09-12 from the generic
+Modal recipe and the adapter's argparse. Its compatible C-alpha designer route,
+revisions, weights licence and environment are recorded separately from the
+native acceleration-kit qualification. A native kit run does not wait for
+that graph binding; use the [integration guide](accelerated-kit-integration.md)
+to prepare its environment and explicit artifact handoff.
 
 ### The profile id does not say which RFdiffusion you get
 

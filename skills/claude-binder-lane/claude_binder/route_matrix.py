@@ -348,9 +348,9 @@ def _accelerated_build_summary(entry: dict[str, Any]) -> dict[str, Any] | None:
     JSON. This lifts them into the one report that answers what a tool can do,
     beside the route that would run it.
 
-    It states availability and never implies dispatch. `dispatchable_here` stays
-    the catalogue's own field and is echoed unchanged, so a reader sees that a
-    kit exists and that this package does not yet launch one, in the same row.
+    It states native setup separately from graph dispatch. `dispatchable_here`
+    describes a full graph binding; it is echoed alongside shipped recipes and
+    native qualification evidence rather than treated as a capability limit.
     """
     block = entry.get("accelerated_build")
     if not isinstance(block, dict):
@@ -372,10 +372,12 @@ def _accelerated_build_summary(entry: dict[str, Any]) -> dict[str, Any] | None:
         "fastest_published_speedup": fastest[1] if fastest else None,
         "dispatchable_here": block.get("dispatchable_here"),
         "environment_recipe": block.get("modal_environment_recipe"),
-        # The module that decides whether the accelerated build actually ran. An
-        # accelerated run and a stock run cost the same and look the same, so a
-        # recipe without this is a way to spend money and not know what you got.
+        # Output formats alone do not establish requested acceleration.
+        # Read activation, manifests and runtime counters together.
         "mode_verifier": block.get("mode_verifier"),
+        # Native kit setup is usable independently of a full Binder graph binding.
+        "native_setup_reference": block.get("native_setup_reference"),
+        "native_execution": block.get("native_execution"),
     }
 
 
@@ -535,8 +537,8 @@ def report(*, live_inventory: dict[str, Any] | None = None) -> dict[str, Any]:
         # scientist runs today through the platform. Counting the two facts
         # separately stops a reader taking "no route" for "cannot be run".
         # A published accelerated kit exists for some of these tools, and an
-        # environment recipe ships for fewer. Neither means this package can
-        # launch one, which is why `dispatchable_here` is echoed per tool rather
+        # environment recipe ships for fewer. A recipe does not establish a
+        # full graph binding, so `dispatchable_here` is echoed per tool rather
         # than summarised into a single reassuring number.
         "tools_with_an_accelerated_kit": sum(
             1 for item in entries if item["accelerated_build"]
@@ -585,6 +587,18 @@ def markdown(result: dict[str, Any]) -> str:
                 ),
             )
         )
+    kits = [item for item in result["tools"] if (item["accelerated_build"] or {}).get("environment_recipe")]
+    if kits:
+        lines += ["", "| Accelerated tool | Native setup | Execution evidence | Full graph binding |",
+                  "| --- | --- | --- | --- |"]
+        for item in kits:
+            kit = item["accelerated_build"]
+            native = kit.get("native_execution") or {}
+            lines.append("| {tool} | {recipe} | {status} | {bound} |".format(
+                tool=item["tool_id"], recipe=kit["environment_recipe"],
+                status=native.get("status", "read the selected kit's qualification record"),
+                bound="yes" if kit["dispatchable_here"] else "none",
+            ))
     platform = result["platform_adapters"]
     lines.append("")
     lines.append("| Provider lifecycle | Module ships | Profiles that select it |")

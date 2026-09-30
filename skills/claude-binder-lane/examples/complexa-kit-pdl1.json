@@ -1,0 +1,11 @@
+{
+  "02_PDL1": {
+    "source": "bindcraft_targets",
+    "target_filename": "PD-L1",
+    "target_path": "/opt/pc/assets/target_data/bindcraft_targets/PD-L1.pdb",
+    "target_input": "A1-115",
+    "hotspot_residues": ["A37", "A39", "A49", "A98"],
+    "binder_length": [80, 80],
+    "pdb_id": null
+  }
+}

@@ -1,0 +1,740 @@
+{
+  "designed_sequences": 8,
+  "frozen_target_residue_observations_checked": 924,
+  "handoff_batch": {
+    "artifact": "artifacts/inputs/handoff/batch.json",
+    "sha256": "336d74f37aa4386b3aa7e5c0717038633cdf484f293a6c4d912acc088fe02849"
+  },
+  "limitations": [
+    "One sequence per generated backbone at seed37 and sampling temperature0.1; no quality or throughput claim.",
+    "Explicit CIF-to-PDB format conversion rounds coordinates to three decimals; original CIFs, measured precision deltas, atom identities and residue mapping retained.",
+    "PXDesign binder unknown xpb placeholders map explicitly to UNK and native-parser - maps to model X on observed binder residues only.",
+    "No folding, affinity, experiment or whole campaign claim.",
+    "Upstream still reports sort_by_length unobserved; requested acceleration has no partial, opt-out, gated, unavailable or fallback levers.",
+    "Provider accounting and cleanup independently owned by the launcher."
+  ],
+  "off_exact_parity": [
+    {
+      "comparison": "proteinmpnn_off_exact",
+      "files": [
+        "probs/px-pdl1-exact-01.npz",
+        "probs/rf-pdl1-exact-01.npz",
+        "scores/px-pdl1-exact-01.npz",
+        "scores/rf-pdl1-exact-01.npz",
+        "seqs/px-pdl1-exact-01.fa",
+        "seqs/rf-pdl1-exact-01.fa"
+      ],
+      "identical": true,
+      "variant": "vanilla"
+    },
+    {
+      "comparison": "proteinmpnn_off_exact",
+      "files": [
+        "probs/px-pdl1-exact-01.npz",
+        "probs/rf-pdl1-exact-01.npz",
+        "scores/px-pdl1-exact-01.npz",
+        "scores/rf-pdl1-exact-01.npz",
+        "seqs/px-pdl1-exact-01.fa",
+        "seqs/rf-pdl1-exact-01.fa"
+      ],
+      "identical": true,
+      "variant": "soluble"
+    }
+  ],
+  "runs": [
+    {
+      "activation": {
+        "active": false,
+        "allow_partial": false,
+        "child_rc": 0,
+        "kit_exit": 0,
+        "levers_applied": [],
+        "levers_fallback": [],
+        "levers_unavailable": [],
+        "levers_unobserved": [],
+        "log": {
+          "artifact": "artifacts/logs/vanilla-off.log",
+          "sha256": "9ef8bb98d92e36203e2d67ea146f238e759b603e17845d6de0475c443f79216d"
+        },
+        "manifest": {
+          "artifact": "artifacts/out/vanilla-off/opt_manifest.json",
+          "sha256": "b308d09b989da11d5931fb0ed543f89d394db8301bcd32f0baf9c1b99ba27d6b"
+        },
+        "opted_out": [],
+        "partial": [],
+        "route": "stock"
+      },
+      "artifact_root": "artifacts/out/vanilla-off",
+      "frozen_target": [
+        {
+          "binder_design_mask_one": true,
+          "candidate": "px-pdl1-exact-01",
+          "designed_chains": [
+            "B"
+          ],
+          "fixed_chains": [
+            "A"
+          ],
+          "fixed_target_residue_observations_checked": 116,
+          "generated_source_sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "db6e08f73be7838f91fa0a375646af30042d71a8f21a734f726ced33aab6ea0c",
+          "pdb_sha256": "54dc47b911b5238730faa379bb93627ecf9a0977d8aab92b28bc1ade65b08c4e",
+          "probabilities": {
+            "artifact": "probs/px-pdl1-exact-01.npz",
+            "sha256": "a8704c06638a6d38a1c9ac936e53b5a443270653bc0d35b3fc9536d5917ed8f4"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.cif",
+            "end": 116,
+            "numbering": "label",
+            "origin_residues_independently_matched": 116,
+            "reference_chain": "A",
+            "sha256": "25ca22e457201020ff0635ff3b52088493403f087df7d86fbf6de2a8eee01d03",
+            "start": 1,
+            "target_chain": "A"
+          },
+          "target_sequence_unchanged": true
+        },
+        {
+          "binder_design_mask_one": true,
+          "candidate": "rf-pdl1-exact-01",
+          "designed_chains": [
+            "A"
+          ],
+          "fixed_chains": [
+            "B"
+          ],
+          "fixed_target_residue_observations_checked": 115,
+          "generated_source_sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "8a48e98563f9cdc6d25479aad66069236dea410f40051756c47999197c1db894",
+          "pdb_sha256": "0b0234cd895d776401c746a7345aafc1a4d93edc996d201f2aa447887c311ef9",
+          "probabilities": {
+            "artifact": "probs/rf-pdl1-exact-01.npz",
+            "sha256": "58cbfd2f6196595aea5185ed4f2d5b17bfde7c48ccd23697d4c3a80583fd75cc"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.pdb",
+            "end": 131,
+            "numbering": "author",
+            "origin_residues_independently_matched": 115,
+            "reference_chain": "A",
+            "sha256": "ba8b75816d8180d8c9ddf7388834d7cbf72163e77ecb612b22449b4375e633a0",
+            "start": 17,
+            "target_chain": "B"
+          },
+          "target_sequence_unchanged": true
+        }
+      ],
+      "mode": "off",
+      "outputs": {
+        "artifacts": [
+          {
+            "arrays": [
+              {
+                "file": "scores/px-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "ee6c84f8ac573bf4000739e85cef65abd9f86793bfa3c91c8bb3cc001e00e2f7"
+              },
+              {
+                "file": "probs/px-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "a8704c06638a6d38a1c9ac936e53b5a443270653bc0d35b3fc9536d5917ed8f4"
+              }
+            ],
+            "designed_chain_lengths": [
+              75
+            ],
+            "designs": 1,
+            "file": "seqs/px-pdl1-exact-01.fa",
+            "sha256": "64f5567b6036550cda8a24f1d9c96df456fa17dc770d9c6837d55cc8e72d9553"
+          },
+          {
+            "arrays": [
+              {
+                "file": "scores/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "cc06021a67a5824f716f73ceee37591410f4a1b0e519c4b607cc39868a4518d2"
+              },
+              {
+                "file": "probs/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "58cbfd2f6196595aea5185ed4f2d5b17bfde7c48ccd23697d4c3a80583fd75cc"
+              }
+            ],
+            "designed_chain_lengths": [
+              95
+            ],
+            "designs": 1,
+            "file": "seqs/rf-pdl1-exact-01.fa",
+            "sha256": "654d38e90464f2842d31c8aaf412e5e5b179cb5fed10a6dab9541397f16afc0c"
+          }
+        ],
+        "designs": 2,
+        "targets": 2,
+        "tool": "proteinmpnn"
+      },
+      "variant": "vanilla"
+    },
+    {
+      "activation": {
+        "active": true,
+        "allow_partial": false,
+        "backbones": 2,
+        "child_rc": 0,
+        "encoder_cache_hits": 3,
+        "fallbacks": [],
+        "fused_draw_mismatched_steps": 0,
+        "fused_draw_offsets_ok": true,
+        "graph_captures": 1,
+        "graph_replays": 210,
+        "hybrid_gemm_active": true,
+        "hybrid_gemm_max_abs_diff": 0.0,
+        "kit_exit": 0,
+        "levers_applied": [
+          "stream",
+          "sort_by_length",
+          "chunk_gemm",
+          "cache_enc_ctx",
+          "graph_rng",
+          "single_graph",
+          "fused_draw",
+          "analytic_offsets",
+          "stock_shape_enc",
+          "hybrid_gemm",
+          "lowmem"
+        ],
+        "levers_fallback": [],
+        "levers_unavailable": [],
+        "levers_unobserved": [
+          "sort_by_length"
+        ],
+        "log": {
+          "artifact": "artifacts/logs/vanilla-exact.log",
+          "sha256": "f53e6f0af0410a2c81f2ce0077501ca9c773f583d62c4d44e2a07b737ef0b377"
+        },
+        "manifest": {
+          "artifact": "artifacts/out/vanilla-exact/opt_manifest.json",
+          "sha256": "c2ed1ea3f03a1ee6842bccc28b0626cfda6bbad23ebcb05e485fe60306412847"
+        },
+        "opted_out": [],
+        "partial": [],
+        "probe": "PASS",
+        "route": "worker",
+        "sequences": 2
+      },
+      "artifact_root": "artifacts/out/vanilla-exact",
+      "frozen_target": [
+        {
+          "binder_design_mask_one": true,
+          "candidate": "px-pdl1-exact-01",
+          "designed_chains": [
+            "B"
+          ],
+          "fixed_chains": [
+            "A"
+          ],
+          "fixed_target_residue_observations_checked": 116,
+          "generated_source_sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "db6e08f73be7838f91fa0a375646af30042d71a8f21a734f726ced33aab6ea0c",
+          "pdb_sha256": "54dc47b911b5238730faa379bb93627ecf9a0977d8aab92b28bc1ade65b08c4e",
+          "probabilities": {
+            "artifact": "probs/px-pdl1-exact-01.npz",
+            "sha256": "a8704c06638a6d38a1c9ac936e53b5a443270653bc0d35b3fc9536d5917ed8f4"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.cif",
+            "end": 116,
+            "numbering": "label",
+            "origin_residues_independently_matched": 116,
+            "reference_chain": "A",
+            "sha256": "25ca22e457201020ff0635ff3b52088493403f087df7d86fbf6de2a8eee01d03",
+            "start": 1,
+            "target_chain": "A"
+          },
+          "target_sequence_unchanged": true
+        },
+        {
+          "binder_design_mask_one": true,
+          "candidate": "rf-pdl1-exact-01",
+          "designed_chains": [
+            "A"
+          ],
+          "fixed_chains": [
+            "B"
+          ],
+          "fixed_target_residue_observations_checked": 115,
+          "generated_source_sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "8a48e98563f9cdc6d25479aad66069236dea410f40051756c47999197c1db894",
+          "pdb_sha256": "0b0234cd895d776401c746a7345aafc1a4d93edc996d201f2aa447887c311ef9",
+          "probabilities": {
+            "artifact": "probs/rf-pdl1-exact-01.npz",
+            "sha256": "58cbfd2f6196595aea5185ed4f2d5b17bfde7c48ccd23697d4c3a80583fd75cc"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.pdb",
+            "end": 131,
+            "numbering": "author",
+            "origin_residues_independently_matched": 115,
+            "reference_chain": "A",
+            "sha256": "ba8b75816d8180d8c9ddf7388834d7cbf72163e77ecb612b22449b4375e633a0",
+            "start": 17,
+            "target_chain": "B"
+          },
+          "target_sequence_unchanged": true
+        }
+      ],
+      "mode": "exact",
+      "outputs": {
+        "artifacts": [
+          {
+            "arrays": [
+              {
+                "file": "scores/px-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "ee6c84f8ac573bf4000739e85cef65abd9f86793bfa3c91c8bb3cc001e00e2f7"
+              },
+              {
+                "file": "probs/px-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "a8704c06638a6d38a1c9ac936e53b5a443270653bc0d35b3fc9536d5917ed8f4"
+              }
+            ],
+            "designed_chain_lengths": [
+              75
+            ],
+            "designs": 1,
+            "file": "seqs/px-pdl1-exact-01.fa",
+            "sha256": "64f5567b6036550cda8a24f1d9c96df456fa17dc770d9c6837d55cc8e72d9553"
+          },
+          {
+            "arrays": [
+              {
+                "file": "scores/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "cc06021a67a5824f716f73ceee37591410f4a1b0e519c4b607cc39868a4518d2"
+              },
+              {
+                "file": "probs/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "58cbfd2f6196595aea5185ed4f2d5b17bfde7c48ccd23697d4c3a80583fd75cc"
+              }
+            ],
+            "designed_chain_lengths": [
+              95
+            ],
+            "designs": 1,
+            "file": "seqs/rf-pdl1-exact-01.fa",
+            "sha256": "654d38e90464f2842d31c8aaf412e5e5b179cb5fed10a6dab9541397f16afc0c"
+          }
+        ],
+        "designs": 2,
+        "targets": 2,
+        "tool": "proteinmpnn"
+      },
+      "variant": "vanilla"
+    },
+    {
+      "activation": {
+        "active": false,
+        "allow_partial": false,
+        "child_rc": 0,
+        "kit_exit": 0,
+        "levers_applied": [],
+        "levers_fallback": [],
+        "levers_unavailable": [],
+        "levers_unobserved": [],
+        "log": {
+          "artifact": "artifacts/logs/soluble-off.log",
+          "sha256": "2003657851ab6607d8420ec8c41a4fa0343bfb4973696a0f2da668440cf516cb"
+        },
+        "manifest": {
+          "artifact": "artifacts/out/soluble-off/opt_manifest.json",
+          "sha256": "83ee6e0e6db736e086f0d91f71f772a3ef9c65340fd774ede3948c22be23d4b5"
+        },
+        "opted_out": [],
+        "partial": [],
+        "route": "stock"
+      },
+      "artifact_root": "artifacts/out/soluble-off",
+      "frozen_target": [
+        {
+          "binder_design_mask_one": true,
+          "candidate": "px-pdl1-exact-01",
+          "designed_chains": [
+            "B"
+          ],
+          "fixed_chains": [
+            "A"
+          ],
+          "fixed_target_residue_observations_checked": 116,
+          "generated_source_sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "db6e08f73be7838f91fa0a375646af30042d71a8f21a734f726ced33aab6ea0c",
+          "pdb_sha256": "54dc47b911b5238730faa379bb93627ecf9a0977d8aab92b28bc1ade65b08c4e",
+          "probabilities": {
+            "artifact": "probs/px-pdl1-exact-01.npz",
+            "sha256": "d4ef28c1dca46ae3893e5e37e1d44e3e2eef7da05c28b5ff44ebaa41052a39be"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.cif",
+            "end": 116,
+            "numbering": "label",
+            "origin_residues_independently_matched": 116,
+            "reference_chain": "A",
+            "sha256": "25ca22e457201020ff0635ff3b52088493403f087df7d86fbf6de2a8eee01d03",
+            "start": 1,
+            "target_chain": "A"
+          },
+          "target_sequence_unchanged": true
+        },
+        {
+          "binder_design_mask_one": true,
+          "candidate": "rf-pdl1-exact-01",
+          "designed_chains": [
+            "A"
+          ],
+          "fixed_chains": [
+            "B"
+          ],
+          "fixed_target_residue_observations_checked": 115,
+          "generated_source_sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "8a48e98563f9cdc6d25479aad66069236dea410f40051756c47999197c1db894",
+          "pdb_sha256": "0b0234cd895d776401c746a7345aafc1a4d93edc996d201f2aa447887c311ef9",
+          "probabilities": {
+            "artifact": "probs/rf-pdl1-exact-01.npz",
+            "sha256": "23bb31ac1f8cbb3b9d09dc9e44d5f864fcd52639eeae0094850e43ca82b8a416"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.pdb",
+            "end": 131,
+            "numbering": "author",
+            "origin_residues_independently_matched": 115,
+            "reference_chain": "A",
+            "sha256": "ba8b75816d8180d8c9ddf7388834d7cbf72163e77ecb612b22449b4375e633a0",
+            "start": 17,
+            "target_chain": "B"
+          },
+          "target_sequence_unchanged": true
+        }
+      ],
+      "mode": "off",
+      "outputs": {
+        "artifacts": [
+          {
+            "arrays": [
+              {
+                "file": "scores/px-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "488f0072f927b9fbd0f9494f4b65c868fc96b8158ad7967463025933ab459539"
+              },
+              {
+                "file": "probs/px-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "d4ef28c1dca46ae3893e5e37e1d44e3e2eef7da05c28b5ff44ebaa41052a39be"
+              }
+            ],
+            "designed_chain_lengths": [
+              75
+            ],
+            "designs": 1,
+            "file": "seqs/px-pdl1-exact-01.fa",
+            "sha256": "f571b7987fba2379dee4be1cad34e828c8da46f15cc09b9316e5e579ddad9a92"
+          },
+          {
+            "arrays": [
+              {
+                "file": "scores/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "8eb3e12d43ca9507e47d4c67a39d1063d5121aee3d6dff6388036b6dacb110ea"
+              },
+              {
+                "file": "probs/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "23bb31ac1f8cbb3b9d09dc9e44d5f864fcd52639eeae0094850e43ca82b8a416"
+              }
+            ],
+            "designed_chain_lengths": [
+              95
+            ],
+            "designs": 1,
+            "file": "seqs/rf-pdl1-exact-01.fa",
+            "sha256": "9b24e0b6eaa8ace57052a8a585a117e0b655b611c63d9709db678830d746ac3c"
+          }
+        ],
+        "designs": 2,
+        "targets": 2,
+        "tool": "proteinmpnn"
+      },
+      "variant": "soluble"
+    },
+    {
+      "activation": {
+        "active": true,
+        "allow_partial": false,
+        "backbones": 2,
+        "child_rc": 0,
+        "encoder_cache_hits": 3,
+        "fallbacks": [],
+        "fused_draw_mismatched_steps": 0,
+        "fused_draw_offsets_ok": true,
+        "graph_captures": 1,
+        "graph_replays": 210,
+        "hybrid_gemm_active": true,
+        "hybrid_gemm_max_abs_diff": 0.0,
+        "kit_exit": 0,
+        "levers_applied": [
+          "stream",
+          "sort_by_length",
+          "chunk_gemm",
+          "cache_enc_ctx",
+          "graph_rng",
+          "single_graph",
+          "fused_draw",
+          "analytic_offsets",
+          "stock_shape_enc",
+          "hybrid_gemm",
+          "lowmem"
+        ],
+        "levers_fallback": [],
+        "levers_unavailable": [],
+        "levers_unobserved": [
+          "sort_by_length"
+        ],
+        "log": {
+          "artifact": "artifacts/logs/soluble-exact.log",
+          "sha256": "11fea2348a50130e4f328baef9b0100bb053b31cb44027700bff1f0ecc38d383"
+        },
+        "manifest": {
+          "artifact": "artifacts/out/soluble-exact/opt_manifest.json",
+          "sha256": "214856ac8ec86c2eeca23042a0d50091b11a67724e43b3fee862d6a4e82692ad"
+        },
+        "opted_out": [],
+        "partial": [],
+        "probe": "PASS",
+        "route": "worker",
+        "sequences": 2
+      },
+      "artifact_root": "artifacts/out/soluble-exact",
+      "frozen_target": [
+        {
+          "binder_design_mask_one": true,
+          "candidate": "px-pdl1-exact-01",
+          "designed_chains": [
+            "B"
+          ],
+          "fixed_chains": [
+            "A"
+          ],
+          "fixed_target_residue_observations_checked": 116,
+          "generated_source_sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "db6e08f73be7838f91fa0a375646af30042d71a8f21a734f726ced33aab6ea0c",
+          "pdb_sha256": "54dc47b911b5238730faa379bb93627ecf9a0977d8aab92b28bc1ade65b08c4e",
+          "probabilities": {
+            "artifact": "probs/px-pdl1-exact-01.npz",
+            "sha256": "d4ef28c1dca46ae3893e5e37e1d44e3e2eef7da05c28b5ff44ebaa41052a39be"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.cif",
+            "end": 116,
+            "numbering": "label",
+            "origin_residues_independently_matched": 116,
+            "reference_chain": "A",
+            "sha256": "25ca22e457201020ff0635ff3b52088493403f087df7d86fbf6de2a8eee01d03",
+            "start": 1,
+            "target_chain": "A"
+          },
+          "target_sequence_unchanged": true
+        },
+        {
+          "binder_design_mask_one": true,
+          "candidate": "rf-pdl1-exact-01",
+          "designed_chains": [
+            "A"
+          ],
+          "fixed_chains": [
+            "B"
+          ],
+          "fixed_target_residue_observations_checked": 115,
+          "generated_source_sha256": "3b4b600a0267fd64de310119152b12eb620deefaf66c4d36fc649beb97ea9da0",
+          "input_coordinate_bytes_unchanged": true,
+          "parsed_sha256": "8a48e98563f9cdc6d25479aad66069236dea410f40051756c47999197c1db894",
+          "pdb_sha256": "0b0234cd895d776401c746a7345aafc1a4d93edc996d201f2aa447887c311ef9",
+          "probabilities": {
+            "artifact": "probs/rf-pdl1-exact-01.npz",
+            "sha256": "23bb31ac1f8cbb3b9d09dc9e44d5f864fcd52639eeae0094850e43ca82b8a416"
+          },
+          "samples_checked": 1,
+          "schema": "proteinmpnn-frozen-target/1",
+          "target_design_mask_zero": true,
+          "target_reference": {
+            "artifact": "target-reference.pdb",
+            "end": 131,
+            "numbering": "author",
+            "origin_residues_independently_matched": 115,
+            "reference_chain": "A",
+            "sha256": "ba8b75816d8180d8c9ddf7388834d7cbf72163e77ecb612b22449b4375e633a0",
+            "start": 17,
+            "target_chain": "B"
+          },
+          "target_sequence_unchanged": true
+        }
+      ],
+      "mode": "exact",
+      "outputs": {
+        "artifacts": [
+          {
+            "arrays": [
+              {
+                "file": "scores/px-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "488f0072f927b9fbd0f9494f4b65c868fc96b8158ad7967463025933ab459539"
+              },
+              {
+                "file": "probs/px-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "d4ef28c1dca46ae3893e5e37e1d44e3e2eef7da05c28b5ff44ebaa41052a39be"
+              }
+            ],
+            "designed_chain_lengths": [
+              75
+            ],
+            "designs": 1,
+            "file": "seqs/px-pdl1-exact-01.fa",
+            "sha256": "f571b7987fba2379dee4be1cad34e828c8da46f15cc09b9316e5e579ddad9a92"
+          },
+          {
+            "arrays": [
+              {
+                "file": "scores/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "global_score",
+                  "score"
+                ],
+                "sha256": "8eb3e12d43ca9507e47d4c67a39d1063d5121aee3d6dff6388036b6dacb110ea"
+              },
+              {
+                "file": "probs/rf-pdl1-exact-01.npz",
+                "keys": [
+                  "S",
+                  "chain_order",
+                  "log_probs",
+                  "mask",
+                  "probs"
+                ],
+                "sha256": "23bb31ac1f8cbb3b9d09dc9e44d5f864fcd52639eeae0094850e43ca82b8a416"
+              }
+            ],
+            "designed_chain_lengths": [
+              95
+            ],
+            "designs": 1,
+            "file": "seqs/rf-pdl1-exact-01.fa",
+            "sha256": "9b24e0b6eaa8ace57052a8a585a117e0b655b611c63d9709db678830d746ac3c"
+          }
+        ],
+        "designs": 2,
+        "targets": 2,
+        "tool": "proteinmpnn"
+      },
+      "variant": "soluble"
+    }
+  ],
+  "schema": "proteinmpnn-generated-handoff-qualification/1",
+  "scope": "Actual PXDesign and RFdiffusion3 Exact full-backbone outputs to binder-only ProteinMPNN vanilla/soluble exact/off.",
+  "source": {
+    "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+    "native_parser_sha256": "3d68c7fcc37c0763c42bfaf6099b4b2f5dd30710f9870b6b38d7a9e1ac18b790",
+    "proteinmpnn_commit": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57"
+  },
+  "status": "qualified"
+}

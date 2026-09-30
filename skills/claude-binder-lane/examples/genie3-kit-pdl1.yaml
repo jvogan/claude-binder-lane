@@ -1,0 +1,18 @@
+# Public PD-L1 problem supplied by the pinned Genie3 checkout.
+# This qualifies one complete 100-step design; it is not a throughput benchmark.
+experiment:
+  name: genie3_kit_pdl1_qualification
+  seed: 101
+paths:
+  rootdir: out/genie3-kit-pdl1
+  dataset: data/design/binder_design/binderbench
+generation:
+  dataset:
+    source: target
+    selections: 04_pdl1
+    n_sample: 1
+    batch_size: 1
+  sampler:
+    sampler:
+      direction_scale: 0.0
+      n_sample_step: 100

@@ -33,6 +33,7 @@ when that handoff needs a reusable Binder bridge.
 | One target, BindCraft2, about 24 to 60 designs, and a bounded budget | [Small campaign quickstart](references/small-campaign-fast-path.md) | Only the selected tool and provider references named there. |
 | A different generator, supplied candidates, multiple methods, or a close reproduction of the published study | [Full campaign workflow](references/running-a-campaign.md) | The selected profile, stage contracts, and reproduction references. |
 | A tool or route comparison | [Tool catalogue](references/tool-catalogue.md) | Only the entries for candidate tools and routes. |
+| An Anthropic acceleration kit, accelerated model, or kit integration into an existing workflow | [Accelerated tool integration](references/accelerated-kit-integration.md) | Only the selected kit's recipe, qualification and handoff instructions. |
 
 For a BindCraft2 small campaign, begin with the quickstart alone. Collect the target
 construct, site or partner-complex rationale, and budget before opening other
@@ -216,6 +217,11 @@ preparing the approved run or resolving a specific missing fact.
   Read [fal](references/fal-route.md) for existing endpoints and private apps.
 - For Anthropic's ESMFold2 optimization kit on Modal, read the [pinned image
   recipe and qualification steps](references/esmfold2-kit-modal.md).
+- For Genie3, PXDesign, RFdiffusion3, BoltzGen, Complexa, ProteinMPNN or another
+  Anthropic optimization kit, read [accelerated tool integration](references/accelerated-kit-integration.md).
+  Prepare the selected native route and connect its artifacts to the user's
+  chosen pipeline. A missing fixed Binder graph binding limits that executor,
+  and does not prevent a native run or a campaign-local connector.
 - For NVIDIA BioNeMo Inference Runtime as a prediction route, read the
   [BioIR route](references/bioir-route.md).
 - For a published-stack request, read [reproduction

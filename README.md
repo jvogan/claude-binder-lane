@@ -14,8 +14,10 @@ The workflow is similar to the computational part of
 It checks methods against positive and negative controls, generates and filters
 candidates, predicts each candidate's complex with the target, scores it, and
 refines the best designs over rounds. The catalogue includes **BindCraft2** and
-the pinned accelerated **Boltz-2** and **ESMFold2** kits, alongside the broader
-published stack. It also explains **BioIR**, NVIDIA's BioNeMo Inference Runtime,
+the pinned accelerated **Boltz-2** and **ESMFold2** kits. Account-local recipes
+also cover **Genie3, PXDesign, RFdiffusion3, BoltzGen, Complexa, and ProteinMPNN**;
+the [integration guide](skills/claude-binder-lane/references/accelerated-kit-integration.md)
+connects them to your selected workflow. It also explains **BioIR**, NVIDIA's BioNeMo Inference Runtime,
 as a GPU prediction route. The 32 shipped tools are a starting catalogue.
 Claude Science can use tools connected to your session and add new tools with
 campaign-local catalogue entries and connectors.
@@ -84,9 +86,10 @@ and cost for the chosen seed lists.
 ![Four steps in order: plan with a budget ceiling, approval before paid work, a test at N=1 for a new route, then a scaled run within the approved plan and budget. The runtime records a receipt and cost for each stage, and a stopped run can resume.](assets/plan-approve-scale.svg)
 
 No paid work starts before you approve a plan with a budget ceiling. Paid work
-runs on your own account. Claude Science first sends one design (`N=1`) through
-each new compute route and checks the output, then scales up within the
-approved plan.
+runs on your own account. Claude Science first sends one design, or the tool's
+smallest valid batch, through each new compute route and checks the output,
+then scales up within the approved plan. BoltzGen's Exact and Fast modes
+require a diffusion batch of at least two.
 
 ## Tools and routes
 
@@ -178,6 +181,7 @@ with its [code](https://github.com/anthropics/uplifting-biomolecular-modeling).
 | Compare tool and route choices | [Tool catalogue](skills/claude-binder-lane/references/tool-catalogue.md) |
 | Estimate cost and authorize a run | [Measured costs](skills/claude-binder-lane/references/measured-costs.md) and [approval and spend](skills/claude-binder-lane/references/approval-and-spend.md) |
 | Generate and filter candidates | [Design and filters](skills/claude-binder-lane/references/design-and-filters.md) |
+| Prepare the six accelerated design and sequence kits | [Setup and workflow handoffs](skills/claude-binder-lane/references/accelerated-kit-integration.md) |
 | Build Anthropic's ESMFold2 optimization kit on Modal | [Pinned image recipe and qualification](skills/claude-binder-lane/references/esmfold2-kit-modal.md) |
 | Use NVIDIA BioNeMo Inference Runtime for structure prediction | [BioIR route](skills/claude-binder-lane/references/bioir-route.md) |
 | Try a target on selected providers | [New-target canary](skills/claude-binder-lane/references/new-target-provider-canary.md) |

@@ -1,0 +1,440 @@
+{
+  "accelerated_modes_valid": true,
+  "actual_driver_sha256": "4e489b454adcc33cd67f497253107042a572a47c28e120563f7c26a6512fbe32",
+  "actual_input_matches_initial_attempt_bytes": true,
+  "actual_input_matches_public_fixture": true,
+  "actual_input_sha256": "e524f78a8c22b4c9c79ca9d7aa93058620e0f618b88e6f4404d4ef337b0f93aa",
+  "all_requested_modes_produced_fresh_structures": true,
+  "all_requested_modes_valid": true,
+  "chain_roles": {
+    "binder": "B0",
+    "evidence": "public task condition target chain A/crop1-116 before generated entity; CIF entity1/A0 target identity and entity2/B0 generated xpb placeholder",
+    "target": "A0"
+  },
+  "comparison_to_unmodified_initial_attempt": {
+    "big": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    },
+    "exact": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    },
+    "fast": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    },
+    "off": {
+      "atom_count_equal": true,
+      "atom_identities_equal": true,
+      "bytes_equal": true,
+      "coordinates_equal": true,
+      "max_coordinate_difference_angstrom": 0.0,
+      "parameters_equal": true
+    }
+  },
+  "current_recipe_sha256": "731c9858b3d0c9f42a362b0293058da4d2ba22e574f81b221f9c0897bf5921b1",
+  "date": "2026-09-30",
+  "driver_sha256_matches_local_patch": true,
+  "exact_vs_off": {
+    "atom_identities_equal": true,
+    "bytes_equal": true,
+    "coordinates_equal": true,
+    "max_coordinate_difference_angstrom": 0.0
+  },
+  "executed_driver_local_patches": [
+    {
+      "after_sha256": "4e489b454adcc33cd67f497253107042a572a47c28e120563f7c26a6512fbe32",
+      "base_kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+      "before_sha256": "6b7f5b5cf251c38e452b2ab063f544f43d79b48684414d726b0f46e2743f638d",
+      "diff_sha256": "39c8e5f7bd83ceb735c0771bb041fd9ea68e56766185acab3547a75b17885a68",
+      "file": "pxdesign/opt/pxdesign_opt/infer_loop.py",
+      "id": "pxdesign-stock-isolation-unused-import-v1"
+    }
+  ],
+  "executed_recipe_sha256": "731c9858b3d0c9f42a362b0293058da4d2ba22e574f81b221f9c0897bf5921b1",
+  "fast_vs_big": {
+    "atom_identities_equal": true,
+    "bytes_equal": true,
+    "coordinates_equal": true,
+    "max_coordinate_difference_angstrom": 0.0
+  },
+  "fixture_sha256": "5da4b92a8352b98b7e7b9f56548f92f222c35980b3c2c4685d0ecdb02bfc27fb",
+  "gpu": "H100",
+  "historical_baseline": {
+    "attempt": "pxdesign-01",
+    "lever_modules_imported": [
+      "pxdesign_opt.stack"
+    ],
+    "qualification_preserved_separately": true,
+    "strict_stock_after_ok": false
+  },
+  "kit": "pxdesign",
+  "kit_commit": "f4f62fa6592ae4938d49b1757bea0cfeff9f468e",
+  "limitations": [
+    "One candidate per mode on a small public target qualifies bounded execution and actual lever engagement; it does not establish biological quality or repeated warm throughput.",
+    "Sampling and wall timings are single-run observations with import/checkpoint load costs; no speedup claim is made.",
+    "big rowpipe actually ran with two slabs; this small input does not qualify maximum token capacity.",
+    "N_sample1 gives valid sdedup single-row calls but no deduplicated serving benefit.",
+    "This same recipe source was executed on H100; other hardware and provider environments need their own qualification.",
+    "The kit driver contains the explicit audited repair; this is not a pristine upstream kit-driver claim. Model/stock-source pins and all requested sampling parameters remain unchanged.",
+    "Provider cost settlement and resource cleanup are tracked separately from inference artifact validation."
+  ],
+  "local_patch_record_sha256": "1ac7f028ec981d116ce1559e7912bf534afd4b056ea332251645c408efa73175",
+  "provider": "Modal",
+  "public_input_case": "pdl1 crop1-116 binder75 public kit task",
+  "recipe_hash_matches_executed_copy": true,
+  "repair_scope": "Removes only the unused stack import from the deterministic stock driver. Full before/after hashes are enforced, all other AST is equal, actual inference artifacts remain byte-identical for every tested mode. Base kit and local patch are both disclosed.",
+  "reports": {
+    "big": {
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "dtype": "bf16",
+        "levers_applied": [
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5"
+        ],
+        "package_levers_applied": [
+          "featdiet",
+          "padmask",
+          "rowpipe",
+          "sdedup",
+          "tf32"
+        ],
+        "precision_ok": 1,
+        "rowpipe_slabs": 2,
+        "sampler_steps": "400",
+        "sdedup": {
+          "bypassed": 0,
+          "calls": 400,
+          "disabled": null,
+          "disabled_calls": 0,
+          "fallback": 0,
+          "fallback_by": {},
+          "items": 0,
+          "klass": "tolerance",
+          "mismatched": 0,
+          "name": "sdedup",
+          "rows_saved": 0,
+          "served": 0,
+          "single": 400,
+          "state": "idle",
+          "trusted": 0,
+          "verified": 0
+        },
+        "stack": {
+          "cuda": "12.1",
+          "python": "3.11.5",
+          "torch": "2.3.1+cu121",
+          "triton": "2.3.1"
+        }
+      },
+      "expected_structures": 1,
+      "kit": "pxdesign",
+      "log_sha256": "1714109f9e95a575db59c5a2c2e14b02dc439733fec7ea9e850e87eb0ae01523",
+      "manifest_sha256": "69567f8e5a26ed1833c291ab10e166a560de9842d9fd7b3ade412ab2f7756e85",
+      "mode": "big",
+      "run_parameters": {
+        "N_sample": "1",
+        "N_step": "400",
+        "det": 1,
+        "dtype": "bf16",
+        "eta_max": "2.5",
+        "eta_min": "2.5",
+        "eta_type": "const",
+        "num_workers": "16",
+        "seeds": [
+          101
+        ],
+        "use_fast_ln": "true",
+        "use_msa": "true"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 1230,
+          "bytes": 131948,
+          "chains": {
+            "A0": {
+              "ca_only_residues": 0,
+              "ca_residues": 116,
+              "full_backbone_residues": 116,
+              "residues": 116
+            },
+            "B0": {
+              "ca_only_residues": 0,
+              "ca_residues": 75,
+              "full_backbone_residues": 75,
+              "residues": 75
+            }
+          },
+          "file": "pdl1/seed_101/predictions/pdl1_sample_0.cif",
+          "sha256": "69c788784157fdbf49e277817135cf13412fa1f9c32efc3a8b6048a1be5ae5e2"
+        }
+      ],
+      "timings": {
+        "load_s": 37.94,
+        "sampling_s": 38.89,
+        "wall_s": 76.83
+      },
+      "valid": true
+    },
+    "exact": {
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "dtype": "bf16",
+        "levers_applied": [
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5"
+        ],
+        "package_levers_applied": [],
+        "precision_ok": 1,
+        "rowpipe_slabs": null,
+        "sampler_steps": "400",
+        "sdedup": {},
+        "stack": {
+          "cuda": "12.1",
+          "python": "3.11.5",
+          "torch": "2.3.1+cu121",
+          "triton": "2.3.1"
+        }
+      },
+      "expected_structures": 1,
+      "kit": "pxdesign",
+      "log_sha256": "45c5e22c70299071a773be5c9669ad9941f7de7988024f5e394a9b1c5be76613",
+      "manifest_sha256": "b379a5cb976abea7dd78a0ee05ac3d0fa34c7fd18574216a2e7d714b35261dbf",
+      "mode": "exact",
+      "run_parameters": {
+        "N_sample": "1",
+        "N_step": "400",
+        "det": 1,
+        "dtype": "bf16",
+        "eta_max": "2.5",
+        "eta_min": "2.5",
+        "eta_type": "const",
+        "num_workers": "16",
+        "seeds": [
+          101
+        ],
+        "use_fast_ln": "true",
+        "use_msa": "true"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 1230,
+          "bytes": 130718,
+          "chains": {
+            "A0": {
+              "ca_only_residues": 0,
+              "ca_residues": 116,
+              "full_backbone_residues": 116,
+              "residues": 116
+            },
+            "B0": {
+              "ca_only_residues": 0,
+              "ca_residues": 75,
+              "full_backbone_residues": 75,
+              "residues": 75
+            }
+          },
+          "file": "pdl1/seed_101/predictions/pdl1_sample_0.cif",
+          "sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547"
+        }
+      ],
+      "timings": {
+        "load_s": 37.92,
+        "sampling_s": 41.87,
+        "wall_s": 79.79
+      },
+      "valid": true
+    },
+    "fast": {
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "dtype": "bf16",
+        "levers_applied": [
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5"
+        ],
+        "package_levers_applied": [
+          "featdiet",
+          "padmask",
+          "sdedup",
+          "tf32"
+        ],
+        "precision_ok": 1,
+        "rowpipe_slabs": null,
+        "sampler_steps": "400",
+        "sdedup": {
+          "bypassed": 0,
+          "calls": 400,
+          "disabled": null,
+          "disabled_calls": 0,
+          "fallback": 0,
+          "fallback_by": {},
+          "items": 0,
+          "klass": "tolerance",
+          "mismatched": 0,
+          "name": "sdedup",
+          "rows_saved": 0,
+          "served": 0,
+          "single": 400,
+          "state": "idle",
+          "trusted": 0,
+          "verified": 0
+        },
+        "stack": {
+          "cuda": "12.1",
+          "python": "3.11.5",
+          "torch": "2.3.1+cu121",
+          "triton": "2.3.1"
+        }
+      },
+      "expected_structures": 1,
+      "kit": "pxdesign",
+      "log_sha256": "becbb76b7ec0afe8707d3bc184c884396830cc62670643d9cde08ce3f3f89454",
+      "manifest_sha256": "9de5025b1c5cf669ed8b740d248babbca5e81af93b0b0f1777c890f73ad3b752",
+      "mode": "fast",
+      "run_parameters": {
+        "N_sample": "1",
+        "N_step": "400",
+        "det": 1,
+        "dtype": "bf16",
+        "eta_max": "2.5",
+        "eta_min": "2.5",
+        "eta_type": "const",
+        "num_workers": "16",
+        "seeds": [
+          101
+        ],
+        "use_fast_ln": "true",
+        "use_msa": "true"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 1230,
+          "bytes": 131948,
+          "chains": {
+            "A0": {
+              "ca_only_residues": 0,
+              "ca_residues": 116,
+              "full_backbone_residues": 116,
+              "residues": 116
+            },
+            "B0": {
+              "ca_only_residues": 0,
+              "ca_residues": 75,
+              "full_backbone_residues": 75,
+              "residues": 75
+            }
+          },
+          "file": "pdl1/seed_101/predictions/pdl1_sample_0.cif",
+          "sha256": "69c788784157fdbf49e277817135cf13412fa1f9c32efc3a8b6048a1be5ae5e2"
+        }
+      ],
+      "timings": {
+        "load_s": 37.84,
+        "sampling_s": 38.57,
+        "wall_s": 76.41
+      },
+      "valid": true
+    },
+    "off": {
+      "claim_boundary": "parsed computational outputs and requested-mode evidence; no biological quality or throughput claim",
+      "errors": [],
+      "evidence": {
+        "dtype": "bf16",
+        "sampler_steps": "400",
+        "stack": {
+          "cuda": "12.1",
+          "python": "3.11.5",
+          "torch": "2.3.1+cu121",
+          "triton": "2.3.1"
+        },
+        "stock_after_ok": true,
+        "stock_lever_modules_imported": [],
+        "stock_proof_clean": true,
+        "stock_proof_sha256": "0da2d99d658d521cd64dd154e1016e8279871a0cbf46fba05f048b204dced088"
+      },
+      "expected_structures": 1,
+      "kit": "pxdesign",
+      "log_sha256": "9661f3aeb2c4c9b6cbe5b5d73c8e9d25e7b4c045bc8d3ce063a595ee13ab18f8",
+      "manifest_sha256": "95ad1644512e16d609b84ea7aadfb9d5d7aefee813fb04159ed1cb223e9336aa",
+      "mode": "off",
+      "run_parameters": {
+        "N_sample": "1",
+        "N_step": "400",
+        "det": 1,
+        "dtype": "bf16",
+        "eta_max": "2.5",
+        "eta_min": "2.5",
+        "eta_type": "const",
+        "num_workers": "16",
+        "seeds": [
+          101
+        ],
+        "use_fast_ln": "true",
+        "use_msa": "true"
+      },
+      "schema": "binder.genie_px_artifact_validation/1",
+      "structures": [
+        {
+          "atoms": 1230,
+          "bytes": 130718,
+          "chains": {
+            "A0": {
+              "ca_only_residues": 0,
+              "ca_residues": 116,
+              "full_backbone_residues": 116,
+              "residues": 116
+            },
+            "B0": {
+              "ca_only_residues": 0,
+              "ca_residues": 75,
+              "full_backbone_residues": 75,
+              "residues": 75
+            }
+          },
+          "file": "pdl1/seed_101/predictions/pdl1_sample_0.cif",
+          "sha256": "8374ddf4e9f8bd6666684711dfe9064534e565a0318d835e90cf454ffe5b7547"
+        }
+      ],
+      "timings": {
+        "load_s": 37.53,
+        "sampling_s": 52.62,
+        "wall_s": 90.15
+      },
+      "valid": true
+    }
+  },
+  "schema": "binder.acceleration_qualification/1",
+  "source_kit_pristine": false,
+  "strict_stock_isolation_valid": true,
+  "validator_sha256": "8ca29459c14330fab98898f552d0e8c0c52797e60c10f77ca91ae0fa98d4cf96"
+}

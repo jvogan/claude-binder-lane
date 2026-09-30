@@ -1,0 +1,15 @@
+[
+  {
+    "name": "pdl1",
+    "condition": {
+      "structure_file": "opt/forward/hoist/inputs/targets/5o45.cif",
+      "filter": {
+        "chain_id": ["A"],
+        "crop": {"A": "1-116"}
+      },
+      "msa": {}
+    },
+    "hotspot": {"A": [40, 99, 107]},
+    "generation": [{"type": "protein", "length": 75, "count": 1}]
+  }
+]

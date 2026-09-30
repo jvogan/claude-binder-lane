@@ -3,7 +3,7 @@
 The adapter deliberately targets a small host protocol rather than a RunPod
 deployment identifier.  Claude Science can supply that protocol through its
 compute host; a workstation can supply an environment-backed client wrapper.
-Neither path needs another Codex skill or plugin at runtime.
+Neither path requires a separate skill or plugin at runtime.
 
 The lifecycle is explicit: submit writes durable facts, resume attaches to the
 recorded job id, settlement validates the harvested receipt, and cleanup stops

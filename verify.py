@@ -51,7 +51,8 @@ def bytecode_remedy(root: Path, cached: list[str]) -> str:
 def files_under(root: Path) -> dict[str, Path]:
     files = {}
     for entry in root.iterdir():
-        if entry.name == ".git" and entry.is_dir() and not entry.is_symlink():
+        # A linked Git worktree stores its metadata pointer in a regular file.
+        if entry.name == ".git" and not entry.is_symlink() and (entry.is_dir() or entry.is_file()):
             continue
         # A root `__pycache__` is collected rather than refused here, so the comparison
         # below can report it as the bytecode it is instead of as a strange directory.

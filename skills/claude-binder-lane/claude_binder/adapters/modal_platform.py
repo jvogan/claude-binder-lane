@@ -46,6 +46,15 @@ CONTAINER_EXPIRY_KINDS = frozenset({"container_expired", "sandbox_expired"})
 # runs. Change the recipe, rebuild the environment, and read the value back off
 # the workspace ledger.
 ENVIRONMENT_DEFAULTS: dict[str, dict[str, Any]] = {
+    "genie3_kit_gpu": {"gpu": "H100", "egress_domains": ["huggingface.co", "*.hf.co"]},
+    "pxdesign_kit_gpu": {"gpu": "H100", "egress_domains": ["pxdesign.tos-cn-beijing.volces.com"]},
+    "rfdiffusion3_kit_gpu": {"gpu": "H100", "egress_domains": ["files.ipd.uw.edu"]},
+    "boltzgen_kit_gpu": {"gpu": "H100", "egress_domains": ["huggingface.co", "*.hf.co"]},
+    "complexa_kit_gpu": {
+        "gpu": "H100",
+        "egress_domains": ["api.ngc.nvidia.com", "xfiles.ngc.nvidia.com", "storage.googleapis.com", "huggingface.co", "*.hf.co"],
+    },
+    "proteinmpnn_kit_gpu": {"gpu": "H100", "egress_domains": ["github.com"]},
     "proteomics_rfd_diffdock_gpu": {
         "gpu": "A100",
         "egress_domains": ["dl.fbaipublicfiles.com"],
